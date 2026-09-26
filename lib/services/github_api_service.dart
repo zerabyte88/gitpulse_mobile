@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class GitHubApiException implements Exception {
 
 class GitHubApiService {
   static const String _baseUrl = 'https://api.github.com';
+  static const Duration _timeoutDuration = Duration(seconds: 15);
   final http.Client _client;
   String? personalAccessToken;
 
@@ -41,7 +43,7 @@ class GitHubApiService {
     try {
       // 1. Fetch User Profile
       final userUri = Uri.parse('$_baseUrl/users/$cleanUsername');
-      final userRes = await _client.get(userUri, headers: _headers);
+      final userRes = await _client.get(userUri, headers: _headers).timeout(_timeoutDuration);
 
       if (userRes.statusCode == 404) {
         throw GitHubApiException('Pengguna "$cleanUsername" tidak ditemukan di GitHub.');
@@ -59,7 +61,7 @@ class GitHubApiService {
       // 2. Fetch Repositories (up to 100 recent)
       final reposUri = Uri.parse(
           '$_baseUrl/users/$cleanUsername/repos?per_page=100&sort=updated');
-      final reposRes = await _client.get(reposUri, headers: _headers);
+      final reposRes = await _client.get(reposUri, headers: _headers).timeout(_timeoutDuration);
       final List<GitHubRepo> repos = [];
 
       if (reposRes.statusCode == 200) {
@@ -77,7 +79,7 @@ class GitHubApiService {
       // 3. Fetch Public Events for activity analysis
       final eventsUri =
           Uri.parse('$_baseUrl/users/$cleanUsername/events/public?per_page=100');
-      final eventsRes = await _client.get(eventsUri, headers: _headers);
+      final eventsRes = await _client.get(eventsUri, headers: _headers).timeout(_timeoutDuration);
       final List<Map<String, dynamic>> events = [];
 
       if (eventsRes.statusCode == 200) {
@@ -94,8 +96,13 @@ class GitHubApiService {
         repos: repos,
         publicEvents: events,
       );
-    } on SocketException {
+    } on SocketException catch (e) {
+      if (e.osError?.errorCode == 13 || e.message.toLowerCase().contains('permission')) {
+        throw GitHubApiException('Izin akses internet belum diaktifkan pada sistem aplikasi.');
+      }
       throw GitHubApiException('Tidak ada koneksi internet. Periksa jaringan kamu.');
+    } on TimeoutException {
+      throw GitHubApiException('Koneksi timeout. Server GitHub tidak merespons tepat waktu.');
     } on http.ClientException {
       throw GitHubApiException('Gagal berkomunikasi dengan server GitHub.');
     } catch (e) {

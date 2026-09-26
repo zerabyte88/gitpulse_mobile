@@ -1,6 +1,6 @@
 {
-    "name": "gitpulse_mobile",
-    "short_name": "gitpulse_mobile",
+    "name": "GitPulse",
+    "short_name": "GitPulse",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
