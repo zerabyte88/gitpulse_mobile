@@ -1,0 +1,178 @@
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
+
+class ActivityChart extends StatelessWidget {
+  final Map<int, int> hourlyActivity;
+
+  const ActivityChart({super.key, required this.hourlyActivity});
+
+  @override
+  Widget build(BuildContext context) {
+    // Group into 6 time intervals (each 4 hours)
+    final intervals = [
+      {'label': '00-04', 'name': 'Malam', 'count': 0},
+      {'label': '04-08', 'name': 'Fajar', 'count': 0},
+      {'label': '08-12', 'name': 'Pagi', 'count': 0},
+      {'label': '12-16', 'name': 'Siang', 'count': 0},
+      {'label': '16-20', 'name': 'Sore', 'count': 0},
+      {'label': '20-24', 'name': 'Malam', 'count': 0},
+    ];
+
+    hourlyActivity.forEach((hour, count) {
+      if (hour < 4) {
+        intervals[0]['count'] = (intervals[0]['count'] as int) + count;
+      } else if (hour < 8) {
+        intervals[1]['count'] = (intervals[1]['count'] as int) + count;
+      } else if (hour < 12) {
+        intervals[2]['count'] = (intervals[2]['count'] as int) + count;
+      } else if (hour < 16) {
+        intervals[3]['count'] = (intervals[3]['count'] as int) + count;
+      } else if (hour < 20) {
+        intervals[4]['count'] = (intervals[4]['count'] as int) + count;
+      } else {
+        intervals[5]['count'] = (intervals[5]['count'] as int) + count;
+      }
+    });
+
+    int maxCount = 0;
+    int peakIndex = 0;
+    for (var i = 0; i < intervals.length; i++) {
+      final c = intervals[i]['count'] as int;
+      if (c > maxCount) {
+        maxCount = c;
+        peakIndex = i;
+      }
+    }
+
+    final barGroups = List.generate(intervals.length, (i) {
+      final count = (intervals[i]['count'] as int).toDouble();
+      final isPeak = i == peakIndex && maxCount > 0;
+
+      return BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            toY: count == 0 ? 0.3 : count,
+            color: isPeak ? AppTheme.primaryCyan : AppTheme.primaryViolet.withValues(alpha: 0.6),
+            width: 22,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+          ),
+        ],
+      );
+    });
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.bolt_rounded, size: 18, color: AppTheme.accentAmber),
+                  SizedBox(width: 8),
+                  Text(
+                    'Ritme Jam Produktif',
+                    style: TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              if (maxCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryCyan.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Peak: ${intervals[peakIndex]['label']}',
+                    style: const TextStyle(
+                      color: AppTheme.primaryCyan,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Berdasarkan riwayat aktivitas event publik terkini',
+            style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            height: 160,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: maxCount == 0 ? 5 : maxCount.toDouble() * 1.25,
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => AppTheme.surfaceElevated,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final item = intervals[group.x.toInt()];
+                      return BarTooltipItem(
+                        '${item['label']}\n${rod.toY.toInt()} event',
+                        const TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 28,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index < 0 || index >= intervals.length) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            intervals[index]['label'] as String,
+                            style: const TextStyle(
+                              color: AppTheme.textSecondary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                barGroups: barGroups,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
