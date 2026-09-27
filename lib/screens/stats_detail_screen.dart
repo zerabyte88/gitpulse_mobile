@@ -87,6 +87,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
 🎖️ Title: ${cStats.commitTitle.title} (${loc.getCommitTierLevelName(cStats.commitTitle.tier)})
 🔥 Streak: ${cStats.currentStreak} ${loc.daysUnit} (Max: ${cStats.longestStreak} ${loc.daysUnit})
 📅 ${loc.thisYearContributions}: ${cStats.thisYearContributions}
+🌐 ${loc.allYearsContributions}: ${cStats.totalContributions}
 🎭 Persona: ${widget.stats.developerPersona}
 ⭐ ${loc.totalStars}: ${widget.stats.totalStars}
 📦 ${loc.repositoriesTitle}: ${u.publicRepos} | 👥 ${loc.followers}: ${u.followers}
@@ -390,7 +391,6 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     final titleInfo = cStats.commitTitle;
     final habitStyle = _getCommitHabitStyle(titleInfo.tier);
     final currentYear = DateTime.now().year;
-    final lastYear = currentYear - 1;
     final repos = _filteredAndSortedRepos;
     final displayedRepos = _showAllRepos ? repos : repos.take(10).toList();
 
@@ -645,11 +645,11 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: '${loc.totalContributions} ($lastYear)',
-                    value: '${cStats.lastYearContributions}',
-                    icon: Icons.history_toggle_off_rounded,
+                    label: loc.allYearsContributions,
+                    value: '${cStats.totalContributions}',
+                    icon: Icons.all_inclusive_rounded,
                     accentColor: AppTheme.primaryViolet,
-                    subtitle: loc.lastYearSubtitle,
+                    subtitle: loc.allTimeSubtitle,
                   ),
                 ),
               ],

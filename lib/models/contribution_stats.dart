@@ -110,6 +110,70 @@ class ContributionStats {
     }
   }
 
+  /// Computes current and longest consecutive daily contribution streaks.
+  /// Handles multi-year arrays, leap years, timezone offsets, and non-chronological lists.
+  static ({int current, int longest}) calculateStreaks(Map<DateTime, int> dayCounts) {
+    if (dayCounts.isEmpty) return (current: 0, longest: 0);
+
+    final sortedDates = dayCounts.keys.toList()..sort();
+    int longest = 0;
+    int running = 0;
+    DateTime? prevDate;
+
+    for (final date in sortedDates) {
+      final count = dayCounts[date] ?? 0;
+      if (count > 0) {
+        if (prevDate != null && date.difference(prevDate).inDays == 1) {
+          running++;
+        } else {
+          running = 1;
+        }
+        if (running > longest) longest = running;
+      } else {
+        running = 0;
+      }
+      prevDate = date;
+    }
+
+    int current = 0;
+    final nowLocal = DateTime.now();
+    final todayLocal = DateTime.utc(nowLocal.year, nowLocal.month, nowLocal.day);
+    final nowUtc = nowLocal.toUtc();
+    final todayUtc = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
+
+    DateTime? lastActiveDate;
+    for (int i = sortedDates.length - 1; i >= 0; i--) {
+      final date = sortedDates[i];
+      if ((dayCounts[date] ?? 0) > 0) {
+        lastActiveDate = date;
+        break;
+      }
+    }
+
+    if (lastActiveDate != null) {
+      final diffLocal = todayLocal.difference(lastActiveDate).inDays;
+      final diffUtc = todayUtc.difference(lastActiveDate).inDays;
+      final daysDiff = diffLocal.abs() <= diffUtc.abs() ? diffLocal : diffUtc;
+
+      // Active streak: last commit is today (0), yesterday (1), or within 1 day timezone skew (-1)
+      if (daysDiff >= -1 && daysDiff <= 1) {
+        DateTime cur = lastActiveDate;
+        while (true) {
+          final count = dayCounts[cur] ?? 0;
+          if (count > 0) {
+            current++;
+            cur = DateTime.utc(cur.year, cur.month, cur.day - 1);
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    if (current > longest) longest = current;
+    return (current: current, longest: longest);
+  }
+
   factory ContributionStats.fromContributionsApi(Map<String, dynamic> json) {
     final now = DateTime.now();
     final currentYearKey = now.year.toString();
@@ -129,53 +193,29 @@ class ContributionStats {
     final total = yearly.values.fold(0, (sum, count) => sum + count);
 
     // Parse daily contributions array
-    int longest = 0;
-    int current = 0;
-
+    final Map<DateTime, int> dayCounts = {};
     if (json['contributions'] is List) {
       final list = json['contributions'] as List;
-
-      // Calculate longest streak
-      int running = 0;
       for (final item in list) {
-        if (item is Map) {
+        if (item is Map && item['date'] != null) {
+          final dateStr = item['date'].toString();
           final count = (item['count'] as num?)?.toInt() ?? 0;
-          if (count > 0) {
-            running++;
-            if (running > longest) longest = running;
-          } else {
-            running = 0;
-          }
-        }
-      }
-
-      // Calculate current streak from backwards
-      if (list.isNotEmpty) {
-        // If today has 0, check if yesterday was active
-        int startIndex = list.length - 1;
-        final lastItem = list[startIndex];
-        final lastCount = (lastItem is Map) ? ((lastItem['count'] as num?)?.toInt() ?? 0) : 0;
-
-        if (lastCount == 0 && startIndex > 0) {
-          // Check yesterday
-          final prevItem = list[startIndex - 1];
-          final prevCount = (prevItem is Map) ? ((prevItem['count'] as num?)?.toInt() ?? 0) : 0;
-          if (prevCount > 0) {
-            startIndex = startIndex - 1;
-          }
-        }
-
-        for (int i = startIndex; i >= 0; i--) {
-          final item = list[i];
-          final count = (item is Map) ? ((item['count'] as num?)?.toInt() ?? 0) : 0;
-          if (count > 0) {
-            current++;
-          } else {
-            break;
+          final parts = dateStr.split('-');
+          if (parts.length == 3) {
+            final y = int.tryParse(parts[0]);
+            final m = int.tryParse(parts[1]);
+            final d = int.tryParse(parts[2]);
+            if (y != null && m != null && d != null) {
+              dayCounts[DateTime.utc(y, m, d)] = count;
+            }
           }
         }
       }
     }
+
+    final streaks = calculateStreaks(dayCounts);
+    final current = streaks.current;
+    final longest = streaks.longest;
 
     final title = determineTitle(
       currentStreak: current,
@@ -204,7 +244,8 @@ class ContributionStats {
 
     int thisYearCount = 0;
     int lastYearCount = 0;
-    final Set<String> activeDates = {};
+    final Map<DateTime, int> dayCounts = {};
+    final Map<String, int> yearlyCounts = {};
 
     for (final event in events) {
       if (event['type'] == 'PushEvent') {
@@ -222,42 +263,20 @@ class ContributionStats {
             } else if (dt.year == lastYear) {
               lastYearCount += commitCount;
             }
-            final dateKey = '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
-            activeDates.add(dateKey);
+            final yearKey = dt.year.toString();
+            yearlyCounts[yearKey] = (yearlyCounts[yearKey] ?? 0) + commitCount;
+
+            final dUtc = DateTime.utc(dt.year, dt.month, dt.day);
+            dayCounts[dUtc] = (dayCounts[dUtc] ?? 0) + commitCount;
           }
         }
       }
     }
 
-    // Calculate current streak from active dates
-    int currentStreak = 0;
-    DateTime checkDate = now;
-    final todayKey = '${checkDate.year}-${checkDate.month.toString().padLeft(2, '0')}-${checkDate.day.toString().padLeft(2, '0')}';
-    final yesterday = now.subtract(const Duration(days: 1));
-    final yesterdayKey = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
-
-    if (activeDates.contains(todayKey)) {
-      checkDate = now;
-    } else if (activeDates.contains(yesterdayKey)) {
-      checkDate = yesterday;
-    } else {
-      checkDate = DateTime(1970);
-    }
-
-    if (checkDate.year > 1970) {
-      while (true) {
-        final key = '${checkDate.year}-${checkDate.month.toString().padLeft(2, '0')}-${checkDate.day.toString().padLeft(2, '0')}';
-        if (activeDates.contains(key)) {
-          currentStreak++;
-          checkDate = checkDate.subtract(const Duration(days: 1));
-        } else {
-          break;
-        }
-      }
-    }
-
-    final longestStreak = currentStreak > 0 ? currentStreak : (activeDates.isNotEmpty ? 1 : 0);
-    final total = thisYearCount + lastYearCount;
+    final streaks = calculateStreaks(dayCounts);
+    final currentStreak = streaks.current;
+    final longestStreak = streaks.longest;
+    final total = yearlyCounts.values.fold(0, (sum, count) => sum + count);
 
     final title = determineTitle(
       currentStreak: currentStreak,
@@ -273,10 +292,12 @@ class ContributionStats {
       longestStreak: longestStreak,
       totalContributions: total,
       commitTitle: title,
-      yearlyTotals: {
-        currentYear.toString(): thisYearCount,
-        lastYear.toString(): lastYearCount,
-      },
+      yearlyTotals: yearlyCounts.isNotEmpty
+          ? yearlyCounts
+          : {
+              currentYear.toString(): thisYearCount,
+              lastYear.toString(): lastYearCount,
+            },
     );
   }
 }

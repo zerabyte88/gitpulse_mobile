@@ -642,6 +642,15 @@ class AppLocalizations {
     AppLanguage.korean: '총 기여',
   });
 
+  String get allYearsContributions => _str({
+    AppLanguage.indonesian: 'Total Kontribusi (Semua Tahun)',
+    AppLanguage.english: 'Total Contributions (All Years)',
+    AppLanguage.japanese: '総貢献数 (全期間)',
+    AppLanguage.chineseSimplified: '总贡献次数 (所有年份)',
+    AppLanguage.chineseTraditional: '總貢獻次數 (所有年份)',
+    AppLanguage.korean: '총 기여 (전체 연도)',
+  });
+
   String get daysUnit => _str({
     AppLanguage.indonesian: 'hari',
     AppLanguage.english: 'days',
@@ -919,6 +928,15 @@ class AppLocalizations {
     AppLanguage.chineseSimplified: '去年',
     AppLanguage.chineseTraditional: '去年',
     AppLanguage.korean: '작년',
+  });
+
+  String get allTimeSubtitle => _str({
+    AppLanguage.indonesian: 'Sepanjang waktu',
+    AppLanguage.english: 'All time',
+    AppLanguage.japanese: '全期間',
+    AppLanguage.chineseSimplified: '所有时间',
+    AppLanguage.chineseTraditional: '所有時間',
+    AppLanguage.korean: '전체 기간',
   });
 
   String get accountOverviewTitle => _str({

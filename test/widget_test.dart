@@ -97,6 +97,75 @@ void main() {
       expect(bronze.levelName, contains('Belum Aktif'));
     });
 
+    test('ContributionStats calculates active and longest streaks accurately across dates', () {
+      final now = DateTime.now();
+      final today = DateTime.utc(now.year, now.month, now.day);
+      final yesterday = DateTime.utc(now.year, now.month, now.day - 1);
+      final twoDaysAgo = DateTime.utc(now.year, now.month, now.day - 2);
+      final threeDaysAgo = DateTime.utc(now.year, now.month, now.day - 3);
+
+      // Scenario 1: Active streak including today (today and yesterday consecutive, gap on twoDaysAgo)
+      final counts = {
+        today: 5,
+        yesterday: 2,
+        twoDaysAgo: 0,
+        threeDaysAgo: 10,
+      };
+      final streaks = ContributionStats.calculateStreaks(counts);
+      expect(streaks.current, 2); // today and yesterday
+      expect(streaks.longest, 2);
+
+      // Scenario 2: Active streak from yesterday (not yet committed today)
+      final countsYesterday = {
+        today: 0,
+        yesterday: 4,
+        twoDaysAgo: 1,
+        threeDaysAgo: 2,
+      };
+      final streaksYesterday = ContributionStats.calculateStreaks(countsYesterday);
+      expect(streaksYesterday.current, 3);
+      expect(streaksYesterday.longest, 3);
+
+      // Scenario 3: Broken streak (last commit was 2 days ago)
+      final countsBroken = {
+        today: 0,
+        yesterday: 0,
+        twoDaysAgo: 5,
+        threeDaysAgo: 6,
+      };
+      final streaksBroken = ContributionStats.calculateStreaks(countsBroken);
+      expect(streaksBroken.current, 0);
+      expect(streaksBroken.longest, 2);
+    });
+
+    test('ContributionStats.fromContributionsApi correctly parses multi-year list with future dates', () {
+      final now = DateTime.now();
+      final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final yest = now.subtract(const Duration(days: 1));
+      final yestStr = '${yest.year}-${yest.month.toString().padLeft(2, '0')}-${yest.day.toString().padLeft(2, '0')}';
+
+      final mockApi = {
+        'total': {
+          '${now.year}': 15,
+          '${now.year - 1}': 50,
+        },
+        'contributions': [
+          // Current year with future date
+          {'date': '${now.year}-12-31', 'count': 0},
+          {'date': todayStr, 'count': 5},
+          {'date': yestStr, 'count': 10},
+          // Last year
+          {'date': '${now.year - 1}-12-31', 'count': 0},
+        ],
+      };
+
+      final stats = ContributionStats.fromContributionsApi(mockApi);
+      expect(stats.currentStreak, 2);
+      expect(stats.longestStreak, 2);
+      expect(stats.thisYearContributions, 15);
+      expect(stats.totalContributions, 65);
+    });
+
     test('GitHubRepo relative time formatting handles hours and days', () {
       final now = DateTime.now();
 
@@ -553,6 +622,11 @@ void main() {
 
       // Verify that AnimatedTierTitle exists in the commit habit banner
       expect(find.byType(AnimatedTierTitle), findsOneWidget);
+
+      // Verify all years total contributions card is rendered
+      expect(find.text('Total Kontribusi (Semua Tahun)'), findsOneWidget);
+      expect(find.text('Sepanjang waktu'), findsOneWidget);
+      expect(find.text('150'), findsOneWidget);
     });
   });
 }
