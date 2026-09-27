@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gitpulse_mobile/models/bookmarked_user.dart';
 import 'package:gitpulse_mobile/models/contribution_stats.dart';
 import 'package:gitpulse_mobile/models/github_repo.dart';
 import 'package:gitpulse_mobile/models/github_user.dart';
+import 'package:gitpulse_mobile/models/tech_news.dart';
 import 'package:gitpulse_mobile/models/user_stats.dart';
+import 'package:gitpulse_mobile/services/storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('GitPulse Model Tests', () {
@@ -240,6 +244,72 @@ void main() {
       expect(stats.languageCounts['Dart'], 66038);
       expect(stats.languageCounts['HTML'], 38404);
       expect(stats.languageCounts['CSS'], 18771);
+    });
+
+    test('BookmarkedUser parses correctly and provides avatar fallback', () {
+      final userWithAvatar = BookmarkedUser.fromJson({
+        'username': 'octocat',
+        'avatar_url': 'https://avatars.githubusercontent.com/u/583231',
+      });
+      expect(userWithAvatar.username, 'octocat');
+      expect(userWithAvatar.avatarUrl, 'https://avatars.githubusercontent.com/u/583231');
+
+      final userDefault = BookmarkedUser.fromJson({
+        'username': 'torvalds',
+      });
+      expect(userDefault.username, 'torvalds');
+      expect(userDefault.avatarUrl, 'https://github.com/torvalds.png');
+    });
+
+    test('StorageService persists bookmarks with avatar and manages recent searches', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await StorageService.init();
+
+      // Add bookmark with custom avatar
+      await storage.toggleBookmark('linus', avatarUrl: 'https://avatars.githubusercontent.com/linus');
+      expect(storage.isBookmarked('linus'), true);
+
+      final bookmarks = storage.getBookmarkedUsers();
+      expect(bookmarks.length, 1);
+      expect(bookmarks.first.username, 'linus');
+      expect(bookmarks.first.avatarUrl, 'https://avatars.githubusercontent.com/linus');
+
+      // Add recent searches and verify removal
+      await storage.addRecentSearch('flutter');
+      await storage.addRecentSearch('dart');
+      expect(storage.getRecentSearches(), ['dart', 'flutter']);
+
+      await storage.removeRecentSearch('dart');
+      expect(storage.getRecentSearches(), ['flutter']);
+
+      // Remove bookmark
+      await storage.removeBookmark('linus');
+      expect(storage.isBookmarked('linus'), false);
+      expect(storage.getBookmarkedUsers().isEmpty, true);
+    });
+
+    test('TechNews fromJson parses correctly with tags and user info', () {
+      final json = {
+        'id': 1234,
+        'title': 'AI Breakthrough in 2026',
+        'description': 'Exploring latest advancements in LLM models.',
+        'url': 'https://dev.to/article/ai-breakthrough',
+        'readable_publish_date': 'Sep 27',
+        'reading_time_minutes': 5,
+        'tag_list': ['ai', 'machinelearning'],
+        'user': {
+          'name': 'Ada Lovelace',
+          'profile_image_90': 'https://avatar.test/ada.png',
+        },
+      };
+
+      final news = TechNews.fromJson(json);
+      expect(news.id, 1234);
+      expect(news.title, 'AI Breakthrough in 2026');
+      expect(news.authorName, 'Ada Lovelace');
+      expect(news.authorAvatar, 'https://avatar.test/ada.png');
+      expect(news.tags, ['ai', 'machinelearning']);
+      expect(news.readingTimeMinutes, 5);
     });
   });
 }

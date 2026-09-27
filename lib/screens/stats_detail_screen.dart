@@ -42,7 +42,10 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
   }
 
   void _toggleBookmark() async {
-    await widget.storageService.toggleBookmark(widget.stats.user.login);
+    await widget.storageService.toggleBookmark(
+      widget.stats.user.login,
+      avatarUrl: widget.stats.user.avatarUrl,
+    );
     setState(() {
       _isBookmarked = !_isBookmarked;
     });
