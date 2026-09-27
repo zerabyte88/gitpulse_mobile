@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../localization/app_localizations.dart';
 import '../models/contribution_stats.dart';
 import '../models/github_repo.dart';
 import '../models/user_stats.dart';
@@ -43,31 +44,34 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
   }
 
   void _toggleBookmark() async {
+    final loc = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final username = widget.stats.user.login;
     await widget.storageService.toggleBookmark(
-      widget.stats.user.login,
+      username,
       avatarUrl: widget.stats.user.avatarUrl,
     );
+    if (!mounted) return;
     setState(() {
       _isBookmarked = !_isBookmarked;
     });
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _isBookmarked
-                ? 'Profil ${widget.stats.user.login} disimpan ke favorit!'
-                : 'Dihapus dari favorit.',
-          ),
-          backgroundColor: AppTheme.surfaceElevated,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          _isBookmarked
+              ? loc.profileSavedToFavorites(username)
+              : loc.profileRemovedFromFavorites,
         ),
-      );
-    }
+        backgroundColor: AppTheme.surfaceElevated,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   void _shareSummary() {
+    final loc = AppLocalizations.of(context);
     final u = widget.stats.user;
     final cStats = widget.stats.contributionStats;
     final topLang = widget.stats.languageCounts.entries.isNotEmpty
@@ -80,20 +84,20 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     final text = '''
 ⚡ GitPulse Profile Snapshot
 👤 @${u.login} (${u.name ?? 'Developer'})
-🎖️ Title: ${cStats.commitTitle.title} (${cStats.commitTitle.levelName})
-🔥 Streak: ${cStats.currentStreak} hari (Rekor: ${cStats.longestStreak} hari)
-📅 Kontribusi Tahun Ini: ${cStats.thisYearContributions}
+🎖️ Title: ${cStats.commitTitle.title} (${loc.getCommitTierLevelName(cStats.commitTitle.tier)})
+🔥 Streak: ${cStats.currentStreak} ${loc.daysUnit} (Max: ${cStats.longestStreak} ${loc.daysUnit})
+📅 ${loc.thisYearContributions}: ${cStats.thisYearContributions}
 🎭 Persona: ${widget.stats.developerPersona}
-⭐ Total Stars: ${widget.stats.totalStars}
-📦 Repos: ${u.publicRepos} | 👥 Followers: ${u.followers}
-💻 Top Language: $topLang
+⭐ ${loc.totalStars}: ${widget.stats.totalStars}
+📦 ${loc.repositoriesTitle}: ${u.publicRepos} | 👥 ${loc.followers}: ${u.followers}
+💻 ${loc.topLanguagesTitle}: $topLang
 🔗 https://github.com/${u.login}
 ''';
 
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ringkasan statistik berhasil disalin ke clipboard!'),
+      SnackBar(
+        content: Text(loc.summaryCopiedToast),
         backgroundColor: AppTheme.accentGreen,
         behavior: SnackBarBehavior.floating,
       ),
@@ -128,14 +132,14 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     return list;
   }
 
-  String _getFilterLabel(RepoSortFilter filter) {
+  String _getFilterLabel(RepoSortFilter filter, AppLocalizations loc) {
     switch (filter) {
       case RepoSortFilter.popular:
-        return 'Terpopuler';
+        return loc.filterPopular;
       case RepoSortFilter.newest:
-        return 'Terbaru';
+        return loc.filterNewest;
       case RepoSortFilter.oldest:
-        return 'Terlama';
+        return loc.filterOldest;
     }
   }
 
@@ -227,7 +231,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     }
   }
 
-  Widget _buildCommitHabitBanner(ContributionStats cStats) {
+  Widget _buildCommitHabitBanner(ContributionStats cStats, AppLocalizations loc) {
     final titleInfo = cStats.commitTitle;
     final habitStyle = _getCommitHabitStyle(titleInfo.tier);
 
@@ -273,7 +277,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   ),
                 ),
                 child: Text(
-                  titleInfo.levelName,
+                  loc.getCommitTierLevelName(titleInfo.tier),
                   style: TextStyle(
                     color: habitStyle.primary,
                     fontSize: 10.5,
@@ -302,7 +306,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      'Current: ${cStats.currentStreak} hari',
+                      'Current: ${cStats.currentStreak} ${loc.daysUnit}',
                       style: TextStyle(
                         color: habitStyle.primary,
                         fontSize: 11,
@@ -320,7 +324,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      'Max Streak: ${cStats.longestStreak} hari',
+                      'Max Streak: ${cStats.longestStreak} ${loc.daysUnit}',
                       style: const TextStyle(
                         color: AppTheme.accentAmber,
                         fontSize: 11,
@@ -347,6 +351,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final user = widget.stats.user;
     final cStats = widget.stats.contributionStats;
     final titleInfo = cStats.commitTitle;
@@ -360,7 +365,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
         title: Text('@${user.login}'),
         actions: [
           IconButton(
-            tooltip: _isBookmarked ? 'Hapus Bookmark' : 'Simpan Profil',
+            tooltip: _isBookmarked ? loc.removeFavorite : loc.saveFavorite,
             icon: Icon(
               _isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
               color: _isBookmarked ? AppTheme.accentAmber : AppTheme.textSecondary,
@@ -368,7 +373,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             onPressed: _toggleBookmark,
           ),
           IconButton(
-            tooltip: 'Salin Ringkasan',
+            tooltip: loc.shareProfile,
             icon: const Icon(Icons.share_rounded, color: AppTheme.primaryCyan),
             onPressed: _shareSummary,
           ),
@@ -492,21 +497,21 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             const SizedBox(height: 16),
 
             // Commit Habit Title Banner (Tingkat & Gelar Aktivitas Commit)
-            _buildCommitHabitBanner(cStats),
+            _buildCommitHabitBanner(cStats, loc),
             const SizedBox(height: 20),
 
             // Section: GitHub Contributions & Streak Statistics
-            const Row(
+            Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.local_fire_department_rounded,
                   size: 20,
                   color: Color(0xFFFF5722),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  'Statistik Kontribusi & Streak',
-                  style: TextStyle(
+                  loc.streakStatsTitle,
+                  style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -519,23 +524,23 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               children: [
                 Expanded(
                   child: StatCard(
-                    label: 'Streak Saat Ini',
-                    value: '${cStats.currentStreak} Hari',
+                    label: loc.currentStreak,
+                    value: '${cStats.currentStreak} ${loc.daysUnit}',
                     icon: Icons.whatshot_rounded,
                     accentColor: const Color(0xFFFF5722),
                     subtitle: cStats.currentStreak > 0
-                        ? 'Sedang aktif 🔥'
-                        : 'Belum aktif',
+                        ? loc.activeNowBadge
+                        : loc.notActiveYetBadge,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: 'Streak Terpanjang',
-                    value: '${cStats.longestStreak} Hari',
+                    label: loc.longestStreak,
+                    value: '${cStats.longestStreak} ${loc.daysUnit}',
                     icon: Icons.emoji_events_rounded,
                     accentColor: AppTheme.accentAmber,
-                    subtitle: 'Rekor konsistensi',
+                    subtitle: loc.consistencyRecord,
                   ),
                 ),
               ],
@@ -545,21 +550,21 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               children: [
                 Expanded(
                   child: StatCard(
-                    label: 'Kontribusi $currentYear',
+                    label: '${loc.thisYearContributions} ($currentYear)',
                     value: '${cStats.thisYearContributions}',
                     icon: Icons.calendar_today_rounded,
                     accentColor: AppTheme.primaryCyan,
-                    subtitle: 'Tahun ini',
+                    subtitle: loc.thisYearSubtitle,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: 'Kontribusi $lastYear',
+                    label: '${loc.totalContributions} ($lastYear)',
                     value: '${cStats.lastYearContributions}',
                     icon: Icons.history_toggle_off_rounded,
                     accentColor: AppTheme.primaryViolet,
-                    subtitle: 'Tahun lalu',
+                    subtitle: loc.lastYearSubtitle,
                   ),
                 ),
               ],
@@ -567,17 +572,17 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             const SizedBox(height: 24),
 
             // Key Metrics Grid
-            const Row(
+            Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.analytics_rounded,
                   size: 18,
                   color: AppTheme.primaryCyan,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  'Ikhtisar Akun',
-                  style: TextStyle(
+                  loc.accountOverviewTitle,
+                  style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -590,21 +595,21 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               children: [
                 Expanded(
                   child: StatCard(
-                    label: 'Total Stars',
+                    label: loc.totalStars,
                     value: '${widget.stats.totalStars}',
                     icon: Icons.star_rounded,
                     accentColor: AppTheme.accentAmber,
-                    subtitle: 'di semua repo',
+                    subtitle: loc.acrossAllRepos,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: 'Public Repos',
+                    label: loc.publicRepos,
                     value: '${user.publicRepos}',
                     icon: Icons.folder_copy_rounded,
                     accentColor: AppTheme.primaryCyan,
-                    subtitle: 'terdaftar',
+                    subtitle: loc.registeredReposSubtitle,
                   ),
                 ),
               ],
@@ -614,7 +619,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               children: [
                 Expanded(
                   child: StatCard(
-                    label: 'Followers',
+                    label: loc.followers,
                     value: '${user.followers}',
                     icon: Icons.people_rounded,
                     accentColor: AppTheme.accentGreen,
@@ -623,7 +628,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: 'Total Forks',
+                    label: loc.totalForks,
                     value: '${widget.stats.totalForks}',
                     icon: Icons.call_split_rounded,
                     accentColor: AppTheme.primaryViolet,
@@ -653,9 +658,9 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                       color: AppTheme.primaryCyan,
                     ),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Repositori',
-                      style: TextStyle(
+                    Text(
+                      loc.repositoriesTitle,
+                      style: const TextStyle(
                         color: AppTheme.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -671,7 +676,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                         border: Border.all(color: AppTheme.border),
                       ),
                       child: Text(
-                        '${widget.stats.repos.length} total',
+                        '${widget.stats.repos.length} ${loc.totalCountBadge}',
                         style: const TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 11,
@@ -684,7 +689,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 // Tombol Filter di sebelah kanan
                 PopupMenuButton<RepoSortFilter>(
                   initialValue: _currentFilter,
-                  tooltip: 'Filter Repositori',
+                  tooltip: loc.filterRepositories,
                   onSelected: (filter) {
                     setState(() {
                       _currentFilter = filter;
@@ -712,7 +717,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          _getFilterLabel(_currentFilter),
+                          _getFilterLabel(_currentFilter, loc),
                           style: const TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 12,
@@ -731,22 +736,22 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   itemBuilder: (context) => [
                     _buildPopupMenuItem(
                       RepoSortFilter.popular,
-                      'Terpopuler',
-                      'Bintang & Fork terbanyak',
+                      loc.filterPopular,
+                      loc.filterPopularDesc,
                       Icons.star_rounded,
                       AppTheme.accentAmber,
                     ),
                     _buildPopupMenuItem(
                       RepoSortFilter.newest,
-                      'Terbaru',
-                      'Commit & update paling baru',
+                      loc.filterNewest,
+                      loc.filterNewestDesc,
                       Icons.update_rounded,
                       AppTheme.primaryCyan,
                     ),
                     _buildPopupMenuItem(
                       RepoSortFilter.oldest,
-                      'Terlama',
-                      'Aktivitas commit terlama',
+                      loc.filterOldest,
+                      loc.filterOldestDesc,
                       Icons.history_rounded,
                       AppTheme.primaryViolet,
                     ),
@@ -757,12 +762,12 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             const SizedBox(height: 14),
 
             if (repos.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
                   child: Text(
-                    'Tidak ada repositori publik.',
-                    style: TextStyle(color: AppTheme.textMuted),
+                    loc.noPublicRepos,
+                    style: const TextStyle(color: AppTheme.textMuted),
                   ),
                 ),
               )
@@ -785,8 +790,8 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     ),
                     label: Text(
                       _showAllRepos
-                          ? 'Tampilkan Lebih Sedikit'
-                          : 'Tampilkan Semua (${repos.length} Repositori)',
+                          ? loc.showFewerRepos
+                          : loc.showAllReposCount(repos.length),
                       style: const TextStyle(
                         color: AppTheme.primaryCyan,
                         fontWeight: FontWeight.w600,

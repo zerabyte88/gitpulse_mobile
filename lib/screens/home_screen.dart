@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 import '../models/bookmarked_user.dart';
 import '../models/tech_news.dart';
 import '../services/github_api_service.dart';
@@ -37,10 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
   List<TechNews> _newsList = [];
   bool _isNewsLoading = true;
 
-  final List<Map<String, String>> _categories = const [
-    {'id': 'ai', 'label': '🤖 AI & Machine Learning'},
-    {'id': 'technology', 'label': '💻 Teknologi & IT'},
-    {'id': 'opensource', 'label': '🌐 Open Source'},
+  List<Map<String, String>> _getCategories(AppLocalizations loc) => [
+    {'id': 'ai', 'label': loc.categoryAi},
+    {'id': 'technology', 'label': loc.categoryTech},
+    {'id': 'opensource', 'label': loc.categoryOpenSource},
   ];
 
   @override
@@ -130,9 +131,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ).then((_) => setState(() {}));
     } catch (e) {
       if (!mounted) return;
+      final msg = e.toString().toLowerCase();
+      final loc = AppLocalizations.of(context);
+      String displayErr;
+      if (msg.contains('not found') || msg.contains('404')) {
+        displayErr = loc.userNotFound;
+      } else if (msg.contains('rate limit') || msg.contains('403')) {
+        displayErr = loc.rateLimitExceeded;
+      } else {
+        displayErr = loc.networkError;
+      }
       setState(() {
         _isLoading = false;
-        _errorMessage = e.toString();
+        _errorMessage = displayErr;
       });
     }
   }
@@ -148,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final bookmarkedUsers = widget.storageService.getBookmarkedUsers();
     final allRecents = widget.storageService.getRecentSearches();
 
@@ -223,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             IconButton(
-              tooltip: 'Pengaturan & Kuota API',
+              tooltip: loc.settingsTitle,
               icon: const Icon(Icons.settings_outlined, color: AppTheme.textSecondary),
               onPressed: _openSettingsSheet,
             ),
@@ -246,12 +258,12 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Search Input with integrated dropdown
-                _buildSearchBar(),
+                _buildSearchBar(loc),
 
                 // Search History Dropdown (only visible when search field is focused/clicked)
                 if (_isSearchFocused) ...[
                   const SizedBox(height: 8),
-                  _buildSearchHistoryPanel(recents, allRecents),
+                  _buildSearchHistoryPanel(loc, recents, allRecents),
                 ],
 
                 if (_errorMessage != null) ...[
@@ -288,12 +300,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
 
                 // Bookmarks Section (Profil Favorit Tersimpan dengan Foto Profil)
-                _buildBookmarksSection(bookmarkedUsers),
+                _buildBookmarksSection(loc, bookmarkedUsers),
 
                 const SizedBox(height: 28),
 
                 // Latest Tech & AI News Section
-                _buildTechNewsSection(),
+                _buildTechNewsSection(loc),
 
                 const SizedBox(height: 32),
               ],
@@ -304,14 +316,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(AppLocalizations loc) {
     return TextField(
       controller: _searchController,
       focusNode: _searchFocusNode,
       textInputAction: TextInputAction.search,
       onSubmitted: _searchUser,
       decoration: InputDecoration(
-        hintText: 'Ketik username GitHub (misal: torvalds)',
+        hintText: loc.searchHint,
         prefixIcon: Icon(
           Icons.search_rounded,
           color: _isSearchFocused ? AppTheme.primaryCyan : AppTheme.textSecondary,
@@ -334,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (_searchController.text.isNotEmpty || _isSearchFocused)
                     IconButton(
                       icon: const Icon(Icons.close_rounded, size: 20, color: AppTheme.textMuted),
-                      tooltip: 'Tutup / Hapus',
+                      tooltip: loc.close,
                       onPressed: () {
                         _searchController.clear();
                         _searchFocusNode.unfocus();
@@ -343,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   IconButton(
                     icon: const Icon(Icons.arrow_forward_rounded, color: AppTheme.primaryCyan),
-                    tooltip: 'Cari',
+                    tooltip: 'GitHub',
                     onPressed: () => _searchUser(_searchController.text),
                   ),
                   const SizedBox(width: 4),
@@ -353,7 +365,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSearchHistoryPanel(List<String> filteredRecents, List<String> allRecents) {
+  Widget _buildSearchHistoryPanel(
+    AppLocalizations loc,
+    List<String> filteredRecents,
+    List<String> allRecents,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.surfaceElevated,
@@ -382,9 +398,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppTheme.primaryCyan,
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  'Riwayat Pencarian',
-                  style: TextStyle(
+                Text(
+                  loc.recentSearches,
+                  style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 13.5,
                     fontWeight: FontWeight.bold,
@@ -401,9 +417,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       visualDensity: VisualDensity.compact,
                     ),
-                    child: const Text(
-                      'Hapus Semua',
-                      style: TextStyle(
+                    child: Text(
+                      loc.clearAll,
+                      style: const TextStyle(
                         color: Colors.redAccent,
                         fontSize: 11.5,
                       ),
@@ -411,7 +427,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 IconButton(
                   icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 20, color: AppTheme.textMuted),
-                  tooltip: 'Tutup riwayat',
+                  tooltip: loc.close,
                   onPressed: () => _searchFocusNode.unfocus(),
                   visualDensity: VisualDensity.compact,
                 ),
@@ -430,7 +446,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 text: TextSpan(
                   style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13.5),
                   children: [
-                    const TextSpan(text: 'Cari '),
                     TextSpan(
                       text: '"${_searchController.text.trim()}"',
                       style: const TextStyle(
@@ -438,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const TextSpan(text: ' di GitHub'),
+                    const TextSpan(text: ' ➔ GitHub'),
                   ],
                 ),
               ),
@@ -462,9 +477,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      allRecents.isEmpty
-                          ? 'Belum ada riwayat. Ketik username lalu tekan cari.'
-                          : 'Tidak ada riwayat yang cocok dengan query.',
+                      loc.noRecentSearches,
                       style: const TextStyle(
                         color: AppTheme.textMuted,
                         fontSize: 12.5,
@@ -504,7 +517,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.north_west_rounded, size: 15, color: AppTheme.textMuted),
-                        tooltip: 'Masukkan ke kolom pencarian',
+                        tooltip: username,
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
                           _searchController.text = username;
@@ -515,7 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded, size: 16, color: AppTheme.textMuted),
-                        tooltip: 'Hapus dari riwayat',
+                        tooltip: loc.close,
                         visualDensity: VisualDensity.compact,
                         onPressed: () async {
                           await widget.storageService.removeRecentSearch(username);
@@ -536,7 +549,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBookmarksSection(List<BookmarkedUser> bookmarks) {
+  Widget _buildBookmarksSection(AppLocalizations loc, List<BookmarkedUser> bookmarks) {
     if (bookmarks.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -560,22 +573,22 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(width: 14),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Profil Favorit Tersimpan',
-                    style: TextStyle(
+                    loc.favoriteProfiles,
+                    style: const TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
-                    'Simpan profil developer favoritmu untuk akses cepat langsung dari beranda.',
-                    style: TextStyle(
+                    loc.emptyBookmarks,
+                    style: const TextStyle(
                       color: AppTheme.textMuted,
                       fontSize: 12,
                     ),
@@ -599,9 +612,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.accentAmber,
             ),
             const SizedBox(width: 8),
-            const Text(
-              'Profil Favorit Tersimpan',
-              style: TextStyle(
+            Text(
+              loc.favoriteProfiles,
+              style: const TextStyle(
                 color: AppTheme.textPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -715,7 +728,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 2),
                             const Text(
-                              'Lihat Statistik ➔',
+                              'GitHub ➔',
                               style: TextStyle(
                                 color: AppTheme.primaryCyan,
                                 fontSize: 11,
@@ -734,7 +747,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppTheme.textMuted,
                         ),
                         visualDensity: VisualDensity.compact,
-                        tooltip: 'Hapus dari favorit',
+                        tooltip: loc.removeFavorite,
                         onPressed: () async {
                           await widget.storageService.removeBookmark(user.username);
                           setState(() {});
@@ -751,7 +764,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTechNewsSection() {
+  Widget _buildTechNewsSection(AppLocalizations loc) {
+    final categories = _getCategories(loc);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -759,17 +774,17 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
+            Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.auto_awesome_rounded,
                   size: 20,
                   color: AppTheme.primaryCyan,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  'Seputar AI & Teknologi',
-                  style: TextStyle(
+                  loc.techNewsTitle,
+                  style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -779,7 +794,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.refresh_rounded, size: 20, color: AppTheme.textSecondary),
-              tooltip: 'Perbarui Berita',
+              tooltip: loc.refresh,
               onPressed: () => _loadNews(refresh: true),
               visualDensity: VisualDensity.compact,
             ),
@@ -793,10 +808,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            itemCount: _categories.length,
+            itemCount: categories.length,
             separatorBuilder: (context, index) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
-              final cat = _categories[index];
+              final cat = categories[index];
               final isSelected = cat['id'] == _selectedCategory;
               return ChoiceChip(
                 label: Text(
@@ -848,7 +863,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Memuat update teknologi terbaru...',
+                    loc.loadingNews,
                     style: TextStyle(
                       color: AppTheme.textMuted.withValues(alpha: 0.8),
                       fontSize: 13,
@@ -863,7 +878,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Text(
-                'Belum ada berita ditemukan untuk kategori ini.',
+                loc.noNewsFound,
                 style: TextStyle(
                   color: AppTheme.textMuted.withValues(alpha: 0.8),
                   fontSize: 13,
@@ -885,3 +900,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

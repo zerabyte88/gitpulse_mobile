@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 import '../models/github_repo.dart';
 import '../theme/app_theme.dart';
 
@@ -162,7 +163,7 @@ class RepoTile extends StatelessWidget {
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(
-                          repo.relativeTimeAgo,
+                          AppLocalizations.of(context).formatRelativeTime(repo.latestActivityDate),
                           style: TextStyle(
                             color: repo.isRecentlyActive
                                 ? AppTheme.accentGreen

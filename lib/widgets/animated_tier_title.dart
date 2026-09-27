@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 import '../models/contribution_stats.dart';
 
 class AnimatedTierTitle extends StatefulWidget {
@@ -106,7 +107,8 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   @override
   Widget build(BuildContext context) {
     final palette = _getTierPalette(widget.titleInfo.tier);
-    final cleanTitle = widget.titleInfo.cleanTitle;
+    final cleanTitle = AppLocalizations.of(context)
+        .getCommitTierCleanTitle(widget.titleInfo.tier);
 
     return AnimatedBuilder(
       animation: _controller,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../localization/app_localizations.dart';
 import '../models/tech_news.dart';
 import '../theme/app_theme.dart';
 
@@ -229,7 +230,7 @@ class TechNewsCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                '${news.readingTimeMinutes} mnt',
+                                '${news.readingTimeMinutes} ${AppLocalizations.of(context).minRead}',
                                 style: const TextStyle(
                                   color: AppTheme.textMuted,
                                   fontSize: 11,

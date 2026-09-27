@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 import '../theme/app_theme.dart';
 
 class LanguageChart extends StatelessWidget {
@@ -28,6 +29,8 @@ class LanguageChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     if (languageCounts.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24),
@@ -36,10 +39,10 @@ class LanguageChart extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppTheme.border),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            'Tidak ada data bahasa pemrograman publik.',
-            style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+            loc.noLanguageData,
+            style: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
           ),
         ),
       );
@@ -104,7 +107,7 @@ class LanguageChart extends StatelessWidget {
         ),
       );
       legendItems.add({
-        'name': 'Lainnya',
+        'name': loc.otherLanguages,
         'percent': percent,
         'bytes': otherBytes,
         'color': color,
@@ -123,13 +126,13 @@ class LanguageChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.code_rounded, size: 18, color: AppTheme.primaryCyan),
-              SizedBox(width: 8),
+              const Icon(Icons.code_rounded, size: 18, color: AppTheme.primaryCyan),
+              const SizedBox(width: 8),
               Text(
-                'Distribusi Bahasa Pemrograman',
-                style: TextStyle(
+                loc.languageDistribution,
+                style: const TextStyle(
                   color: AppTheme.textPrimary,
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

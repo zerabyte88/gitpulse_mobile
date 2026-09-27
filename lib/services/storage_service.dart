@@ -132,4 +132,15 @@ class StorageService {
       await _prefs.setString(_keyToken, token.trim());
     }
   }
+
+  // Language
+  static const String _keyLanguage = 'gitpulse_app_language';
+
+  String getLanguageCode() {
+    return _prefs.getString(_keyLanguage) ?? 'id';
+  }
+
+  Future<void> setLanguageCode(String code) async {
+    await _prefs.setString(_keyLanguage, code);
+  }
 }
