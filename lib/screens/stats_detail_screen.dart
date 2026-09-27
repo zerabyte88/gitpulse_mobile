@@ -539,62 +539,6 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
 
             // Commit Habit Title Banner (Tingkat & Gelar Aktivitas Commit)
             _buildCommitHabitBanner(cStats),
-            const SizedBox(height: 14),
-
-            // Developer Persona Banner
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppTheme.primaryViolet.withValues(alpha: 0.2),
-                    AppTheme.primaryCyan.withValues(alpha: 0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppTheme.primaryViolet.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryViolet.withValues(alpha: 0.25),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      color: AppTheme.primaryCyan,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.stats.developerPersona,
-                          style: const TextStyle(
-                            color: AppTheme.textPrimary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.stats.personaDescription,
-                          style: const TextStyle(
-                            color: AppTheme.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 20),
 
             // Section: GitHub Contributions & Streak Statistics
