@@ -5,6 +5,7 @@ import '../services/github_api_service.dart';
 import '../services/storage_service.dart';
 import '../services/tech_news_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/settings_sheet.dart';
 import '../widgets/tech_news_card.dart';
 import 'stats_detail_screen.dart';
 
@@ -48,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _searchFocusNode.addListener(_onSearchFocusChanged);
     _searchController.addListener(_onSearchTextChanged);
     _loadNews();
+    widget.apiService.fetchRateLimit().then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   void _onSearchFocusChanged() {
@@ -133,70 +137,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showTokenDialog() {
-    final tokenController = TextEditingController(
-      text: widget.storageService.getToken() ?? '',
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppTheme.surfaceElevated,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-          side: const BorderSide(color: AppTheme.border),
-        ),
-        title: const Row(
-          children: [
-            Icon(Icons.key_rounded, color: AppTheme.primaryCyan, size: 20),
-            SizedBox(width: 8),
-            Text('GitHub Token (Opsional)'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Menambahkan Personal Access Token meningkatkan kuota GitHub API dari 60 menjadi 5.000 request per jam.',
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: tokenController,
-              decoration: const InputDecoration(
-                hintText: 'ghp_xxxxxxxxxxxx',
-                labelText: 'Personal Access Token',
-              ),
-              obscureText: true,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal', style: TextStyle(color: AppTheme.textMuted)),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final token = tokenController.text.trim();
-              await widget.storageService.setToken(token);
-              widget.apiService.personalAccessToken = token.isEmpty ? null : token;
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pengaturan token berhasil diperbarui!'),
-                    backgroundColor: AppTheme.accentGreen,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
-      ),
+  void _openSettingsSheet() {
+    SettingsSheet.show(
+      context,
+      storageService: widget.storageService,
+      apiService: widget.apiService,
+      onSettingsChanged: () => setState(() {}),
     );
   }
 
@@ -210,6 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final recents = query.isEmpty
         ? allRecents
         : allRecents.where((u) => u.toLowerCase().contains(query)).toList();
+
+    final rateLimit = widget.apiService.lastRateLimit;
 
     return GestureDetector(
       onTap: () {
@@ -240,10 +188,44 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           actions: [
+            if (rateLimit != null)
+              GestureDetector(
+                onTap: _openSettingsSheet,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceElevated,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppTheme.border),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.speed_rounded,
+                        size: 13,
+                        color: rateLimit.remainingPercentage < 20
+                            ? Colors.redAccent
+                            : AppTheme.primaryCyan,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${rateLimit.used}/${rateLimit.limit}',
+                        style: const TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             IconButton(
-              tooltip: 'Pengaturan Token',
+              tooltip: 'Pengaturan & Kuota API',
               icon: const Icon(Icons.settings_outlined, color: AppTheme.textSecondary),
-              onPressed: _showTokenDialog,
+              onPressed: _openSettingsSheet,
             ),
           ],
         ),
@@ -251,7 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppTheme.primaryCyan,
           backgroundColor: AppTheme.surfaceElevated,
           onRefresh: () async {
-            await _loadNews(refresh: true);
+            await Future.wait([
+              _loadNews(refresh: true),
+              widget.apiService.fetchRateLimit(),
+            ]);
             setState(() {});
           },
           child: SingleChildScrollView(

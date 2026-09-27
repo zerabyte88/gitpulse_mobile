@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gitpulse_mobile/models/bookmarked_user.dart';
 import 'package:gitpulse_mobile/models/contribution_stats.dart';
+import 'package:gitpulse_mobile/models/github_rate_limit.dart';
 import 'package:gitpulse_mobile/models/github_repo.dart';
 import 'package:gitpulse_mobile/models/github_user.dart';
 import 'package:gitpulse_mobile/models/tech_news.dart';
@@ -310,6 +311,67 @@ void main() {
       expect(news.authorAvatar, 'https://avatar.test/ada.png');
       expect(news.tags, ['ai', 'machinelearning']);
       expect(news.readingTimeMinutes, 5);
+    });
+
+    test('GitHubRateLimit metrics and percentage calculations behave as expected', () {
+      // 1. Untouched / never run: remaining == limit -> 100%
+      final untouched = GitHubRateLimit(
+        limit: 60,
+        remaining: 60,
+        used: 0,
+        resetTime: DateTime.now().add(const Duration(minutes: 50)),
+      );
+      expect(untouched.remainingRatio, 1.0);
+      expect(untouched.remainingPercentage, 100.0);
+      expect(untouched.used, 0);
+
+      // 2. Partial usage: 28 used, 32 remaining of 60
+      final partial = GitHubRateLimit(
+        limit: 60,
+        remaining: 32,
+        used: 28,
+        resetTime: DateTime.now().add(const Duration(minutes: 30)),
+      );
+      expect(partial.used, 28);
+      expect(partial.remaining, 32);
+      expect(partial.remainingPercentage, closeTo(53.33, 0.1));
+
+      // 3. Exhausted: 60 used, 0 remaining -> 0%
+      final exhausted = GitHubRateLimit(
+        limit: 60,
+        remaining: 0,
+        used: 60,
+        resetTime: DateTime.now().add(const Duration(minutes: 5)),
+      );
+      expect(exhausted.remainingRatio, 0.0);
+      expect(exhausted.remainingPercentage, 0.0);
+      expect(exhausted.used, 60);
+
+      // 4. Personal Token usage: 1001 used of 5000
+      final tokenLimit = GitHubRateLimit(
+        limit: 5000,
+        remaining: 3999,
+        used: 1001,
+        resetTime: DateTime.now().add(const Duration(minutes: 45)),
+      );
+      expect(tokenLimit.limit, 5000);
+      expect(tokenLimit.used, 1001);
+      expect(tokenLimit.remaining, 3999);
+      expect(tokenLimit.remainingPercentage, closeTo(79.98, 0.1));
+
+      // 5. From JSON parsing
+      final json = {
+        'rate': {
+          'limit': 60,
+          'remaining': 45,
+          'used': 15,
+          'reset': 1790499958,
+        }
+      };
+      final fromJson = GitHubRateLimit.fromJson(json);
+      expect(fromJson.limit, 60);
+      expect(fromJson.remaining, 45);
+      expect(fromJson.used, 15);
     });
   });
 }

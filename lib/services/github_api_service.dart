@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/contribution_stats.dart';
+import '../models/github_rate_limit.dart';
 import '../models/github_repo.dart';
 import '../models/github_user.dart';
 import '../models/user_stats.dart';
@@ -20,9 +21,12 @@ class GitHubApiService {
   static const Duration _timeoutDuration = Duration(seconds: 15);
   final http.Client _client;
   String? personalAccessToken;
+  GitHubRateLimit? _lastRateLimit;
 
   GitHubApiService({http.Client? client, this.personalAccessToken})
       : _client = client ?? http.Client();
+
+  GitHubRateLimit? get lastRateLimit => _lastRateLimit;
 
   Map<String, String> get _headers {
     final headers = <String, String>{
@@ -33,6 +37,52 @@ class GitHubApiService {
       headers['Authorization'] = 'Bearer ${personalAccessToken!.trim()}';
     }
     return headers;
+  }
+
+  void _updateRateLimitFromHeaders(Map<String, String> headers) {
+    final limitStr = headers['x-ratelimit-limit'];
+    final remainingStr = headers['x-ratelimit-remaining'];
+    final resetStr = headers['x-ratelimit-reset'];
+    final usedStr = headers['x-ratelimit-used'];
+
+    if (limitStr != null && remainingStr != null) {
+      final limit = int.tryParse(limitStr) ?? 60;
+      final remaining = int.tryParse(remainingStr) ?? 60;
+      final used = usedStr != null
+          ? (int.tryParse(usedStr) ?? (limit - remaining))
+          : (limit - remaining);
+      final resetSeconds = resetStr != null ? int.tryParse(resetStr) : null;
+      final resetTime = resetSeconds != null
+          ? DateTime.fromMillisecondsSinceEpoch(resetSeconds * 1000)
+          : DateTime.now().add(const Duration(hours: 1));
+
+      _lastRateLimit = GitHubRateLimit(
+        limit: limit,
+        remaining: remaining.clamp(0, limit),
+        used: used.clamp(0, limit),
+        resetTime: resetTime,
+      );
+    }
+  }
+
+  Future<GitHubRateLimit> fetchRateLimit() async {
+    try {
+      final uri = Uri.parse('$_baseUrl/rate_limit');
+      final res = await _client.get(uri, headers: _headers).timeout(const Duration(seconds: 8));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        final rateLimit = GitHubRateLimit.fromJson(data);
+        _lastRateLimit = rateLimit;
+        return rateLimit;
+      }
+    } catch (_) {
+      // Ignored: fallback to cached or default
+    }
+
+    return _lastRateLimit ??
+        GitHubRateLimit.defaultLimit(
+          hasToken: personalAccessToken != null && personalAccessToken!.trim().isNotEmpty,
+        );
   }
 
   Future<ContributionStats?> _fetchContributions(String username) async {
@@ -62,12 +112,16 @@ class GitHubApiService {
       // 1. Fetch User Profile
       final userUri = Uri.parse('$_baseUrl/users/$cleanUsername');
       final userRes = await _client.get(userUri, headers: _headers).timeout(_timeoutDuration);
+      _updateRateLimitFromHeaders(userRes.headers);
 
       if (userRes.statusCode == 404) {
         throw GitHubApiException('Pengguna "$cleanUsername" tidak ditemukan di GitHub.');
       } else if (userRes.statusCode == 403) {
+        final resetMsg = _lastRateLimit != null
+            ? ' (Reset dalam ${_lastRateLimit!.resetCountdown})'
+            : '';
         throw GitHubApiException(
-            'Limit GitHub API tercapai (60 req/jam). Coba beberapa saat lagi atau masukkan GitHub Token.');
+            'Limit GitHub API tercapai$resetMsg. Masukkan GitHub Token di pengaturan untuk 5.000 req/jam.');
       } else if (userRes.statusCode != 200) {
         throw GitHubApiException(
             'Gagal memuat profil (${userRes.statusCode}): ${userRes.reasonPhrase}');
@@ -80,6 +134,7 @@ class GitHubApiService {
       final reposUri = Uri.parse(
           '$_baseUrl/users/$cleanUsername/repos?per_page=100&sort=updated');
       final reposRes = await _client.get(reposUri, headers: _headers).timeout(_timeoutDuration);
+      _updateRateLimitFromHeaders(reposRes.headers);
       final List<GitHubRepo> repos = [];
 
       if (reposRes.statusCode == 200) {
@@ -98,6 +153,7 @@ class GitHubApiService {
       final eventsUri =
           Uri.parse('$_baseUrl/users/$cleanUsername/events/public?per_page=100');
       final eventsRes = await _client.get(eventsUri, headers: _headers).timeout(_timeoutDuration);
+      _updateRateLimitFromHeaders(eventsRes.headers);
       final List<Map<String, dynamic>> events = [];
 
       if (eventsRes.statusCode == 200) {
@@ -126,6 +182,7 @@ class GitHubApiService {
           try {
             final langUri = Uri.parse('$_baseUrl/repos/$cleanUsername/${repo.name}/languages');
             final langRes = await _client.get(langUri, headers: _headers).timeout(const Duration(seconds: 8));
+            _updateRateLimitFromHeaders(langRes.headers);
             if (langRes.statusCode == 200) {
               final Map<String, dynamic> data = jsonDecode(langRes.body) as Map<String, dynamic>;
               return data.map((k, v) => MapEntry(k, (v as num).toInt()));
