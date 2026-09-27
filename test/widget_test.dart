@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gitpulse_mobile/localization/app_language.dart';
+import 'package:gitpulse_mobile/localization/app_localizations.dart';
 import 'package:gitpulse_mobile/models/bookmarked_user.dart';
 import 'package:gitpulse_mobile/models/contribution_stats.dart';
 import 'package:gitpulse_mobile/models/github_rate_limit.dart';
@@ -401,6 +403,84 @@ void main() {
         description: '',
       );
       expect(info3.cleanTitle, 'Relentless Committer');
+    });
+
+    test('AppLanguage parses and maps all 6 languages accurately', () {
+      expect(AppLanguage.fromCode('id'), AppLanguage.indonesian);
+      expect(AppLanguage.fromCode('en'), AppLanguage.english);
+      expect(AppLanguage.fromCode('ja'), AppLanguage.japanese);
+      expect(AppLanguage.fromCode('zh_Hans'), AppLanguage.chineseSimplified);
+      expect(AppLanguage.fromCode('zh_CN'), AppLanguage.chineseSimplified);
+      expect(AppLanguage.fromCode('zh_Hant'), AppLanguage.chineseTraditional);
+      expect(AppLanguage.fromCode('zh_TW'), AppLanguage.chineseTraditional);
+      expect(AppLanguage.fromCode('ko'), AppLanguage.korean);
+      expect(AppLanguage.fromCode('unknown'), AppLanguage.indonesian);
+
+      expect(AppLanguage.values.length, 6);
+      for (final lang in AppLanguage.values) {
+        expect(lang.code, isNotEmpty);
+        expect(lang.name, isNotEmpty);
+        expect(lang.nativeName, isNotEmpty);
+        expect(lang.flag, isNotEmpty);
+      }
+    });
+
+    test('AppLocalizations renders expected translations for all 6 languages', () {
+      final idLoc = AppLocalizations(AppLanguage.indonesian);
+      final enLoc = AppLocalizations(AppLanguage.english);
+      final jaLoc = AppLocalizations(AppLanguage.japanese);
+      final zhHansLoc = AppLocalizations(AppLanguage.chineseSimplified);
+      final zhHantLoc = AppLocalizations(AppLanguage.chineseTraditional);
+      final koLoc = AppLocalizations(AppLanguage.korean);
+
+      // App Title / Repositories
+      expect(idLoc.repositoriesTitle, 'Repositori');
+      expect(enLoc.repositoriesTitle, 'Repositories');
+      expect(jaLoc.repositoriesTitle, 'リポジトリ');
+      expect(zhHansLoc.repositoriesTitle, '代码仓库');
+      expect(zhHantLoc.repositoriesTitle, '代碼倉庫');
+      expect(koLoc.repositoriesTitle, '리포지토리');
+
+      // Filter labels
+      expect(idLoc.filterPopular, 'Terpopuler');
+      expect(enLoc.filterPopular, 'Most Popular');
+      expect(jaLoc.filterPopular, '人気順');
+      expect(zhHansLoc.filterPopular, '最受欢迎');
+      expect(zhHantLoc.filterPopular, '最受歡迎');
+      expect(koLoc.filterPopular, '인기순');
+
+      // Commit tier clean titles
+      expect(idLoc.getCommitTierCleanTitle(1), 'Code Titan');
+      expect(jaLoc.getCommitTierCleanTitle(1), 'コードタイタン');
+      expect(zhHansLoc.getCommitTierCleanTitle(1), '代码泰坦');
+      expect(zhHantLoc.getCommitTierCleanTitle(1), '代碼泰坦');
+      expect(koLoc.getCommitTierCleanTitle(1), '코드 타이탄');
+
+      // Relative time formatting
+      final tenMinutesAgo = DateTime.now().subtract(const Duration(minutes: 10));
+      expect(idLoc.formatRelativeTime(tenMinutesAgo), contains('mnt lalu'));
+      expect(enLoc.formatRelativeTime(tenMinutesAgo), contains('m ago'));
+      expect(jaLoc.formatRelativeTime(tenMinutesAgo), contains('分前'));
+      expect(zhHansLoc.formatRelativeTime(tenMinutesAgo), contains('分钟前'));
+      expect(zhHantLoc.formatRelativeTime(tenMinutesAgo), contains('分鐘前'));
+      expect(koLoc.formatRelativeTime(tenMinutesAgo), contains('분 전'));
+    });
+
+    test('StorageService persists and retrieves language preference correctly', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final storage = StorageService(prefs);
+
+      // Default is Indonesian (id)
+      expect(storage.getLanguageCode(), 'id');
+
+      // Update to Japanese
+      await storage.setLanguageCode('ja');
+      expect(storage.getLanguageCode(), 'ja');
+
+      // Update to Korean
+      await storage.setLanguageCode('ko');
+      expect(storage.getLanguageCode(), 'ko');
     });
   });
 }
