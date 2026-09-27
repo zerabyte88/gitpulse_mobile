@@ -91,10 +91,46 @@ class GitHubApiService {
         }
       }
 
+      // 4. Fetch Language breakdown from active repositories
+      final nonForkRepos = repos.where((r) => !r.isFork).toList();
+      final Map<String, int> aggregatedLanguages = {};
+
+      if (nonForkRepos.isNotEmpty) {
+        // Prioritize repositories by size so the most significant codebases are captured
+        final prioritizedRepos = List<GitHubRepo>.from(nonForkRepos)
+          ..sort((a, b) => b.size.compareTo(a.size));
+
+        // Limit queries to avoid exhausting unauthenticated rate limits (max 8 unauthenticated, 25 authenticated)
+        final maxRepoQueries = personalAccessToken != null ? 25 : 8;
+        final targetRepos = prioritizedRepos.take(maxRepoQueries).toList();
+
+        final futures = targetRepos.map((repo) async {
+          try {
+            final langUri = Uri.parse('$_baseUrl/repos/$cleanUsername/${repo.name}/languages');
+            final langRes = await _client.get(langUri, headers: _headers).timeout(const Duration(seconds: 8));
+            if (langRes.statusCode == 200) {
+              final Map<String, dynamic> data = jsonDecode(langRes.body) as Map<String, dynamic>;
+              return data.map((k, v) => MapEntry(k, (v as num).toInt()));
+            }
+          } catch (_) {
+            // Silently ignore individual repo language fetch issues
+          }
+          return <String, int>{};
+        });
+
+        final results = await Future.wait(futures);
+        for (final repoLangs in results) {
+          repoLangs.forEach((lang, bytes) {
+            aggregatedLanguages[lang] = (aggregatedLanguages[lang] ?? 0) + bytes;
+          });
+        }
+      }
+
       return UserStats.calculate(
         user: user,
         repos: repos,
         publicEvents: events,
+        aggregatedLanguages: aggregatedLanguages,
       );
     } on SocketException catch (e) {
       if (e.osError?.errorCode == 13 || e.message.toLowerCase().contains('permission')) {

@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: const Icon(
                 Icons.insights_rounded,
-                color: Color(0xFF0B0F19),
+                color: Colors.black,
                 size: 20,
               ),
             ),
@@ -173,48 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero Intro Box
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppTheme.primaryCyan.withValues(alpha: 0.12),
-                    AppTheme.primaryViolet.withValues(alpha: 0.06),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.primaryCyan.withValues(alpha: 0.2)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Track Coding Stats & Rhythm ⚡',
-                    style: TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Pantau performa profil, jam produktif ngoding, dan koleksi bintang GitHub dalam satu aplikasi.',
-                    style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 13,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Search Bar
+            // Search Bar at Top
             TextField(
               controller: _searchController,
               textInputAction: TextInputAction.search,
@@ -271,45 +230,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             const SizedBox(height: 24),
 
-            // Quick Samples Chips
-            const Text(
-              'Jelajahi Profil Populer',
-              style: TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+            if (bookmarks.isEmpty && recents.isEmpty) ...[
+              const SizedBox(height: 48),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.manage_search_rounded,
+                      size: 56,
+                      color: AppTheme.textMuted.withValues(alpha: 0.4),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Masukkan username GitHub untuk melihat profil & statistik.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppTheme.textMuted,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                'torvalds',
-                'flutter',
-                'google',
-                'antigravity',
-              ].map((user) {
-                return ActionChip(
-                  label: Text('@$user'),
-                  labelStyle: const TextStyle(
-                    color: AppTheme.primaryCyan,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  backgroundColor: AppTheme.surface,
-                  side: const BorderSide(color: AppTheme.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  onPressed: () {
-                    _searchController.text = user;
-                    _searchUser(user);
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 28),
+            ],
 
             // Bookmarks Section
             if (bookmarks.isNotEmpty) ...[

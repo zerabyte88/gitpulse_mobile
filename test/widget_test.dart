@@ -67,5 +67,48 @@ void main() {
       expect(stats.languageCounts['Python'], 1);
       expect(stats.developerPersona, contains('Star Magnet'));
     });
+
+    test('UserStats uses aggregatedLanguages bytes with high fidelity', () {
+      final user = GitHubUser(
+        login: 'zerabyte88',
+        id: 1,
+        avatarUrl: 'https://github.com/avatar.png',
+        htmlUrl: 'https://github.com/zerabyte88',
+        publicRepos: 3,
+        followers: 5,
+        following: 1,
+      );
+
+      final repos = [
+        GitHubRepo(
+          name: 'repo1',
+          htmlUrl: 'https://github.com/zerabyte88/repo1',
+          language: 'Dart',
+          stargazersCount: 0,
+          forksCount: 0,
+          isFork: false,
+          size: 87,
+        ),
+      ];
+
+      final aggregated = {
+        'Dart': 66038,
+        'HTML': 38404,
+        'PHP': 210388,
+        'CSS': 18771,
+      };
+
+      final stats = UserStats.calculate(
+        user: user,
+        repos: repos,
+        publicEvents: [],
+        aggregatedLanguages: aggregated,
+      );
+
+      expect(stats.languageCounts['PHP'], 210388);
+      expect(stats.languageCounts['Dart'], 66038);
+      expect(stats.languageCounts['HTML'], 38404);
+      expect(stats.languageCounts['CSS'], 18771);
+    });
   });
 }

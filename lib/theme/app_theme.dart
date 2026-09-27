@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Brand Colors
-  static const Color background = Color(0xFF0B0F19);
-  static const Color surface = Color(0xFF151D2F);
-  static const Color surfaceElevated = Color(0xFF1E293B);
-  static const Color border = Color(0xFF2E3E5C);
+  // Brand Colors - Pure OLED Pitch Black
+  static const Color background = Color(0xFF000000);
+  static const Color surface = Color(0xFF0D0D0E);
+  static const Color surfaceElevated = Color(0xFF161618);
+  static const Color border = Color(0xFF222226);
 
   static const Color primaryCyan = Color(0xFF00E5FF);
   static const Color primaryViolet = Color(0xFF8B5CF6);
@@ -76,7 +76,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryCyan,
-          foregroundColor: const Color(0xFF0B0F19),
+          foregroundColor: Colors.black,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(

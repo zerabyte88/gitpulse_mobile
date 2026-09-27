@@ -6,6 +6,7 @@ class GitHubRepo {
   final int stargazersCount;
   final int forksCount;
   final bool isFork;
+  final int size; // Size in KB
   final DateTime? updatedAt;
 
   GitHubRepo({
@@ -16,6 +17,7 @@ class GitHubRepo {
     required this.stargazersCount,
     required this.forksCount,
     required this.isFork,
+    this.size = 0,
     this.updatedAt,
   });
 
@@ -28,6 +30,7 @@ class GitHubRepo {
       stargazersCount: json['stargazers_count'] as int? ?? 0,
       forksCount: json['forks_count'] as int? ?? 0,
       isFork: json['fork'] as bool? ?? false,
+      size: json['size'] as int? ?? 0,
       updatedAt: json['updated_at'] != null
           ? DateTime.tryParse(json['updated_at'] as String)
           : null,

@@ -17,6 +17,15 @@ class LanguageChart extends StatelessWidget {
     Color(0xFF64748B), // Slate
   ];
 
+  static String _formatBytes(int bytes) {
+    if (bytes >= 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } else if (bytes >= 1024) {
+      return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    }
+    return '$bytes B';
+  }
+
   @override
   Widget build(BuildContext context) {
     if (languageCounts.isEmpty) {
@@ -36,13 +45,13 @@ class LanguageChart extends StatelessWidget {
       );
     }
 
-    // Sort by count descending
+    // Sort by count/bytes descending
     final sortedEntries = languageCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
     // Limit to top 5 + "Lainnya"
     final topEntries = sortedEntries.take(5).toList();
-    final otherCount = sortedEntries
+    final otherBytes = sortedEntries
         .skip(5)
         .fold<int>(0, (sum, item) => sum + item.value);
 
@@ -54,18 +63,18 @@ class LanguageChart extends StatelessWidget {
     for (var i = 0; i < topEntries.length; i++) {
       final entry = topEntries[i];
       final color = _palette[i % _palette.length];
-      final percent = (entry.value / totalCount) * 100;
+      final percent = totalCount > 0 ? (entry.value / totalCount) * 100 : 0.0;
 
       sections.add(
         PieChartSectionData(
           color: color,
           value: entry.value.toDouble(),
-          title: '${percent.toStringAsFixed(0)}%',
+          title: percent >= 7 ? '${percent.toStringAsFixed(0)}%' : '',
           radius: 38,
           titleStyle: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0B0F19),
+            color: Colors.black,
           ),
         ),
       );
@@ -73,34 +82,36 @@ class LanguageChart extends StatelessWidget {
       legendItems.add({
         'name': entry.key,
         'percent': percent,
-        'count': entry.value,
+        'bytes': entry.value,
         'color': color,
       });
     }
 
-    if (otherCount > 0) {
-      final percent = (otherCount / totalCount) * 100;
+    if (otherBytes > 0) {
+      final percent = totalCount > 0 ? (otherBytes / totalCount) * 100 : 0.0;
       final color = _palette.last;
       sections.add(
         PieChartSectionData(
           color: color,
-          value: otherCount.toDouble(),
-          title: '${percent.toStringAsFixed(0)}%',
+          value: otherBytes.toDouble(),
+          title: percent >= 7 ? '${percent.toStringAsFixed(0)}%' : '',
           radius: 38,
           titleStyle: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0B0F19),
+            color: Colors.black,
           ),
         ),
       );
       legendItems.add({
         'name': 'Lainnya',
         'percent': percent,
-        'count': otherCount,
+        'bytes': otherBytes,
         'color': color,
       });
     }
+
+    final isDetailedBytes = totalCount >= 100;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -145,6 +156,11 @@ class LanguageChart extends StatelessWidget {
               final color = item['color'] as Color;
               final name = item['name'] as String;
               final percent = item['percent'] as double;
+              final bytes = item['bytes'] as int;
+
+              final subtitle = isDetailedBytes
+                  ? '(${percent.toStringAsFixed(1)}% · ${_formatBytes(bytes)})'
+                  : '(${percent.toStringAsFixed(1)}%)';
 
               return Row(
                 mainAxisSize: MainAxisSize.min,
@@ -168,7 +184,7 @@ class LanguageChart extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '(${percent.toStringAsFixed(1)}%)',
+                    subtitle,
                     style: const TextStyle(
                       color: AppTheme.textMuted,
                       fontSize: 11,

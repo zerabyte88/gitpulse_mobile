@@ -26,6 +26,7 @@ class UserStats {
     required GitHubUser user,
     required List<GitHubRepo> repos,
     required List<Map<String, dynamic>> publicEvents,
+    Map<String, int>? aggregatedLanguages,
   }) {
     int totalStars = 0;
     int totalForks = 0;
@@ -34,8 +35,17 @@ class UserStats {
     for (final repo in repos) {
       totalStars += repo.stargazersCount;
       totalForks += repo.forksCount;
-      if (repo.language != null && repo.language!.isNotEmpty) {
-        langCounts[repo.language!] = (langCounts[repo.language!] ?? 0) + 1;
+    }
+
+    if (aggregatedLanguages != null && aggregatedLanguages.isNotEmpty) {
+      langCounts.addAll(aggregatedLanguages);
+    } else {
+      // Fallback: weight by repo size in KB, or at least 1, excluding forks
+      for (final repo in repos) {
+        if (!repo.isFork && repo.language != null && repo.language!.isNotEmpty) {
+          final weight = repo.size > 0 ? repo.size : 1;
+          langCounts[repo.language!] = (langCounts[repo.language!] ?? 0) + weight;
+        }
       }
     }
 
