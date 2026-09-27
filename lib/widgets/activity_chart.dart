@@ -75,20 +75,27 @@ class ActivityChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(
-                children: [
-                  Icon(Icons.bolt_rounded, size: 18, color: AppTheme.accentAmber),
-                  SizedBox(width: 8),
-                  Text(
-                    'Ritme Jam Produktif',
-                    style: TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+              const Expanded(
+                child: Row(
+                  children: [
+                    Icon(Icons.bolt_rounded, size: 18, color: AppTheme.accentAmber),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Ritme Jam Produktif',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               if (maxCount > 0)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

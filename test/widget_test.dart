@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gitpulse_mobile/localization/app_language.dart';
 import 'package:gitpulse_mobile/localization/app_localizations.dart';
@@ -8,7 +9,9 @@ import 'package:gitpulse_mobile/models/github_repo.dart';
 import 'package:gitpulse_mobile/models/github_user.dart';
 import 'package:gitpulse_mobile/models/tech_news.dart';
 import 'package:gitpulse_mobile/models/user_stats.dart';
+import 'package:gitpulse_mobile/screens/stats_detail_screen.dart';
 import 'package:gitpulse_mobile/services/storage_service.dart';
+import 'package:gitpulse_mobile/widgets/animated_tier_title.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -481,6 +484,75 @@ void main() {
       // Update to Korean
       await storage.setLanguageCode('ko');
       expect(storage.getLanguageCode(), 'ko');
+    });
+
+    testWidgets('StatsDetailScreen renders user full name clearly without being truncated by title', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final storage = StorageService(prefs);
+
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      final user = GitHubUser(
+        login: 'zerabyte88',
+        id: 12345,
+        avatarUrl: '',
+        htmlUrl: 'https://github.com/zerabyte88',
+        name: 'Nanda Alexander',
+        location: 'Planet Earth, Solar System',
+        company: 'GitPulse Team',
+        publicRepos: 10,
+        followers: 50,
+        following: 20,
+      );
+
+      final stats = UserStats(
+        user: user,
+        repos: [],
+        totalStars: 42,
+        totalForks: 12,
+        languageCounts: {'Dart': 80, 'TypeScript': 20},
+        hourlyActivity: {14: 10, 15: 15},
+        developerPersona: 'Fullstack Explorer',
+        personaDescription: 'Passionate developer',
+        contributionStats: ContributionStats(
+          thisYearContributions: 50,
+          lastYearContributions: 100,
+          currentStreak: 0,
+          longestStreak: 6,
+          totalContributions: 150,
+          commitTitle: ContributionStats.determineTitle(
+            currentStreak: 0,
+            longestStreak: 6,
+            thisYearContributions: 50,
+            totalContributions: 150,
+          ),
+          yearlyTotals: {'2026': 50, '2025': 100},
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StatsDetailScreen(
+            stats: stats,
+            storageService: storage,
+          ),
+        ),
+      );
+
+      // Verify that full name 'Nanda Alexander' is rendered
+      expect(find.text('Nanda Alexander'), findsOneWidget);
+      expect(find.text('@zerabyte88'), findsAtLeastNWidgets(1));
+      expect(find.text('Planet Earth, Solar System'), findsOneWidget);
+      expect(find.text('GitPulse Team'), findsOneWidget);
+
+      // Verify that AnimatedTierTitle exists in the commit habit banner
+      expect(find.byType(AnimatedTierTitle), findsOneWidget);
     });
   });
 }

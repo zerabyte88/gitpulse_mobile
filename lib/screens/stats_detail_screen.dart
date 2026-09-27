@@ -260,10 +260,23 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Flexible(
-                child: AnimatedTierTitle(
-                  titleInfo: titleInfo,
-                  fontSize: 15.5,
-                  showBadgeContainer: false,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      habitStyle.icon,
+                      size: 18,
+                      color: habitStyle.primary,
+                    ),
+                    const SizedBox(width: 7),
+                    Flexible(
+                      child: AnimatedTierTitle(
+                        titleInfo: titleInfo,
+                        fontSize: 15.5,
+                        showBadgeContainer: false,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
@@ -289,56 +302,76 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
           ),
           const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
-              color: AppTheme.background.withValues(alpha: 0.4),
+              color: AppTheme.background.withValues(alpha: 0.45),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.whatshot_rounded,
-                      size: 13,
-                      color: habitStyle.primary,
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      'Current: ${cStats.currentStreak} ${loc.daysUnit}',
-                      style: TextStyle(
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.whatshot_rounded,
+                        size: 13,
                         color: habitStyle.primary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          'Current: ${cStats.currentStreak} ${loc.daysUnit}',
+                          style: TextStyle(
+                            color: habitStyle.primary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.emoji_events_rounded,
-                      size: 13,
-                      color: AppTheme.accentAmber,
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      'Max Streak: ${cStats.longestStreak} ${loc.daysUnit}',
-                      style: const TextStyle(
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.emoji_events_rounded,
+                        size: 13,
                         color: AppTheme.accentAmber,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          'Max: ${cStats.longestStreak} ${loc.daysUnit}',
+                          style: const TextStyle(
+                            color: AppTheme.accentAmber,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  titleInfo.badgeText,
-                  style: const TextStyle(
-                    color: AppTheme.textMuted,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                  decoration: BoxDecoration(
+                    color: habitStyle.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    titleInfo.badgeText,
+                    style: TextStyle(
+                      color: habitStyle.primary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -355,6 +388,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     final user = widget.stats.user;
     final cStats = widget.stats.contributionStats;
     final titleInfo = cStats.commitTitle;
+    final habitStyle = _getCommitHabitStyle(titleInfo.tier);
     final currentYear = DateTime.now().year;
     final lastYear = currentYear - 1;
     final repos = _filteredAndSortedRepos;
@@ -400,41 +434,64 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               child: Column(
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 36,
-                        backgroundColor: AppTheme.primaryCyan.withValues(alpha: 0.2),
-                        backgroundImage: NetworkImage(user.avatarUrl),
+                      Container(
+                        padding: const EdgeInsets.all(2.5),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: habitStyle.primary.withValues(alpha: 0.55),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: habitStyle.primary.withValues(alpha: 0.15),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 34,
+                          backgroundColor: AppTheme.surfaceElevated,
+                          backgroundImage: user.avatarUrl.isNotEmpty
+                              ? NetworkImage(user.avatarUrl)
+                              : null,
+                          child: user.avatarUrl.isEmpty
+                              ? Text(
+                                  user.login.isNotEmpty
+                                      ? user.login[0].toUpperCase()
+                                      : '?',
+                                  style: TextStyle(
+                                    color: habitStyle.primary,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : null,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    user.name ?? user.login,
-                                    style: const TextStyle(
-                                      color: AppTheme.textPrimary,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                AnimatedTierTitle(
-                                  titleInfo: titleInfo,
-                                  fontSize: 11.5,
-                                  showBadgeContainer: true,
-                                ),
-                              ],
+                            Text(
+                              (user.name != null && user.name!.trim().isNotEmpty)
+                                  ? user.name!
+                                  : user.login,
+                              style: const TextStyle(
+                                color: AppTheme.textPrimary,
+                                fontSize: 18.5,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -0.2,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            const SizedBox(height: 2),
                             Text(
                               '@${user.login}',
                               style: const TextStyle(
@@ -443,7 +500,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            if (user.location != null) ...[
+                            if (user.location != null && user.location!.trim().isNotEmpty) ...[
                               const SizedBox(height: 6),
                               Row(
                                 children: [
@@ -455,7 +512,31 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                   const SizedBox(width: 4),
                                   Expanded(
                                     child: Text(
-                                      user.location!,
+                                      user.location!.trim(),
+                                      style: const TextStyle(
+                                        color: AppTheme.textMuted,
+                                        fontSize: 12,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                            if (user.company != null && user.company!.trim().isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.business_rounded,
+                                    size: 13,
+                                    color: AppTheme.textMuted,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      user.company!.trim(),
                                       style: const TextStyle(
                                         color: AppTheme.textMuted,
                                         fontSize: 12,
@@ -509,12 +590,16 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   color: Color(0xFFFF5722),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  loc.streakStatsTitle,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    loc.streakStatsTitle,
+                    style: const TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -580,12 +665,16 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   color: AppTheme.primaryCyan,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  loc.accountOverviewTitle,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    loc.accountOverviewTitle,
+                    style: const TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -650,42 +739,49 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.folder_special_rounded,
-                      size: 20,
-                      color: AppTheme.primaryCyan,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      loc.repositoriesTitle,
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.folder_special_rounded,
+                        size: 20,
+                        color: AppTheme.primaryCyan,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    // Tempat baru Total Repositori
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surfaceElevated,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppTheme.border),
-                      ),
-                      child: Text(
-                        '${widget.stats.repos.length} ${loc.totalCountBadge}',
-                        style: const TextStyle(
-                          color: AppTheme.textSecondary,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          loc.repositoriesTitle,
+                          style: const TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      // Tempat baru Total Repositori
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surfaceElevated,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppTheme.border),
+                        ),
+                        child: Text(
+                          '${widget.stats.repos.length} ${loc.totalCountBadge}',
+                          style: const TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 // Tombol Filter di sebelah kanan
                 PopupMenuButton<RepoSortFilter>(
                   initialValue: _currentFilter,
