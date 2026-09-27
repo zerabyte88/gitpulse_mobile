@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../models/contribution_stats.dart';
 import '../models/github_repo.dart';
 import '../models/github_user.dart';
 import '../models/user_stats.dart';
@@ -34,6 +35,20 @@ class GitHubApiService {
     return headers;
   }
 
+  Future<ContributionStats?> _fetchContributions(String username) async {
+    try {
+      final uri = Uri.parse('https://github-contributions-api.jogruber.de/v4/$username');
+      final res = await _client.get(uri).timeout(const Duration(seconds: 8));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        return ContributionStats.fromContributionsApi(data);
+      }
+    } catch (_) {
+      // Ignored: will fallback to event-based calculation
+    }
+    return null;
+  }
+
   Future<UserStats> fetchUserStats(String username) async {
     final cleanUsername = username.trim();
     if (cleanUsername.isEmpty) {
@@ -41,6 +56,9 @@ class GitHubApiService {
     }
 
     try {
+      // Kick off contributions fetch in background early
+      final contribFuture = _fetchContributions(cleanUsername);
+
       // 1. Fetch User Profile
       final userUri = Uri.parse('$_baseUrl/users/$cleanUsername');
       final userRes = await _client.get(userUri, headers: _headers).timeout(_timeoutDuration);
@@ -126,10 +144,15 @@ class GitHubApiService {
         }
       }
 
+      // Await contribution stats or fallback to public events
+      final fetchedContributions = await contribFuture;
+      final contributionStats = fetchedContributions ?? ContributionStats.fromEvents(events);
+
       return UserStats.calculate(
         user: user,
         repos: repos,
         publicEvents: events,
+        contributionStats: contributionStats,
         aggregatedLanguages: aggregatedLanguages,
       );
     } on SocketException catch (e) {

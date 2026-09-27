@@ -1,3 +1,4 @@
+import 'contribution_stats.dart';
 import 'github_repo.dart';
 import 'github_user.dart';
 
@@ -10,6 +11,7 @@ class UserStats {
   final Map<int, int> hourlyActivity; // 0 to 23 -> count
   final String developerPersona;
   final String personaDescription;
+  final ContributionStats contributionStats;
 
   UserStats({
     required this.user,
@@ -20,12 +22,14 @@ class UserStats {
     required this.hourlyActivity,
     required this.developerPersona,
     required this.personaDescription,
+    required this.contributionStats,
   });
 
   factory UserStats.calculate({
     required GitHubUser user,
     required List<GitHubRepo> repos,
     required List<Map<String, dynamic>> publicEvents,
+    required ContributionStats contributionStats,
     Map<String, int>? aggregatedLanguages,
   }) {
     int totalStars = 0;
@@ -103,6 +107,7 @@ class UserStats {
       hourlyActivity: hours,
       developerPersona: persona,
       personaDescription: description,
+      contributionStats: contributionStats,
     );
   }
 }

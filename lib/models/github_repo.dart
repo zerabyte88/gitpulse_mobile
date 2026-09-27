@@ -8,6 +8,8 @@ class GitHubRepo {
   final bool isFork;
   final int size; // Size in KB
   final DateTime? updatedAt;
+  final DateTime? pushedAt;
+  final DateTime? createdAt;
 
   GitHubRepo({
     required this.name,
@@ -19,6 +21,8 @@ class GitHubRepo {
     required this.isFork,
     this.size = 0,
     this.updatedAt,
+    this.pushedAt,
+    this.createdAt,
   });
 
   factory GitHubRepo.fromJson(Map<String, dynamic> json) {
@@ -32,8 +36,48 @@ class GitHubRepo {
       isFork: json['fork'] as bool? ?? false,
       size: json['size'] as int? ?? 0,
       updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'] as String)
+          ? DateTime.tryParse(json['updated_at'] as String)?.toLocal()
+          : null,
+      pushedAt: json['pushed_at'] != null
+          ? DateTime.tryParse(json['pushed_at'] as String)?.toLocal()
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'] as String)?.toLocal()
           : null,
     );
   }
+
+  /// The timestamp of the latest commit pushed or repo update
+  DateTime? get latestActivityDate => pushedAt ?? updatedAt ?? createdAt;
+
+  /// Returns user-friendly Indonesian relative time (e.g., '2 jam lalu', '3 hari lalu')
+  String get relativeTimeAgo {
+    final date = latestActivityDate;
+    if (date == null) return 'Tidak ada aktivitas';
+    final diff = DateTime.now().difference(date);
+
+    if (diff.isNegative || diff.inMinutes < 1) {
+      return 'Baru saja';
+    } else if (diff.inHours < 1) {
+      return '${diff.inMinutes} mnt lalu';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours} jam lalu';
+    } else if (diff.inDays < 30) {
+      return '${diff.inDays} hari lalu';
+    } else if (diff.inDays < 365) {
+      final months = (diff.inDays / 30).floor();
+      return '$months bln lalu';
+    } else {
+      final years = (diff.inDays / 365).floor();
+      return '$years thn lalu';
+    }
+  }
+
+  /// Whether there was commit activity within the past 14 days
+  bool get isRecentlyActive {
+    final date = latestActivityDate;
+    if (date == null) return false;
+    return DateTime.now().difference(date).inDays <= 14;
+  }
 }
+
