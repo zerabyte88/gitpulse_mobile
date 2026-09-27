@@ -185,52 +185,6 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     );
   }
 
-  Widget _buildQuickFilterChip(RepoSortFilter filter, String label, IconData icon) {
-    final isSelected = _currentFilter == filter;
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: () {
-        setState(() {
-          _currentFilter = filter;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primaryCyan.withValues(alpha: 0.15)
-              : AppTheme.surface,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected
-                ? AppTheme.primaryCyan
-                : AppTheme.border,
-            width: isSelected ? 1.2 : 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 13,
-              color: isSelected ? AppTheme.primaryCyan : AppTheme.textSecondary,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? AppTheme.primaryCyan : AppTheme.textSecondary,
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   ({Color primary, Color secondary, IconData icon}) _getCommitHabitStyle(int tier) {
     switch (tier) {
@@ -799,34 +753,6 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   ],
                 ),
               ],
-            ),
-            const SizedBox(height: 10),
-
-            // Quick Filter Chips Bar
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              child: Row(
-                children: [
-                  _buildQuickFilterChip(
-                    RepoSortFilter.popular,
-                    'Terpopuler',
-                    Icons.star_rounded,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildQuickFilterChip(
-                    RepoSortFilter.newest,
-                    'Terbaru',
-                    Icons.update_rounded,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildQuickFilterChip(
-                    RepoSortFilter.oldest,
-                    'Terlama',
-                    Icons.history_rounded,
-                  ),
-                ],
-              ),
             ),
             const SizedBox(height: 14),
 
