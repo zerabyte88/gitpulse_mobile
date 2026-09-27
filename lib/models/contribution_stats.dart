@@ -12,6 +12,11 @@ class CommitTitleInfo {
     required this.badgeText,
     required this.tier,
   });
+
+  /// Nama title bersih tanpa ikon atau emoji
+  String get cleanTitle {
+    return title.replaceAll(RegExp(r'^[^\w\s]+\s*'), '').trim();
+  }
 }
 
 class ContributionStats {

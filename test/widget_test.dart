@@ -373,5 +373,34 @@ void main() {
       expect(fromJson.remaining, 45);
       expect(fromJson.used, 15);
     });
+
+    test('CommitTitleInfo cleanTitle strips icons and emojis cleanly', () {
+      const info1 = CommitTitleInfo(
+        title: '🌱 Fresh Sprout',
+        levelName: 'Belum Aktif',
+        badgeText: 'Tier: Bronze',
+        tier: 6,
+        description: '',
+      );
+      expect(info1.cleanTitle, 'Fresh Sprout');
+
+      const info2 = CommitTitleInfo(
+        title: '🔥 Code Titan',
+        levelName: 'Sangat Rajin',
+        badgeText: 'Tier: Mythic',
+        tier: 1,
+        description: '',
+      );
+      expect(info2.cleanTitle, 'Code Titan');
+
+      const info3 = CommitTitleInfo(
+        title: '⚡ Relentless Committer',
+        levelName: 'Sangat Rajin',
+        badgeText: 'Tier: Diamond',
+        tier: 2,
+        description: '',
+      );
+      expect(info3.cleanTitle, 'Relentless Committer');
+    });
   });
 }

@@ -6,6 +6,7 @@ import '../models/user_stats.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/activity_chart.dart';
+import '../widgets/animated_tier_title.dart';
 import '../widgets/language_chart.dart';
 import '../widgets/repo_tile.dart';
 import '../widgets/stat_card.dart';
@@ -231,60 +232,65 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     );
   }
 
+  ({Color primary, Color secondary, IconData icon}) _getCommitHabitStyle(int tier) {
+    switch (tier) {
+      case 1:
+        return (
+          primary: const Color(0xFFFF5722),
+          secondary: AppTheme.accentAmber,
+          icon: Icons.local_fire_department_rounded,
+        );
+      case 2:
+        return (
+          primary: AppTheme.primaryCyan,
+          secondary: const Color(0xFF3B82F6),
+          icon: Icons.bolt_rounded,
+        );
+      case 3:
+        return (
+          primary: AppTheme.accentGreen,
+          secondary: const Color(0xFF14B8A6),
+          icon: Icons.trending_up_rounded,
+        );
+      case 4:
+        return (
+          primary: AppTheme.primaryViolet,
+          secondary: const Color(0xFFEC4899),
+          icon: Icons.coffee_rounded,
+        );
+      case 5:
+        return (
+          primary: const Color(0xFF64748B),
+          secondary: const Color(0xFF475569),
+          icon: Icons.bedtime_rounded,
+        );
+      default:
+        return (
+          primary: const Color(0xFF10B981),
+          secondary: const Color(0xFF334155),
+          icon: Icons.eco_rounded,
+        );
+    }
+  }
+
   Widget _buildCommitHabitBanner(ContributionStats cStats) {
     final titleInfo = cStats.commitTitle;
-
-    Color primaryBadgeColor;
-    Color secondaryBadgeColor;
-    IconData habitIcon;
-
-    switch (titleInfo.tier) {
-      case 1:
-        primaryBadgeColor = const Color(0xFFFF5722); // Orange Red
-        secondaryBadgeColor = AppTheme.accentAmber;
-        habitIcon = Icons.local_fire_department_rounded;
-        break;
-      case 2:
-        primaryBadgeColor = AppTheme.primaryCyan;
-        secondaryBadgeColor = const Color(0xFF3B82F6); // Blue
-        habitIcon = Icons.bolt_rounded;
-        break;
-      case 3:
-        primaryBadgeColor = AppTheme.accentGreen;
-        secondaryBadgeColor = const Color(0xFF14B8A6); // Teal
-        habitIcon = Icons.trending_up_rounded;
-        break;
-      case 4:
-        primaryBadgeColor = AppTheme.primaryViolet;
-        secondaryBadgeColor = const Color(0xFFEC4899); // Pink
-        habitIcon = Icons.coffee_rounded;
-        break;
-      case 5:
-        primaryBadgeColor = const Color(0xFF64748B); // Slate
-        secondaryBadgeColor = const Color(0xFF475569);
-        habitIcon = Icons.bedtime_rounded;
-        break;
-      default:
-        primaryBadgeColor = const Color(0xFF10B981); // Mint
-        secondaryBadgeColor = const Color(0xFF334155);
-        habitIcon = Icons.eco_rounded;
-        break;
-    }
+    final habitStyle = _getCommitHabitStyle(titleInfo.tier);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            primaryBadgeColor.withValues(alpha: 0.18),
-            secondaryBadgeColor.withValues(alpha: 0.08),
+            habitStyle.primary.withValues(alpha: 0.18),
+            habitStyle.secondary.withValues(alpha: 0.08),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: primaryBadgeColor.withValues(alpha: 0.35),
+          color: habitStyle.primary.withValues(alpha: 0.35),
           width: 1.2,
         ),
       ),
@@ -292,75 +298,38 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: primaryBadgeColor.withValues(alpha: 0.22),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  habitIcon,
-                  color: primaryBadgeColor,
-                  size: 20,
+              Flexible(
+                child: AnimatedTierTitle(
+                  titleInfo: titleInfo,
+                  fontSize: 15.5,
+                  showBadgeContainer: false,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            titleInfo.title,
-                            style: const TextStyle(
-                              color: AppTheme.textPrimary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: primaryBadgeColor.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: primaryBadgeColor.withValues(alpha: 0.4),
-                            ),
-                          ),
-                          child: Text(
-                            titleInfo.levelName,
-                            style: TextStyle(
-                              color: primaryBadgeColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      titleInfo.description,
-                      style: const TextStyle(
-                        color: AppTheme.textSecondary,
-                        fontSize: 12,
-                        height: 1.35,
-                      ),
-                    ),
-                  ],
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                decoration: BoxDecoration(
+                  color: habitStyle.primary.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: habitStyle.primary.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Text(
+                  titleInfo.levelName,
+                  style: TextStyle(
+                    color: habitStyle.primary,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
@@ -375,13 +344,13 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     Icon(
                       Icons.whatshot_rounded,
                       size: 13,
-                      color: primaryBadgeColor,
+                      color: habitStyle.primary,
                     ),
                     const SizedBox(width: 5),
                     Text(
                       'Current: ${cStats.currentStreak} hari',
                       style: TextStyle(
-                        color: primaryBadgeColor,
+                        color: habitStyle.primary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -426,6 +395,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
   Widget build(BuildContext context) {
     final user = widget.stats.user;
     final cStats = widget.stats.contributionStats;
+    final titleInfo = cStats.commitTitle;
     final currentYear = DateTime.now().year;
     final lastYear = currentYear - 1;
     final repos = _filteredAndSortedRepos;
@@ -483,15 +453,28 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              user.name ?? user.login,
-                              style: const TextStyle(
-                                color: AppTheme.textPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    user.name ?? user.login,
+                                    style: const TextStyle(
+                                      color: AppTheme.textPrimary,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                AnimatedTierTitle(
+                                  titleInfo: titleInfo,
+                                  fontSize: 11.5,
+                                  showBadgeContainer: true,
+                                ),
+                              ],
                             ),
                             Text(
                               '@${user.login}',
