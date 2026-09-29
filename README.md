@@ -1,4 +1,4 @@
-# ⚡ GitPulse Mobile
+# GitPulse Mobile
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/build-apk.yml)
 [![Tests](https://img.shields.io/badge/Tests-Passing%20(100%25)-success?style=flat-square)](test/widget_test.dart)
-[![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#-system-architecture--data-flow)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
 
 <p align="center">
@@ -26,22 +26,22 @@
 </p>
 
 <p align="center">
-  <a href="#-problem-statement--core-value">Problem Statement</a> •
-  <a href="#-key-features">Key Features</a> •
-  <a href="#-system-architecture--data-flow">Architecture & Data Flow</a> •
-  <a href="#-developer-persona-classification-matrix">Persona Matrix</a> •
-  <a href="#-security--privacy-governance">Security</a> •
-  <a href="#-technology-stack">Tech Stack</a> •
-  <a href="#-installation--getting-started">Installation</a> •
-  <a href="#-cicd-pipeline--apk-distribution">CI/CD APK</a> •
-  <a href="#-strategic-roadmap">Roadmap</a>
+  <a href="#problem-statement--core-value">Problem Statement</a> •
+  <a href="#key-features">Key Features</a> •
+  <a href="#system-architecture--data-flow">Architecture & Data Flow</a> •
+  <a href="#developer-persona-classification-matrix">Persona Matrix</a> •
+  <a href="#security--privacy-governance">Security</a> •
+  <a href="#technology-stack">Tech Stack</a> •
+  <a href="#installation--getting-started">Installation</a> •
+  <a href="#cicd-pipeline--apk-distribution">CI/CD APK</a> •
+  <a href="#strategic-roadmap">Roadmap</a>
 </p>
 
 </div>
 
 ---
 
-## 📌 Problem Statement & Core Value
+## Problem Statement & Core Value
 
 The standard GitHub contribution graph ("green squares") displays daily activity frequency, but suffers from fundamental limitations:
 - **Absence of Temporal Context**: It does not distinguish whether commits occur at midnight, early dawn, or during core business hours.
@@ -52,19 +52,19 @@ The standard GitHub contribution graph ("green squares") displays daily activity
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 <table>
   <thead>
     <tr>
-      <th width="45%">Feature</th>
-      <th width="55%">Technical Specification</th>
+      <th width="40%">Feature</th>
+      <th width="60%">Technical Specification</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>
-        <b>⚡ 24-Hour Productivity Rhythm</b><br/>
+        <b>24-Hour Productivity Rhythm</b><br/>
         <i>Peak Coding Hours Detection</i>
       </td>
       <td>
@@ -73,7 +73,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>🎭 Deterministic Developer Persona Engine</b><br/>
+        <b>Deterministic Developer Persona Engine</b><br/>
         <i>Rule-Based Qualitative Profiling</i>
       </td>
       <td>
@@ -82,7 +82,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>📊 Language Footprint Distribution</b><br/>
+        <b>Language Footprint Distribution</b><br/>
         <i>Interactive Multi-Language Breakdown</i>
       </td>
       <td>
@@ -91,7 +91,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>🔍 Consolidated Portfolio Aggregator</b><br/>
+        <b>Consolidated Portfolio Aggregator</b><br/>
         <i>Cross-Repository Impact Metrics</i>
       </td>
       <td>
@@ -100,7 +100,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>🔖 Offline-First Local Cache & Bookmarks</b><br/>
+        <b>Offline-First Local Cache & Bookmarks</b><br/>
         <i>Persistent State Management</i>
       </td>
       <td>
@@ -109,7 +109,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>🔑 Adaptive Dual Rate-Limiting Strategy</b><br/>
+        <b>Adaptive Dual Rate-Limiting Strategy</b><br/>
         <i>Anonymous vs. Authenticated Execution</i>
       </td>
       <td>
@@ -118,7 +118,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>📰 Curated Tech News & Engineering Feeds</b><br/>
+        <b>Curated Tech News & Engineering Feeds</b><br/>
         <i>Real-Time Industry Intelligence</i>
       </td>
       <td>
@@ -127,7 +127,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>📋 One-Click Shareable Telemetry</b><br/>
+        <b>One-Click Shareable Telemetry</b><br/>
         <i>Social Summary Generator</i>
       </td>
       <td>
@@ -139,7 +139,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
 
 ---
 
-## 🏛️ System Architecture & Data Flow
+## System Architecture & Data Flow
 
 GitPulse Mobile follows **Clean Layered Architecture** principles to separate concerns, enforce testability, and isolate business logic from presentation and transport protocols:
 
@@ -245,22 +245,22 @@ gitpulse_mobile/
 
 ---
 
-## 🎯 Developer Persona Classification Matrix
+## Developer Persona Classification Matrix
 
 The persona classification engine assigns a title based on the following deterministic priority order:
 
 | Persona | Evaluation Criteria | Characteristic Profile |
 | :--- | :--- | :--- |
-| **🌟 Star Magnet** | `Total Stars >= 100` | Exceptional community impact with widely acknowledged open-source repositories. |
-| **⚡ Polyglot Architect** | `Unique Languages >= 4` | Broad technological breadth across distinct ecosystems, languages, and paradigms. |
-| **🦉 Midnight Owl Coder** | `Night Events (22:00–04:59) > Morning & Afternoon` | Highest engineering focus and productivity occur during late-night hours. |
-| **🌅 Early Bird Developer** | `Morning Events (05:00–11:59) > Afternoon & Night` | Consistent early-morning execution rhythm with high-clarity morning commits. |
-| **🚀 Prolific Builder** | `Total Public Repositories > 20` | High-output builder continuously creating, prototyping, and shipping code. |
-| **💻 Dedicated Craftsman** | *Default Fallback Condition* | Consistent, methodical contributor dedicated to quality software craftsmanship. |
+| **Star Magnet** | `Total Stars >= 100` | Exceptional community impact with widely acknowledged open-source repositories. |
+| **Polyglot Architect** | `Unique Languages >= 4` | Broad technological breadth across distinct ecosystems, languages, and paradigms. |
+| **Midnight Owl Coder** | `Night Events (22:00–04:59) > Morning & Afternoon` | Highest engineering focus and productivity occur during late-night hours. |
+| **Early Bird Developer** | `Morning Events (05:00–11:59) > Afternoon & Night` | Consistent early-morning execution rhythm with high-clarity morning commits. |
+| **Prolific Builder** | `Total Public Repositories > 20` | High-output builder continuously creating, prototyping, and shipping code. |
+| **Dedicated Craftsman** | *Default Fallback Condition* | Consistent, methodical contributor dedicated to quality software craftsmanship. |
 
 ---
 
-## 🔒 Security & Privacy Governance
+## Security & Privacy Governance
 
 GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
@@ -271,7 +271,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Category | Technology | Version | Architectural Purpose |
 | :--- | :--- | :--- | :--- |
@@ -287,7 +287,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 ---
 
-## 💻 Installation & Getting Started
+## Installation & Getting Started
 
 ### Prerequisites
 - **Flutter SDK**: Version `3.24.0` or higher
@@ -315,11 +315,11 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
    ```
 
 4. **Launch the Application**:
-   * For Google Chrome (Web):
+   - For Google Chrome (Web):
      ```bash
      flutter run -d chrome
      ```
-   * For Android Device / Emulator:
+   - For Android Device / Emulator:
      ```bash
      flutter run -d android
      ```
@@ -332,7 +332,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 ---
 
-## 🤖 CI/CD Pipeline & APK Distribution
+## CI/CD Pipeline & APK Distribution
 
 This repository features an automated **GitHub Actions** CI/CD pipeline (`.github/workflows/build-apk.yml`) triggered on every push and pull request to `main` and `master`:
 
@@ -383,7 +383,7 @@ This repository features an automated **GitHub Actions** CI/CD pipeline (`.githu
 
 ---
 
-## 🗺️ Strategic Roadmap
+## Strategic Roadmap
 
 - [x] Comprehensive cross-repo metric aggregation (Stars, Forks, Repos).
 - [x] 24-hour developer productivity rhythm histogram.
@@ -398,7 +398,7 @@ This repository features an automated **GitHub Actions** CI/CD pipeline (`.githu
 
 ---
 
-## 🤝 Contributing Guidelines
+## Contributing Guidelines
 
 Contributions are welcome! Please follow these steps:
 
@@ -419,7 +419,6 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source software licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this project in accordance with the license conditions.
-
