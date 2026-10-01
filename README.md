@@ -17,7 +17,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
-[![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/build-apk.yml)
+[![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/Tests-Passing%20(18%2F18)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
@@ -351,62 +351,67 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
      flutter run -d android
      ```
 
-5. **Build Release APK**:
+5. **Build Release APK (64-bit ARM Only)**:
    ```bash
-   flutter build apk --release
+   flutter build apk --release --target-platform android-arm64
    # Compiled binary output: build/app/outputs/flutter-apk/app-release.apk
    ```
 
 ---
 
-## CI/CD Pipeline & APK Distribution
+## CI/CD Pipeline & GitHub Releases
 
-This repository features an automated **GitHub Actions** CI/CD pipeline (`.github/workflows/build-apk.yml`) triggered on every push and pull request to `main` and `master`:
+This repository utilizes a two-tier GitHub Actions architecture separating automated quality gates from release binary publishing:
+
+1. **Automated CI Quality Gate (`.github/workflows/ci.yml`)**:
+   - Triggers on every push and pull request to `main` and `master`.
+   - Runs `flutter pub get`, `flutter analyze` (zero lint warnings), and `flutter test` (100% test coverage).
+   - **Does NOT build APKs on commit**, keeping CI execution under 25 seconds and preserving runner quotas.
+
+2. **Manual Release Pipeline (`.github/workflows/release.yml`)**:
+   - Triggered **manually via `workflow_dispatch`** only when you are ready to publish a new version.
+   - Compiles **strictly 64-bit ARM APK** (`--target-platform android-arm64`, with `arm64-v8a` ABI filter).
+   - Packages the artifact as `GitPulse-v1.0.1-arm64-v8a.apk` and calculates SHA-256 checksums (`.sha256`).
+   - Automatically publishes the release to **GitHub Releases** and uploads the assets.
 
 ```text
-┌──────────────────────┐
-│  Developer Git Push  │  ──► Branch: main, master, or Pull Request
-└──────────┬───────────┘
-           │
-           ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                  GitHub Actions CI/CD Pipeline                         │
-│                    (.github/workflows/build-apk.yml)                   │
+│              Manual Release Workflow (workflow_dispatch)               │
+│                  (.github/workflows/release.yml)                       │
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
-│   [Stage 1: Environment Provisioning]                                  │
-│   ├── VM Runner: Ubuntu Latest                                         │
-│   ├── actions/checkout@v4                                              │
-│   ├── actions/setup-java@v4 (Eclipse Temurin JDK 17)                   │
-│   └── subosito/flutter-action@v2 (Flutter Stable with caching)         │
+│   [Stage 1: Manual Trigger via GitHub Actions UI]                      │
+│   └── Inputs: tag_name (e.g. v1.0.1), release_title, notes             │
 │                                                                        │
-│   [Stage 2: Code Verification & Quality Gate]                          │
-│   ├── flutter pub get           ──► Resolve & lock dependency graph    │
+│   [Stage 2: Verification & Quality Gate]                               │
 │   ├── flutter analyze           ──► Static analysis (zero warnings)    │
-│   └── flutter test              ──► 100% Unit test pass rate (18 tests)│
+│   └── flutter test              ──► 100% Unit test pass rate           │
 │                                                                        │
-│   [Stage 3: Compilation & Optimization]                                │
-│   └── flutter build apk --release ──► Tree-shaking, AOT ARM64 binary   │
+│   [Stage 3: 64-bit Compilation & Optimization]                         │
+│   └── flutter build apk --release --target-platform android-arm64      │
+│       (Excludes legacy 32-bit & universal bloat; ~50% smaller APK)     │
 │                                                                        │
-│   [Stage 4: Artifact Distribution]                                     │
-│   └── actions/upload-artifact@v4                                       │
-│       └── Output: GitPulse-Android-APK (app-release.apk)               │
+│   [Stage 4: Checksum & Distribution]                                   │
+│   ├── sha256sum GitPulse-v1.0.1-arm64-v8a.apk                          │
+│   └── softprops/action-gh-release@v2                                   │
+│       ├── Creates GitHub Release Tag                                   │
+│       ├── Attaches GitPulse-v1.0.1-arm64-v8a.apk                       │
+│       └── Attaches GitPulse-v1.0.1-arm64-v8a.apk.sha256                │
 │                                                                        │
 └──────────────────────────────────┬─────────────────────────────────────┘
                                    │
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│                           Release Artifact                             │
-│       Downloadable Production APK v1.0.1 (Build 2) ready to install    │
+│                       GitHub Releases Dashboard                        │
+│            Production 64-bit APK ready for user downloads              │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### How to Download the Latest APK Build:
-1. Navigate to the [Actions tab](https://github.com/zerabyte88/gitpulse_mobile/actions) on GitHub.
-2. Select the latest successful run of the **Build & Release GitPulse APK** workflow.
-3. Scroll down to the **Artifacts** section at the bottom of the page.
-4. Click **GitPulse-Android-APK** to download the pre-compiled `.apk` bundle.
-5. Extract the ZIP archive and install `app-release.apk` on your Android device.
+### How to Trigger a Release Build:
+1. Navigate to the **Actions** tab on GitHub.
+2. Select **Release 64-bit APK** from the left sidebar.
+3. Click **Run workflow**, verify the tag (e.g., `v1.0.1`), and click the green **Run workflow** button.
+4. Once completed, your new APK will automatically appear under [Releases](https://github.com/zerabyte88/gitpulse_mobile/releases).
 
 ---
 

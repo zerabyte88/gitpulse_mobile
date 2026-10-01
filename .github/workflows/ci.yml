@@ -1,4 +1,4 @@
-name: Build & Release GitPulse APK
+name: CI Quality Gate
 
 on:
   push:
@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build Android APK
+  verify:
+    name: Code Quality & Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
       - name: Setup Java JDK
@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Flutter
+      - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
@@ -34,14 +34,5 @@ jobs:
       - name: Analyze Code
         run: flutter analyze
 
-      - name: Run Tests
+      - name: Run Test Suite
         run: flutter test
-
-      - name: Build Android Release APK
-        run: flutter build apk --release
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: GitPulse-Android-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
