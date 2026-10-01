@@ -43,19 +43,6 @@
 
 ---
 
-## What's New in v1.0.1
-
-Version **v1.0.1 (Build 2)** delivers a comprehensive UI/UX overhaul engineered to replace artificial, generic AI-style aesthetics with an authentic, professional, and minimalist developer tool experience:
-
-- **Minimalist Developer Design System**: Shifted from high-contrast pitch black and fluorescent neon cyberpunk gradients to a refined **GitHub Dark & Linear-inspired Slate Theme** (`#0D1117` canvas, `#161B22` cards, `#30363D` borders, and `#58A6FF` accent blue).
-- **Inter Typography Standard**: Switched global typography to `GoogleFonts.inter` for maximum readability and information density suited for engineering telemetry.
-- **Native Status & Tier Badges**: Eliminated gaudy pulsing rainbow shader masks in favor of crisp, understated developer badges (`AnimatedTierTitle`) with smooth ambient presence.
-- **GitHub-Native Repository Cards**: Redesigned `RepoTile` to mirror native GitHub cards with authentic programming language color dots, clean star/fork indicators, and compact relative time pills.
-- **Refined Rhythm & Language Charts**: Cleaned up `ActivityChart` and `LanguageChart` with semantic contribution colors (`#3FB950`), muted bar frames, and high-legibility legends.
-- **In-App Build & Version Telemetry**: Integrated `AppConfig` and added an **About GitPulse** card inside the settings sheet alongside an app-bar version badge (`v1.0.1`), ensuring the APK version and build code are always visible and auditable.
-
----
-
 ## Problem Statement & Core Value
 
 The standard GitHub contribution graph ("green squares") displays daily activity frequency, but suffers from fundamental limitations:
