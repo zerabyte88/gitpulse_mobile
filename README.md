@@ -189,9 +189,9 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │                                                                                        │
 │   ┌────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                              UserStats Calculation Engine                      │   │
-│   │  • Metric Aggregator (Total Stars, Forks, Repo Volume, Primary Languages)       │   │
-│   │  • 24-Hour Event Binner (Converts ISO-8601 UTC to Local Time 00:00–23:00)       │   │
-│   │  • Deterministic Persona Classifier (Star Magnet, Midnight Owl, Polyglot, etc.) │   │
+│   │  • Metric Aggregator (Total Stars, Forks, Repo Volume, Primary Languages)      │   │
+│   │  • 24-Hour Event Binner (Converts ISO-8601 UTC to Local Time 00:00–23:00)      │   │
+│   │  • Deterministic Persona Classifier (Star Magnet, Midnight Owl, Polyglot, etc.)│   │
 │   └────────────────────────────────────────▲───────────────────────────────────────┘   │
 └────────────────────────────────────────────┼───────────────────────────────────────────┘
                                              │ 4. Deserialized Models (User, Repos, Events)
