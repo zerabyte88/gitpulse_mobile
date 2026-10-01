@@ -9,13 +9,14 @@ class LanguageChart extends StatelessWidget {
   const LanguageChart({super.key, required this.languageCounts});
 
   static const List<Color> _palette = [
-    Color(0xFF00E5FF), // Cyan
-    Color(0xFF8B5CF6), // Violet
-    Color(0xFF10B981), // Green
-    Color(0xFFF59E0B), // Amber
-    Color(0xFFEC4899), // Pink
-    Color(0xFF3B82F6), // Blue
-    Color(0xFF64748B), // Slate
+    Color(0xFF3178C6), // TypeScript / Dart Blue
+    Color(0xFFF1E05A), // JavaScript Amber / Gold
+    Color(0xFF3572A5), // Python Blue
+    Color(0xFF3FB950), // Emerald Green
+    Color(0xFFE34C26), // HTML Orange / Coral
+    Color(0xFFBC8CFF), // Purple
+    Color(0xFF00ADD8), // Go Cyan
+    Color(0xFF8B949E), // Muted Slate
   ];
 
   static String _formatBytes(int bytes) {
@@ -33,11 +34,11 @@ class LanguageChart extends StatelessWidget {
 
     if (languageCounts.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.border),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.border, width: 1),
         ),
         child: Center(
           child: Text(
@@ -72,12 +73,12 @@ class LanguageChart extends StatelessWidget {
         PieChartSectionData(
           color: color,
           value: entry.value.toDouble(),
-          title: percent >= 7 ? '${percent.toStringAsFixed(0)}%' : '',
-          radius: 38,
+          title: percent >= 8 ? '${percent.toStringAsFixed(0)}%' : '',
+          radius: 34,
           titleStyle: const TextStyle(
             fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF0D1117),
           ),
         ),
       );
@@ -97,12 +98,12 @@ class LanguageChart extends StatelessWidget {
         PieChartSectionData(
           color: color,
           value: otherBytes.toDouble(),
-          title: percent >= 7 ? '${percent.toStringAsFixed(0)}%' : '',
-          radius: 38,
+          title: percent >= 8 ? '${percent.toStringAsFixed(0)}%' : '',
+          radius: 34,
           titleStyle: const TextStyle(
             fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF0D1117),
           ),
         ),
       );
@@ -117,26 +118,30 @@ class LanguageChart extends StatelessWidget {
     final isDetailedBytes = totalCount >= 100;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.border),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.code_rounded, size: 18, color: AppTheme.primaryCyan),
+              const Icon(
+                Icons.code_rounded,
+                size: 16,
+                color: AppTheme.primaryCyan,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   loc.languageDistribution,
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -144,18 +149,18 @@ class LanguageChart extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
           SizedBox(
-            height: 180,
+            height: 160,
             child: PieChart(
               PieChartData(
-                sectionsSpace: 3,
-                centerSpaceRadius: 40,
+                sectionsSpace: 2,
+                centerSpaceRadius: 42,
                 sections: sections,
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Wrap(
             spacing: 12,
             runSpacing: 8,
@@ -173,8 +178,8 @@ class LanguageChart extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 10,
-                    height: 10,
+                    width: 8,
+                    height: 8,
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,

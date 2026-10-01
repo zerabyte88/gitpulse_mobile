@@ -156,7 +156,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
       value: filter,
       child: Row(
         children: [
-          Icon(icon, size: 18, color: color),
+          Icon(icon, size: 17, color: color),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -167,7 +167,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   title,
                   style: TextStyle(
                     color: isSelected ? AppTheme.primaryCyan : AppTheme.textPrimary,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     fontSize: 13,
                   ),
                 ),
@@ -183,50 +183,49 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
           ),
           if (isSelected) ...[
             const SizedBox(width: 6),
-            const Icon(Icons.check_rounded, size: 16, color: AppTheme.primaryCyan),
+            const Icon(Icons.check_rounded, size: 15, color: AppTheme.primaryCyan),
           ],
         ],
       ),
     );
   }
 
-
   ({Color primary, Color secondary, IconData icon}) _getCommitHabitStyle(int tier) {
     switch (tier) {
       case 1:
         return (
-          primary: const Color(0xFFFF5722),
+          primary: AppTheme.accentOrange,
           secondary: AppTheme.accentAmber,
           icon: Icons.local_fire_department_rounded,
         );
       case 2:
         return (
           primary: AppTheme.primaryCyan,
-          secondary: const Color(0xFF3B82F6),
+          secondary: const Color(0xFF388BFD),
           icon: Icons.bolt_rounded,
         );
       case 3:
         return (
           primary: AppTheme.accentGreen,
-          secondary: const Color(0xFF14B8A6),
+          secondary: const Color(0xFF2EA043),
           icon: Icons.trending_up_rounded,
         );
       case 4:
         return (
-          primary: AppTheme.primaryViolet,
-          secondary: const Color(0xFFEC4899),
+          primary: AppTheme.accentAmber,
+          secondary: const Color(0xFFB45309),
           icon: Icons.coffee_rounded,
         );
       case 5:
         return (
-          primary: const Color(0xFF64748B),
-          secondary: const Color(0xFF475569),
+          primary: AppTheme.textSecondary,
+          secondary: AppTheme.textMuted,
           icon: Icons.bedtime_rounded,
         );
       default:
         return (
-          primary: const Color(0xFF10B981),
-          secondary: const Color(0xFF334155),
+          primary: const Color(0xFF56D364),
+          secondary: AppTheme.textMuted,
           icon: Icons.eco_rounded,
         );
     }
@@ -239,18 +238,11 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            habitStyle.primary.withValues(alpha: 0.18),
-            habitStyle.secondary.withValues(alpha: 0.08),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: habitStyle.primary.withValues(alpha: 0.35),
-          width: 1.2,
+          color: habitStyle.primary.withValues(alpha: 0.3),
+          width: 1,
         ),
       ),
       child: Column(
@@ -266,14 +258,14 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   children: [
                     Icon(
                       habitStyle.icon,
-                      size: 18,
+                      size: 17,
                       color: habitStyle.primary,
                     ),
                     const SizedBox(width: 7),
                     Flexible(
                       child: AnimatedTierTitle(
                         titleInfo: titleInfo,
-                        fontSize: 15.5,
+                        fontSize: 14.5,
                         showBadgeContainer: false,
                       ),
                     ),
@@ -282,12 +274,13 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                 decoration: BoxDecoration(
-                  color: habitStyle.primary.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(8),
+                  color: habitStyle.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: habitStyle.primary.withValues(alpha: 0.4),
+                    color: habitStyle.primary.withValues(alpha: 0.3),
+                    width: 0.8,
                   ),
                 ),
                 child: Text(
@@ -295,7 +288,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   style: TextStyle(
                     color: habitStyle.primary,
                     fontSize: 10.5,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -305,8 +298,9 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
-              color: AppTheme.background.withValues(alpha: 0.45),
+              color: AppTheme.surfaceElevated,
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppTheme.border, width: 0.8),
             ),
             child: Row(
               children: [
@@ -396,19 +390,26 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('@${user.login}'),
+        title: Text(
+          '@${user.login}',
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 17,
+          ),
+        ),
         actions: [
           IconButton(
             tooltip: _isBookmarked ? loc.removeFavorite : loc.saveFavorite,
             icon: Icon(
               _isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
               color: _isBookmarked ? AppTheme.accentAmber : AppTheme.textSecondary,
+              size: 21,
             ),
             onPressed: _toggleBookmark,
           ),
           IconButton(
             tooltip: loc.shareProfile,
-            icon: const Icon(Icons.share_rounded, color: AppTheme.primaryCyan),
+            icon: const Icon(Icons.share_outlined, size: 20, color: AppTheme.textSecondary),
             onPressed: _shareSummary,
           ),
         ],
@@ -421,15 +422,11 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
           children: [
             // User Header Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppTheme.surface, AppTheme.surfaceElevated],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppTheme.border),
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppTheme.border, width: 1),
               ),
               child: Column(
                 children: [
@@ -437,23 +434,16 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(2.5),
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: habitStyle.primary.withValues(alpha: 0.55),
-                            width: 2,
+                            color: AppTheme.border,
+                            width: 1.5,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: habitStyle.primary.withValues(alpha: 0.15),
-                              blurRadius: 10,
-                              spreadRadius: 1,
-                            ),
-                          ],
                         ),
                         child: CircleAvatar(
-                          radius: 34,
+                          radius: 30,
                           backgroundColor: AppTheme.surfaceElevated,
                           backgroundImage: user.avatarUrl.isNotEmpty
                               ? NetworkImage(user.avatarUrl)
@@ -465,14 +455,14 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                       : '?',
                                   style: TextStyle(
                                     color: habitStyle.primary,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )
                               : null,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,8 +474,8 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                   : user.login,
                               style: const TextStyle(
                                 color: AppTheme.textPrimary,
-                                fontSize: 18.5,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
                                 letterSpacing: -0.2,
                               ),
                               maxLines: 2,
@@ -496,16 +486,16 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                               '@${user.login}',
                               style: const TextStyle(
                                 color: AppTheme.primaryCyan,
-                                fontSize: 13,
+                                fontSize: 12.5,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             if (user.location != null && user.location!.trim().isNotEmpty) ...[
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
                                   const Icon(
-                                    Icons.location_on_rounded,
+                                    Icons.location_on_outlined,
                                     size: 13,
                                     color: AppTheme.textMuted,
                                   ),
@@ -515,7 +505,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                       user.location!.trim(),
                                       style: const TextStyle(
                                         color: AppTheme.textMuted,
-                                        fontSize: 12,
+                                        fontSize: 11.5,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -525,11 +515,11 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                               ),
                             ],
                             if (user.company != null && user.company!.trim().isNotEmpty) ...[
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 3),
                               Row(
                                 children: [
                                   const Icon(
-                                    Icons.business_rounded,
+                                    Icons.business_outlined,
                                     size: 13,
                                     color: AppTheme.textMuted,
                                   ),
@@ -539,7 +529,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                                       user.company!.trim(),
                                       style: const TextStyle(
                                         color: AppTheme.textMuted,
-                                        fontSize: 12,
+                                        fontSize: 11.5,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -554,19 +544,20 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     ],
                   ),
                   if (user.bio != null && user.bio!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppTheme.background.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
+                        color: AppTheme.surfaceElevated,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppTheme.border, width: 0.8),
                       ),
                       child: Text(
                         user.bio!,
                         style: const TextStyle(
                           color: AppTheme.textSecondary,
-                          fontSize: 13,
+                          fontSize: 12.5,
                           height: 1.4,
                         ),
                       ),
@@ -575,19 +566,19 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
-            // Commit Habit Title Banner (Tingkat & Gelar Aktivitas Commit)
+            // Commit Habit Title Banner
             _buildCommitHabitBanner(cStats, loc),
-            const SizedBox(height: 20),
+            const SizedBox(height: 18),
 
             // Section: GitHub Contributions & Streak Statistics
             Row(
               children: [
                 const Icon(
                   Icons.local_fire_department_rounded,
-                  size: 20,
-                  color: Color(0xFFFF5722),
+                  size: 18,
+                  color: AppTheme.accentOrange,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -595,8 +586,8 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     loc.streakStatsTitle,
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -604,7 +595,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -612,13 +603,13 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     label: loc.currentStreak,
                     value: '${cStats.currentStreak} ${loc.daysUnit}',
                     icon: Icons.whatshot_rounded,
-                    accentColor: const Color(0xFFFF5722),
+                    accentColor: AppTheme.accentOrange,
                     subtitle: cStats.currentStreak > 0
                         ? loc.activeNowBadge
                         : loc.notActiveYetBadge,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: StatCard(
                     label: loc.longestStreak,
@@ -630,7 +621,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -642,7 +633,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     subtitle: loc.thisYearSubtitle,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: StatCard(
                     label: loc.allYearsContributions,
@@ -654,13 +645,13 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Key Metrics Grid
             Row(
               children: [
                 const Icon(
-                  Icons.analytics_rounded,
+                  Icons.analytics_outlined,
                   size: 18,
                   color: AppTheme.primaryCyan,
                 ),
@@ -670,8 +661,8 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                     loc.accountOverviewTitle,
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -679,42 +670,42 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: StatCard(
                     label: loc.totalStars,
                     value: '${widget.stats.totalStars}',
-                    icon: Icons.star_rounded,
+                    icon: Icons.star_outline_rounded,
                     accentColor: AppTheme.accentAmber,
                     subtitle: loc.acrossAllRepos,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: StatCard(
                     label: loc.publicRepos,
                     value: '${user.publicRepos}',
-                    icon: Icons.folder_copy_rounded,
+                    icon: Icons.folder_open_rounded,
                     accentColor: AppTheme.primaryCyan,
                     subtitle: loc.registeredReposSubtitle,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
                   child: StatCard(
                     label: loc.followers,
                     value: '${user.followers}',
-                    icon: Icons.people_rounded,
+                    icon: Icons.people_outline_rounded,
                     accentColor: AppTheme.accentGreen,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: StatCard(
                     label: loc.totalForks,
@@ -725,15 +716,15 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 18),
 
             // Language Chart
             LanguageChart(languageCounts: widget.stats.languageCounts),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Activity Chart
             ActivityChart(hourlyActivity: widget.stats.hourlyActivity),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Repositories Section Header
             Row(
@@ -743,8 +734,8 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.folder_special_rounded,
-                        size: 20,
+                        Icons.folder_special_outlined,
+                        size: 18,
                         color: AppTheme.primaryCyan,
                       ),
                       const SizedBox(width: 8),
@@ -753,28 +744,27 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                           loc.repositoriesTitle,
                           style: const TextStyle(
                             color: AppTheme.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Tempat baru Total Repositori
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppTheme.surfaceElevated,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppTheme.border),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppTheme.border, width: 0.8),
                         ),
                         child: Text(
                           '${widget.stats.repos.length} ${loc.totalCountBadge}',
                           style: const TextStyle(
                             color: AppTheme.textSecondary,
                             fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -782,7 +772,6 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Tombol Filter di sebelah kanan
                 PopupMenuButton<RepoSortFilter>(
                   initialValue: _currentFilter,
                   tooltip: loc.filterRepositories,
@@ -793,15 +782,15 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                   },
                   color: AppTheme.surfaceElevated,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    side: const BorderSide(color: AppTheme.border),
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: AppTheme.border, width: 1),
                   ),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                     decoration: BoxDecoration(
                       color: AppTheme.surfaceElevated,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.border),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.border, width: 0.8),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -811,16 +800,16 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                           size: 14,
                           color: AppTheme.primaryCyan,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 5),
                         Text(
                           _getFilterLabel(_currentFilter, loc),
                           style: const TextStyle(
                             color: AppTheme.textPrimary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         const Icon(
                           Icons.arrow_drop_down_rounded,
                           size: 16,
@@ -834,7 +823,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                       RepoSortFilter.popular,
                       loc.filterPopular,
                       loc.filterPopularDesc,
-                      Icons.star_rounded,
+                      Icons.star_outline_rounded,
                       AppTheme.accentAmber,
                     ),
                     _buildPopupMenuItem(
@@ -855,7 +844,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
 
             if (repos.isEmpty)
               Padding(
@@ -882,6 +871,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                       _showAllRepos
                           ? Icons.keyboard_arrow_up_rounded
                           : Icons.keyboard_arrow_down_rounded,
+                      size: 16,
                       color: AppTheme.primaryCyan,
                     ),
                     label: Text(
@@ -891,7 +881,7 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
                       style: const TextStyle(
                         color: AppTheme.primaryCyan,
                         fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                        fontSize: 12.5,
                       ),
                     ),
                   ),

@@ -184,19 +184,42 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppTheme.primaryCyan, AppTheme.primaryViolet],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
+                  color: AppTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.border, width: 1),
                 ),
                 child: const Icon(
-                  Icons.insights_rounded,
-                  color: Colors.black,
-                  size: 20,
+                  Icons.terminal_rounded,
+                  color: AppTheme.primaryCyan,
+                  size: 18,
                 ),
               ),
               const SizedBox(width: 10),
-              const Text('GitPulse'),
+              const Text(
+                'GitPulse',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 17.5,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: AppTheme.border, width: 0.8),
+                ),
+                child: const Text(
+                  AppConfig.appVersion,
+                  style: TextStyle(
+                    color: AppTheme.textMuted,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ],
           ),
           actions: [
@@ -208,8 +231,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceElevated,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppTheme.border),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: AppTheme.border, width: 0.8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -218,10 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.speed_rounded,
                         size: 13,
                         color: rateLimit.remainingPercentage < 20
-                            ? Colors.redAccent
+                            ? AppTheme.accentRed
                             : AppTheme.primaryCyan,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 5),
                       Text(
                         '${rateLimit.used}/${rateLimit.limit}',
                         style: const TextStyle(
@@ -236,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             IconButton(
               tooltip: loc.settingsTitle,
-              icon: const Icon(Icons.settings_outlined, color: AppTheme.textSecondary),
+              icon: const Icon(Icons.tune_rounded, size: 20, color: AppTheme.textSecondary),
               onPressed: _openSettingsSheet,
             ),
           ],
@@ -271,23 +294,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+                      color: AppTheme.accentRed.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.error_outline_rounded,
-                          color: Colors.redAccent,
-                          size: 18,
+                          color: AppTheme.accentRed,
+                          size: 17,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _errorMessage!,
                             style: const TextStyle(
-                              color: Colors.redAccent,
+                              color: AppTheme.accentRed,
                               fontSize: 12,
                             ),
                           ),
@@ -297,17 +320,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
-                // Bookmarks Section (Profil Favorit Tersimpan dengan Foto Profil)
+                // Bookmarks Section
                 _buildBookmarksSection(loc, bookmarkedUsers),
 
-                const SizedBox(height: 28),
+                const SizedBox(height: 24),
 
                 // Latest Tech & AI News Section
                 _buildTechNewsSection(loc),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 28),
               ],
             ),
           ),
@@ -326,14 +349,15 @@ class _HomeScreenState extends State<HomeScreen> {
         hintText: loc.searchHint,
         prefixIcon: Icon(
           Icons.search_rounded,
+          size: 20,
           color: _isSearchFocused ? AppTheme.primaryCyan : AppTheme.textSecondary,
         ),
         suffixIcon: _isLoading
             ? const Padding(
                 padding: EdgeInsets.all(12),
                 child: SizedBox(
-                  width: 20,
-                  height: 20,
+                  width: 18,
+                  height: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: AppTheme.primaryCyan,
@@ -345,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   if (_searchController.text.isNotEmpty || _isSearchFocused)
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, size: 20, color: AppTheme.textMuted),
+                      icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
                       tooltip: loc.close,
                       onPressed: () {
                         _searchController.clear();
@@ -354,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   IconButton(
-                    icon: const Icon(Icons.arrow_forward_rounded, color: AppTheme.primaryCyan),
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 18, color: AppTheme.primaryCyan),
                     tooltip: 'GitHub',
                     onPressed: () => _searchUser(_searchController.text),
                   ),
@@ -373,15 +397,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.surfaceElevated,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.primaryCyan.withValues(alpha: 0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,16 +411,16 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Icon(
                   Icons.history_rounded,
-                  size: 17,
-                  color: AppTheme.primaryCyan,
+                  size: 16,
+                  color: AppTheme.textSecondary,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   loc.recentSearches,
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const Spacer(),
@@ -420,13 +437,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(
                       loc.clearAll,
                       style: const TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 11.5,
+                        color: AppTheme.accentRed,
+                        fontSize: 11,
                       ),
                     ),
                   ),
                 IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 20, color: AppTheme.textMuted),
+                  icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 18, color: AppTheme.textMuted),
                   tooltip: loc.close,
                   onPressed: () => _searchFocusNode.unfocus(),
                   visualDensity: VisualDensity.compact,
@@ -441,23 +458,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               dense: true,
               visualDensity: VisualDensity.compact,
-              leading: const Icon(Icons.search_rounded, size: 18, color: AppTheme.primaryCyan),
+              leading: const Icon(Icons.search_rounded, size: 16, color: AppTheme.primaryCyan),
               title: RichText(
                 text: TextSpan(
-                  style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13.5),
+                  style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13),
                   children: [
                     TextSpan(
                       text: '"${_searchController.text.trim()}"',
                       style: const TextStyle(
                         color: AppTheme.primaryCyan,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const TextSpan(text: ' ➔ GitHub'),
                   ],
                 ),
               ),
-              trailing: const Icon(Icons.arrow_forward_rounded, size: 16, color: AppTheme.primaryCyan),
+              trailing: const Icon(Icons.arrow_forward_rounded, size: 15, color: AppTheme.primaryCyan),
               onTap: () => _searchUser(_searchController.text),
             ),
             const Divider(height: 1, color: AppTheme.border),
@@ -471,7 +488,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    size: 16,
+                    size: 15,
                     color: AppTheme.textMuted.withValues(alpha: 0.7),
                   ),
                   const SizedBox(width: 8),
@@ -480,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       loc.noRecentSearches,
                       style: const TextStyle(
                         color: AppTheme.textMuted,
-                        fontSize: 12.5,
+                        fontSize: 12,
                       ),
                     ),
                   ),
@@ -501,14 +518,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: const EdgeInsets.only(left: 14, right: 6),
                   leading: const Icon(
                     Icons.history_rounded,
-                    size: 17,
+                    size: 16,
                     color: AppTheme.textMuted,
                   ),
                   title: Text(
                     username,
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 13.5,
+                      fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -516,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.north_west_rounded, size: 15, color: AppTheme.textMuted),
+                        icon: const Icon(Icons.north_west_rounded, size: 14, color: AppTheme.textMuted),
                         tooltip: username,
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
@@ -527,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, size: 16, color: AppTheme.textMuted),
+                        icon: const Icon(Icons.close_rounded, size: 15, color: AppTheme.textMuted),
                         tooltip: loc.close,
                         visualDensity: VisualDensity.compact,
                         onPressed: () async {
@@ -552,27 +569,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBookmarksSection(AppLocalizations loc, List<BookmarkedUser> bookmarks) {
     if (bookmarks.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.border),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.border, width: 1),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.accentAmber.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
+                color: AppTheme.surfaceElevated,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppTheme.border, width: 0.8),
               ),
               child: const Icon(
                 Icons.star_outline_rounded,
                 color: AppTheme.accentAmber,
-                size: 22,
+                size: 18,
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,8 +599,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     loc.favoriteProfiles,
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -590,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     loc.emptyBookmarks,
                     style: const TextStyle(
                       color: AppTheme.textMuted,
-                      fontSize: 12,
+                      fontSize: 11.5,
                     ),
                   ),
                 ],
@@ -607,8 +625,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           children: [
             const Icon(
-              Icons.bookmark_rounded,
-              size: 19,
+              Icons.bookmark_outline_rounded,
+              size: 17,
               color: AppTheme.accentAmber,
             ),
             const SizedBox(width: 8),
@@ -616,93 +634,94 @@ class _HomeScreenState extends State<HomeScreen> {
               loc.favoriteProfiles,
               style: const TextStyle(
                 color: AppTheme.textPrimary,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
+                fontSize: 14.5,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: AppTheme.accentAmber.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(10),
+                color: AppTheme.surfaceElevated,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: AppTheme.border, width: 0.8),
               ),
               child: Text(
                 '${bookmarks.length}',
                 style: const TextStyle(
-                  color: AppTheme.accentAmber,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textSecondary,
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         SizedBox(
-          height: 72,
+          height: 64,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemCount: bookmarks.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 10),
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final user = bookmarks[index];
               return InkWell(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(10),
                 onTap: () {
                   _searchController.text = user.username;
                   _searchUser(user.username);
                 },
                 child: Container(
-                  width: 200,
+                  width: 190,
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceElevated,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppTheme.border),
+                    color: AppTheme.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppTheme.border, width: 1),
                   ),
                   child: Row(
                     children: [
-                      // Avatar Photo with Amber Border
+                      // Avatar Photo with subtle border
                       Container(
-                        width: 44,
-                        height: 44,
+                        width: 38,
+                        height: 38,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppTheme.accentAmber.withValues(alpha: 0.6),
-                            width: 1.5,
+                            color: AppTheme.border,
+                            width: 1,
                           ),
                         ),
                         child: ClipOval(
                           child: Image.network(
                             user.avatarUrl,
-                            width: 44,
-                            height: 44,
+                            width: 38,
+                            height: 38,
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
                               return Container(
-                                color: AppTheme.surface,
+                                color: AppTheme.surfaceElevated,
                                 child: const Center(
                                   child: SizedBox(
-                                    width: 16,
-                                    height: 16,
+                                    width: 14,
+                                    height: 14,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1.5,
-                                      color: AppTheme.accentAmber,
+                                      color: AppTheme.primaryCyan,
                                     ),
                                   ),
                                 ),
                               );
                             },
                             errorBuilder: (context, error, stackTrace) => Container(
-                              color: AppTheme.surface,
+                              color: AppTheme.surfaceElevated,
                               child: const Icon(
-                                Icons.person_rounded,
-                                size: 22,
-                                color: AppTheme.accentAmber,
+                                Icons.person_outline_rounded,
+                                size: 18,
+                                color: AppTheme.textMuted,
                               ),
                             ),
                           ),
@@ -722,17 +741,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: AppTheme.textPrimary,
-                                fontSize: 13.5,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 2),
                             const Text(
-                              'GitHub ➔',
+                              'github.com',
                               style: TextStyle(
-                                color: AppTheme.primaryCyan,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
+                                color: AppTheme.textMuted,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ],
@@ -743,7 +762,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: const Icon(
                           Icons.close_rounded,
-                          size: 15,
+                          size: 14,
                           color: AppTheme.textMuted,
                         ),
                         visualDensity: VisualDensity.compact,
@@ -777,8 +796,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 const Icon(
-                  Icons.auto_awesome_rounded,
-                  size: 20,
+                  Icons.feed_outlined,
+                  size: 18,
                   color: AppTheme.primaryCyan,
                 ),
                 const SizedBox(width: 8),
@@ -786,14 +805,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   loc.techNewsTitle,
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
             IconButton(
-              icon: const Icon(Icons.refresh_rounded, size: 20, color: AppTheme.textSecondary),
+              icon: const Icon(Icons.refresh_rounded, size: 18, color: AppTheme.textSecondary),
               tooltip: loc.refresh,
               onPressed: () => _loadNews(refresh: true),
               visualDensity: VisualDensity.compact,
@@ -804,7 +823,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Category Filter Chips
         SizedBox(
-          height: 38,
+          height: 34,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -817,19 +836,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: Text(
                   cat['label']!,
                   style: TextStyle(
-                    color: isSelected ? Colors.black : AppTheme.textSecondary,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    fontSize: 12.5,
+                    color: isSelected ? AppTheme.primaryCyan : AppTheme.textSecondary,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    fontSize: 12,
                   ),
                 ),
                 selected: isSelected,
-                selectedColor: AppTheme.primaryCyan,
-                backgroundColor: AppTheme.surfaceElevated,
+                selectedColor: AppTheme.primaryCyan.withValues(alpha: 0.12),
+                backgroundColor: AppTheme.surface,
                 side: BorderSide(
                   color: isSelected ? AppTheme.primaryCyan : AppTheme.border,
+                  width: 0.8,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 showCheckmark: false,
                 onSelected: (selected) {
@@ -844,7 +864,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
 
         // News Content
         if (_isNewsLoading)
@@ -854,19 +874,19 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   const SizedBox(
-                    width: 28,
-                    height: 28,
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
+                      strokeWidth: 2,
                       color: AppTheme.primaryCyan,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Text(
                     loc.loadingNews,
                     style: TextStyle(
                       color: AppTheme.textMuted.withValues(alpha: 0.8),
-                      fontSize: 13,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -876,12 +896,12 @@ class _HomeScreenState extends State<HomeScreen> {
         else if (_newsList.isEmpty)
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
+              padding: const EdgeInsets.symmetric(vertical: 28),
               child: Text(
                 loc.noNewsFound,
                 style: TextStyle(
                   color: AppTheme.textMuted.withValues(alpha: 0.8),
-                  fontSize: 13,
+                  fontSize: 12.5,
                 ),
               ),
             ),
@@ -891,7 +911,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _newsList.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 14),
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               return TechNewsCard(news: _newsList[index]);
             },
@@ -900,4 +920,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

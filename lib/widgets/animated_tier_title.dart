@@ -27,9 +27,10 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   @override
   void initState() {
     super.initState();
+    // Subtle ambient breath animation for premium status badges
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2600),
+      duration: const Duration(milliseconds: 3200),
     )..repeat(reverse: true);
   }
 
@@ -39,137 +40,92 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     super.dispose();
   }
 
-  ({List<Color> gradient, Color glow}) _getTierPalette(int tier) {
+  ({Color accent, Color background, Color border}) _getTierStyle(int tier) {
     switch (tier) {
       case 1:
-        // Mythic / Master - Fiery Lava & Blazing Sun
+        // Tier 1: Master / Code Titan - Refined Amber / Gold
         return (
-          gradient: const [
-            Color(0xFFFF3D00),
-            Color(0xFFFF9100),
-            Color(0xFFFFEA00),
-          ],
-          glow: const Color(0xFFFF5722),
+          accent: const Color(0xFFF59E0B),
+          background: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+          border: const Color(0xFFF59E0B).withValues(alpha: 0.35),
         );
       case 2:
-        // Diamond - Electric Neon Cyan & Royal Blue
+        // Tier 2: Relentless Committer - GitHub Electric Blue
         return (
-          gradient: const [
-            Color(0xFF00E5FF),
-            Color(0xFF38BDF8),
-            Color(0xFF3B82F6),
-          ],
-          glow: const Color(0xFF00E5FF),
+          accent: const Color(0xFF58A6FF),
+          background: const Color(0xFF58A6FF).withValues(alpha: 0.12),
+          border: const Color(0xFF58A6FF).withValues(alpha: 0.35),
         );
       case 3:
-        // Platinum - Radiant Emerald & Teal
+        // Tier 3: Consistent Builder - GitHub Emerald
         return (
-          gradient: const [
-            Color(0xFF10B981),
-            Color(0xFF14B8A6),
-            Color(0xFF06B6D4),
-          ],
-          glow: const Color(0xFF10B981),
+          accent: const Color(0xFF3FB950),
+          background: const Color(0xFF3FB950).withValues(alpha: 0.12),
+          border: const Color(0xFF3FB950).withValues(alpha: 0.35),
         );
       case 4:
-        // Gold - Warm Amber & Sunset Gold
+        // Tier 4: Weekend Warrior - Warm Bronze
         return (
-          gradient: const [
-            Color(0xFFF59E0B),
-            Color(0xFFFBBF24),
-            Color(0xFFFB923C),
-          ],
-          glow: const Color(0xFFF59E0B),
+          accent: const Color(0xFFD29922),
+          background: const Color(0xFFD29922).withValues(alpha: 0.12),
+          border: const Color(0xFFD29922).withValues(alpha: 0.35),
         );
       case 5:
-        // Silver - Sleek Chrome & Steel
+        // Tier 5: Dormant Explorer - Steel Slate
         return (
-          gradient: const [
-            Color(0xFF94A3B8),
-            Color(0xFFE2E8F0),
-            Color(0xFF64748B),
-          ],
-          glow: const Color(0xFF94A3B8),
+          accent: const Color(0xFF8B949E),
+          background: const Color(0xFF8B949E).withValues(alpha: 0.12),
+          border: const Color(0xFF8B949E).withValues(alpha: 0.30),
         );
       default:
-        // Bronze / Fresh Sprout - Living Mint & Fresh Sage
+        // Tier 6: Fresh Sprout - Muted Mint / Sage
         return (
-          gradient: const [
-            Color(0xFF10B981),
-            Color(0xFF34D399),
-            Color(0xFFA3E635),
-          ],
-          glow: const Color(0xFF10B981),
+          accent: const Color(0xFF56D364),
+          background: const Color(0xFF56D364).withValues(alpha: 0.10),
+          border: const Color(0xFF56D364).withValues(alpha: 0.28),
         );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final palette = _getTierPalette(widget.titleInfo.tier);
+    final style = _getTierStyle(widget.titleInfo.tier);
     final cleanTitle = AppLocalizations.of(context)
         .getCommitTierCleanTitle(widget.titleInfo.tier);
+
+    final textWidget = Text(
+      cleanTitle,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: widget.fontSize,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
+        color: style.accent,
+      ),
+    );
+
+    if (!widget.showBadgeContainer) {
+      return textWidget;
+    }
 
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        final progress = _controller.value;
-        final glowAlpha = 0.25 + 0.35 * progress;
-        final borderAlpha = 0.35 + 0.35 * progress;
-
-        Widget textWidget = ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (bounds) {
-            return LinearGradient(
-              begin: Alignment(-1.5 + 3.0 * progress, -0.5),
-              end: Alignment(1.5 + 3.0 * progress, 0.5),
-              colors: [
-                palette.gradient[0],
-                palette.gradient[1],
-                palette.gradient[2 % palette.gradient.length],
-                palette.gradient[0],
-              ],
-            ).createShader(bounds);
-          },
-          child: Text(
-            cleanTitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: widget.fontSize,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.3,
-              shadows: [
-                Shadow(
-                  color: palette.glow.withValues(alpha: glowAlpha),
-                  blurRadius: 4 + 4 * progress,
-                ),
-              ],
-            ),
-          ),
-        );
-
-        if (!widget.showBadgeContainer) {
-          return textWidget;
-        }
+        // Subtle ambient opacity shimmer (ergonomic, non-distracting)
+        final animValue = _controller.value;
+        final borderAlpha = 0.25 + 0.15 * animValue;
 
         return Container(
           padding: widget.padding ??
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
           decoration: BoxDecoration(
-            color: palette.glow.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
+            color: style.background,
+            borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: palette.glow.withValues(alpha: borderAlpha),
-              width: 1.2,
+              color: style.accent.withValues(alpha: borderAlpha),
+              width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: palette.glow.withValues(alpha: 0.15 * progress),
-                blurRadius: 6 + 4 * progress,
-                spreadRadius: 0,
-              ),
-            ],
           ),
           child: textWidget,
         );

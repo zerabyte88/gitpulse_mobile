@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../localization/app_language.dart';
 import '../localization/app_localizations.dart';
 import '../models/github_rate_limit.dart';
@@ -120,6 +121,29 @@ class _SettingsSheetState extends State<SettingsSheet> {
     await _refreshRateLimit();
   }
 
+  Widget _buildAboutInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppTheme.textMuted,
+            fontSize: 12,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: AppTheme.textPrimary,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -139,7 +163,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
     } else if (remainingPercent > 15) {
       progressColor = AppTheme.accentAmber;
     } else {
-      progressColor = Colors.redAccent;
+      progressColor = AppTheme.accentRed;
     }
 
     final currentLang = AppLanguageService.currentLanguage;
@@ -147,9 +171,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
     return Container(
       decoration: const BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         border: Border(
-          top: BorderSide(color: AppTheme.border, width: 1.5),
+          top: BorderSide(color: AppTheme.border, width: 1.2),
           left: BorderSide(color: AppTheme.border, width: 1),
           right: BorderSide(color: AppTheme.border, width: 1),
         ),
@@ -158,7 +182,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
       child: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +190,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
               // Top drag indicator
               Center(
                 child: Container(
-                  width: 40,
+                  width: 36,
                   height: 4,
                   decoration: BoxDecoration(
                     color: AppTheme.border,
@@ -174,24 +198,25 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
 
               // Sheet Header
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryCyan.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
+                      color: AppTheme.surfaceElevated,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.border, width: 0.8),
                     ),
                     child: const Icon(
                       Icons.tune_rounded,
                       color: AppTheme.primaryCyan,
-                      size: 20,
+                      size: 18,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,18 +225,18 @@ class _SettingsSheetState extends State<SettingsSheet> {
                           loc.settingsTitle,
                           style: const TextStyle(
                             color: AppTheme.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 1),
                         Text(
                           loc.settingsSubtitle,
                           style: const TextStyle(
                             color: AppTheme.textMuted,
-                            fontSize: 12,
+                            fontSize: 11.5,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -220,20 +245,20 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
+                    icon: const Icon(Icons.close_rounded, size: 20, color: AppTheme.textSecondary),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
 
-              // CARD 1: Language Selection (Pilih Bahasa)
+              // CARD 1: Language Selection
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceElevated,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppTheme.border),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.border, width: 1),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +268,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         const Icon(
                           Icons.translate_rounded,
                           color: AppTheme.primaryCyan,
-                          size: 18,
+                          size: 16,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -251,16 +276,17 @@ class _SettingsSheetState extends State<SettingsSheet> {
                             loc.languageSectionTitle,
                             style: const TextStyle(
                               color: AppTheme.textPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryCyan.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
+                            color: AppTheme.surface,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: AppTheme.border, width: 0.8),
                           ),
                           child: Text(
                             '${currentLang.flag} ${currentLang.nativeName}',
@@ -278,24 +304,24 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       loc.languageSectionSubtitle,
                       style: const TextStyle(
                         color: AppTheme.textSecondary,
-                        fontSize: 12,
+                        fontSize: 11.5,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
                     // Grid of 6 Languages
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final itemWidth = (constraints.maxWidth - 10) / 2;
+                        final itemWidth = (constraints.maxWidth - 8) / 2;
                         return Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
+                          spacing: 8,
+                          runSpacing: 8,
                           children: AppLanguage.values.map((lang) {
                             final isSelected = lang == currentLang;
                             return SizedBox(
                               width: itemWidth,
                               child: InkWell(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                                 onTap: () async {
                                   if (lang == currentLang) return;
                                   final messenger = ScaffoldMessenger.of(context);
@@ -317,25 +343,25 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                   );
                                 },
                                 child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+                                  duration: const Duration(milliseconds: 150),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? AppTheme.primaryCyan.withValues(alpha: 0.12)
+                                        ? AppTheme.primaryCyan.withValues(alpha: 0.10)
                                         : AppTheme.surface,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       color: isSelected
                                           ? AppTheme.primaryCyan
                                           : AppTheme.border,
-                                      width: isSelected ? 1.5 : 1,
+                                      width: isSelected ? 1.2 : 0.8,
                                     ),
                                   ),
                                   child: Row(
                                     children: [
                                       Text(
                                         lang.flag,
-                                        style: const TextStyle(fontSize: 18),
+                                        style: const TextStyle(fontSize: 16),
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
@@ -349,9 +375,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                                 color: isSelected
                                                     ? AppTheme.primaryCyan
                                                     : AppTheme.textPrimary,
-                                                fontSize: 12.5,
+                                                fontSize: 12,
                                                 fontWeight: isSelected
-                                                    ? FontWeight.bold
+                                                    ? FontWeight.w600
                                                     : FontWeight.w500,
                                               ),
                                               maxLines: 1,
@@ -361,7 +387,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                               lang.name,
                                               style: const TextStyle(
                                                 color: AppTheme.textMuted,
-                                                fontSize: 10,
+                                                fontSize: 9.5,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -372,7 +398,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                       if (isSelected)
                                         const Icon(
                                           Icons.check_circle_rounded,
-                                          size: 16,
+                                          size: 15,
                                           color: AppTheme.primaryCyan,
                                         ),
                                     ],
@@ -387,26 +413,25 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
 
               // CARD 2: GitHub API Rate Limit Tracker
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceElevated,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppTheme.border),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.border, width: 1),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Rate limit title & refresh button
                     Row(
                       children: [
                         const Icon(
                           Icons.speed_rounded,
                           color: AppTheme.primaryCyan,
-                          size: 18,
+                          size: 16,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -414,32 +439,32 @@ class _SettingsSheetState extends State<SettingsSheet> {
                             loc.rateLimitStatus,
                             style: const TextStyle(
                               color: AppTheme.textPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                         if (_isLoadingRateLimit)
                           const SizedBox(
-                            width: 16,
-                            height: 16,
+                            width: 14,
+                            height: 14,
                             child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                              strokeWidth: 1.8,
                               color: AppTheme.primaryCyan,
                             ),
                           )
                         else
                           InkWell(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(6),
                             onTap: _refreshRateLimit,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   const Icon(
                                     Icons.refresh_rounded,
-                                    size: 14,
+                                    size: 13,
                                     color: AppTheme.primaryCyan,
                                   ),
                                   const SizedBox(width: 4),
@@ -447,8 +472,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                     loc.refresh,
                                     style: const TextStyle(
                                       color: AppTheme.primaryCyan,
-                                      fontSize: 11.5,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
@@ -457,20 +482,21 @@ class _SettingsSheetState extends State<SettingsSheet> {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
                     // Mode Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: hasToken
-                            ? AppTheme.accentGreen.withValues(alpha: 0.12)
-                            : AppTheme.primaryCyan.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                            ? AppTheme.accentGreen.withValues(alpha: 0.10)
+                            : AppTheme.surface,
+                        borderRadius: BorderRadius.circular(6),
                         border: Border.all(
                           color: hasToken
-                              ? AppTheme.accentGreen.withValues(alpha: 0.3)
-                              : AppTheme.primaryCyan.withValues(alpha: 0.25),
+                              ? AppTheme.accentGreen.withValues(alpha: 0.25)
+                              : AppTheme.border,
+                          width: 0.8,
                         ),
                       ),
                       child: Row(
@@ -478,26 +504,26 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         children: [
                           Icon(
                             hasToken ? Icons.verified_rounded : Icons.info_outline_rounded,
-                            size: 14,
-                            color: hasToken ? AppTheme.accentGreen : AppTheme.primaryCyan,
+                            size: 13,
+                            color: hasToken ? AppTheme.accentGreen : AppTheme.textSecondary,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 5),
                           Text(
                             hasToken
                                 ? loc.personalTokenActive
                                 : loc.standardMode,
                             style: TextStyle(
-                              color: hasToken ? AppTheme.accentGreen : AppTheme.primaryCyan,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w600,
+                              color: hasToken ? AppTheme.accentGreen : AppTheme.textSecondary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
-                    // Metrics: Requests Used and Remaining Percentage
+                    // Metrics
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -509,10 +535,10 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               loc.requestsUsed,
                               style: const TextStyle(
                                 color: AppTheme.textMuted,
-                                fontSize: 11.5,
+                                fontSize: 11,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 2),
                             RichText(
                               text: TextSpan(
                                 children: [
@@ -520,15 +546,15 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                     text: '$usedCount',
                                     style: TextStyle(
                                       color: progressColor,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   TextSpan(
                                     text: ' / $totalLimit',
                                     style: const TextStyle(
                                       color: AppTheme.textSecondary,
-                                      fontSize: 14,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -544,51 +570,49 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               loc.remainingQuota,
                               style: const TextStyle(
                                 color: AppTheme.textMuted,
-                                fontSize: 11.5,
+                                fontSize: 11,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 2),
                             Text(
                               '${remainingPercent.toStringAsFixed(remainingPercent % 1 == 0 ? 0 : 1)}%',
                               style: TextStyle(
                                 color: progressColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
-                    // Progress Bar: 100% when unused, 0% when exhausted
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: rateLimit.remainingRatio,
-                        minHeight: 8,
+                        minHeight: 6,
                         backgroundColor: AppTheme.surface,
                         valueColor: AlwaysStoppedAnimation<Color>(progressColor),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
 
-                    // Reset Timer Info
                     Row(
                       children: [
                         const Icon(
                           Icons.schedule_rounded,
-                          size: 13,
+                          size: 12,
                           color: AppTheme.textMuted,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 5),
                         Expanded(
                           child: Text(
                             '${loc.resetIn} ${rateLimit.resetCountdown} (${DateFormat('HH:mm').format(rateLimit.resetTime)})',
                             style: const TextStyle(
                               color: AppTheme.textMuted,
-                              fontSize: 11.5,
+                              fontSize: 11,
                             ),
                           ),
                         ),
@@ -597,26 +621,25 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
 
               // CARD 3: GitHub Personal Access Token
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceElevated,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppTheme.border),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.border, width: 1),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header with neat "Opsional" badge
                     Row(
                       children: [
                         const Icon(
                           Icons.vpn_key_rounded,
                           color: AppTheme.accentAmber,
-                          size: 18,
+                          size: 16,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -624,52 +647,52 @@ class _SettingsSheetState extends State<SettingsSheet> {
                             loc.githubTokenTitle,
                             style: const TextStyle(
                               color: AppTheme.textPrimary,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                           decoration: BoxDecoration(
-                            color: AppTheme.border,
-                            borderRadius: BorderRadius.circular(6),
+                            color: AppTheme.surface,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: AppTheme.border, width: 0.8),
                           ),
                           child: Text(
                             loc.optionalBadge,
                             style: const TextStyle(
                               color: AppTheme.textMuted,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
                     Text(
                       loc.tokenDescription,
                       style: const TextStyle(
                         color: AppTheme.textSecondary,
-                        fontSize: 12.5,
-                        height: 1.4,
+                        fontSize: 12,
+                        height: 1.35,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
-                    // Token input field
                     TextField(
                       controller: _tokenController,
                       obscureText: _obscureToken,
-                      style: const TextStyle(fontSize: 13.5),
+                      style: const TextStyle(fontSize: 13),
                       decoration: InputDecoration(
                         hintText: loc.tokenHint,
                         prefixIcon: const Icon(
                           Icons.password_rounded,
-                          size: 18,
+                          size: 16,
                           color: AppTheme.textMuted,
                         ),
                         suffixIcon: Row(
@@ -680,7 +703,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                 _obscureToken
                                     ? Icons.visibility_off_rounded
                                     : Icons.visibility_rounded,
-                                size: 18,
+                                size: 16,
                                 color: AppTheme.textMuted,
                               ),
                               onPressed: () {
@@ -693,7 +716,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               IconButton(
                                 icon: const Icon(
                                   Icons.clear_rounded,
-                                  size: 16,
+                                  size: 15,
                                   color: AppTheme.textMuted,
                                 ),
                                 onPressed: () {
@@ -706,11 +729,10 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
-                    // Guide accordion / expander
                     InkWell(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                       onTap: () {
                         setState(() {
                           _showTokenGuide = !_showTokenGuide;
@@ -724,7 +746,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               _showTokenGuide
                                   ? Icons.keyboard_arrow_up_rounded
                                   : Icons.keyboard_arrow_down_rounded,
-                              size: 16,
+                              size: 15,
                               color: AppTheme.primaryCyan,
                             ),
                             const SizedBox(width: 4),
@@ -732,8 +754,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                               loc.howToCreateToken,
                               style: const TextStyle(
                                 color: AppTheme.primaryCyan,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
@@ -742,37 +764,36 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     ),
 
                     if (_showTokenGuide) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: AppTheme.surface,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppTheme.border),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.border, width: 0.8),
                         ),
                         child: Text(
                           loc.tokenGuideContent,
                           style: const TextStyle(
                             color: AppTheme.textMuted,
-                            fontSize: 11.5,
-                            height: 1.5,
+                            fontSize: 11,
+                            height: 1.45,
                           ),
                         ),
                       ),
                     ],
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
 
-                    // Action buttons
                     Row(
                       children: [
                         if (hasToken)
                           TextButton.icon(
-                            icon: const Icon(Icons.delete_outline_rounded, size: 16),
+                            icon: const Icon(Icons.delete_outline_rounded, size: 15),
                             label: Text(loc.deleteToken),
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.redAccent,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              foregroundColor: AppTheme.accentRed,
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                               visualDensity: VisualDensity.compact,
                             ),
                             onPressed: () => _clearToken(loc),
@@ -782,21 +803,117 @@ class _SettingsSheetState extends State<SettingsSheet> {
                           onPressed: () => _saveToken(loc),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryCyan,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                            foregroundColor: const Color(0xFF0D1117),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: Text(
                             loc.saveToken,
                             style: const TextStyle(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // CARD 4: About GitPulse & Build Version Info
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceElevated,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.border, width: 1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: AppTheme.primaryCyan,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            loc.aboutApp,
+                            style: const TextStyle(
+                              color: AppTheme.textPrimary,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            color: AppTheme.accentGreen.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: AppTheme.accentGreen.withValues(alpha: 0.3),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: const Text(
+                            AppConfig.appVersion,
+                            style: TextStyle(
+                              color: AppTheme.accentGreen,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      loc.appDescriptionLabel,
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 11.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1, color: AppTheme.border),
+                    const SizedBox(height: 10),
+                    _buildAboutInfoRow(loc.appVersionLabel, AppConfig.appVersion),
+                    const SizedBox(height: 6),
+                    _buildAboutInfoRow(loc.buildNumberLabel, '${AppConfig.buildNumber} (Release APK)'),
+                    const SizedBox(height: 6),
+                    _buildAboutInfoRow('Architecture', 'Clean Layered (Flutter 3)'),
+                    const SizedBox(height: 6),
+                    _buildAboutInfoRow('License', AppConfig.license),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.open_in_new_rounded, size: 13),
+                        label: Text(
+                          loc.viewOnGitHub,
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppTheme.primaryCyan,
+                          side: const BorderSide(color: AppTheme.border, width: 0.8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 9),
+                        ),
+                        onPressed: () async {
+                          final uri = Uri.parse(AppConfig.githubRepoUrl);
+                          await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        },
+                      ),
                     ),
                   ],
                 ),

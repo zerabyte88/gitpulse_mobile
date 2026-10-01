@@ -11,6 +11,7 @@ import 'package:gitpulse_mobile/models/tech_news.dart';
 import 'package:gitpulse_mobile/models/user_stats.dart';
 import 'package:gitpulse_mobile/screens/stats_detail_screen.dart';
 import 'package:gitpulse_mobile/services/storage_service.dart';
+import 'package:gitpulse_mobile/theme/app_theme.dart';
 import 'package:gitpulse_mobile/widgets/animated_tier_title.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -627,6 +628,30 @@ void main() {
       expect(find.text('Total Kontribusi (Semua Tahun)'), findsOneWidget);
       expect(find.text('Sepanjang waktu'), findsOneWidget);
       expect(find.text('150'), findsOneWidget);
+    });
+
+    test('AppConfig provides accurate release and version telemetry for v1.0.1', () {
+      expect(AppConfig.appName, 'GitPulse');
+      expect(AppConfig.appVersion, 'v1.0.1');
+      expect(AppConfig.buildNumber, '2');
+      expect(AppConfig.fullVersion, 'v1.0.1 (Build 2)');
+      expect(AppConfig.releaseTag, 'v1.0.1');
+      expect(AppConfig.license, 'MIT License');
+      expect(AppConfig.githubRepoUrl, contains('github.com'));
+    });
+
+    test('AppLocalizations provides expected translations for About and Version info', () {
+      final idLoc = AppLocalizations(AppLanguage.indonesian);
+      final enLoc = AppLocalizations(AppLanguage.english);
+
+      expect(idLoc.aboutApp, 'Tentang GitPulse');
+      expect(enLoc.aboutApp, 'About GitPulse');
+      expect(idLoc.appVersionLabel, 'Versi Aplikasi');
+      expect(enLoc.appVersionLabel, 'App Version');
+      expect(idLoc.buildNumberLabel, 'Build');
+      expect(enLoc.buildNumberLabel, 'Build');
+      expect(idLoc.viewOnGitHub, 'Lihat Repositori di GitHub');
+      expect(enLoc.viewOnGitHub, 'View Repository on GitHub');
     });
   });
 }

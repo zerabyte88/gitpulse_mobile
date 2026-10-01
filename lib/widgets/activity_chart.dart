@@ -54,20 +54,26 @@ class ActivityChart extends StatelessWidget {
         barRods: [
           BarChartRodData(
             toY: count == 0 ? 0.3 : count,
-            color: isPeak ? AppTheme.primaryCyan : AppTheme.primaryViolet.withValues(alpha: 0.6),
+            color: isPeak ? AppTheme.accentGreen : AppTheme.surfaceElevated,
             width: 22,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+            borderSide: BorderSide(
+              color: isPeak
+                  ? AppTheme.accentGreen.withValues(alpha: 0.5)
+                  : AppTheme.border,
+              width: 1,
+            ),
           ),
         ],
       );
     });
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.border),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,15 +84,19 @@ class ActivityChart extends StatelessWidget {
               const Expanded(
                 child: Row(
                   children: [
-                    Icon(Icons.bolt_rounded, size: 18, color: AppTheme.accentAmber),
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 16,
+                      color: AppTheme.primaryCyan,
+                    ),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Ritme Jam Produktif',
                         style: TextStyle(
                           color: AppTheme.textPrimary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -98,30 +108,34 @@ class ActivityChart extends StatelessWidget {
               const SizedBox(width: 8),
               if (maxCount > 0)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryCyan.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppTheme.accentGreen.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: AppTheme.accentGreen.withValues(alpha: 0.25),
+                      width: 0.8,
+                    ),
                   ),
                   child: Text(
                     'Peak: ${intervals[peakIndex]['label']}',
                     style: const TextStyle(
-                      color: AppTheme.primaryCyan,
+                      color: AppTheme.accentGreen,
                       fontSize: 11,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           const Text(
-            'Berdasarkan riwayat aktivitas event publik terkini',
+            'Distribusi aktivitas commit & event menurut jam lokal perangkat',
             style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           SizedBox(
-            height: 160,
+            height: 150,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
@@ -136,8 +150,8 @@ class ActivityChart extends StatelessWidget {
                         '${item['label']}\n${rod.toY.toInt()} event',
                         const TextStyle(
                           color: AppTheme.textPrimary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11.5,
                         ),
                       );
                     },
@@ -151,7 +165,7 @@ class ActivityChart extends StatelessWidget {
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 28,
+                      reservedSize: 26,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
                         if (index < 0 || index >= intervals.length) {

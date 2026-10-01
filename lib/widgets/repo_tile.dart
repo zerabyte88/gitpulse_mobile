@@ -8,15 +8,61 @@ class RepoTile extends StatelessWidget {
 
   const RepoTile({super.key, required this.repo});
 
+  // Authentic language color mapper for common programming languages
+  Color _getLanguageColor(String? language) {
+    switch (language?.toLowerCase()) {
+      case 'dart':
+        return const Color(0xFF00B4AB);
+      case 'flutter':
+        return const Color(0xFF02569B);
+      case 'javascript':
+        return const Color(0xFFF1E05A);
+      case 'typescript':
+        return const Color(0xFF3178C6);
+      case 'python':
+        return const Color(0xFF3572A5);
+      case 'html':
+        return const Color(0xFFE34C26);
+      case 'css':
+        return const Color(0xFF563D7C);
+      case 'kotlin':
+        return const Color(0xFFA97BFF);
+      case 'swift':
+        return const Color(0xFFF05138);
+      case 'rust':
+        return const Color(0xFFDEA584);
+      case 'go':
+        return const Color(0xFF00ADD8);
+      case 'c++':
+      case 'cpp':
+        return const Color(0xFFF34B7D);
+      case 'c':
+        return const Color(0xFF555555);
+      case 'java':
+        return const Color(0xFFB07219);
+      case 'php':
+        return const Color(0xFF4F5D95);
+      case 'ruby':
+        return const Color(0xFF701516);
+      case 'shell':
+      case 'bash':
+        return const Color(0xFF89E051);
+      default:
+        return AppTheme.primaryCyan;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final langColor = _getLanguageColor(repo.language);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.border),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,9 +70,9 @@ class RepoTile extends StatelessWidget {
           Row(
             children: [
               const Icon(
-                Icons.book_rounded,
+                Icons.book_outlined,
                 size: 16,
-                color: AppTheme.primaryCyan,
+                color: AppTheme.textSecondary,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -34,8 +80,8 @@ class RepoTile extends StatelessWidget {
                   repo.name,
                   style: const TextStyle(
                     color: AppTheme.primaryCyan,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -47,30 +93,34 @@ class RepoTile extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceElevated,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppTheme.border),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: AppTheme.border, width: 0.8),
                   ),
                   child: const Text(
                     'Fork',
-                    style: TextStyle(color: AppTheme.textMuted, fontSize: 10),
+                    style: TextStyle(
+                      color: AppTheme.textMuted,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
             ],
           ),
           if (repo.description != null && repo.description!.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               repo.description!,
               style: const TextStyle(
                 color: AppTheme.textSecondary,
-                fontSize: 13,
+                fontSize: 12.5,
                 height: 1.35,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -81,8 +131,8 @@ class RepoTile extends StatelessWidget {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppTheme.accentGreen,
+                      decoration: BoxDecoration(
+                        color: langColor,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -103,7 +153,7 @@ class RepoTile extends StatelessWidget {
                     const SizedBox(width: 12),
                   ],
                   const Icon(
-                    Icons.star_rounded,
+                    Icons.star_outline_rounded,
                     size: 15,
                     color: AppTheme.accentAmber,
                   ),
@@ -120,7 +170,7 @@ class RepoTile extends StatelessWidget {
                   const Icon(
                     Icons.call_split_rounded,
                     size: 14,
-                    color: AppTheme.primaryViolet,
+                    color: AppTheme.textMuted,
                   ),
                   const SizedBox(width: 3),
                   Text(
@@ -136,16 +186,17 @@ class RepoTile extends StatelessWidget {
               const SizedBox(width: 8),
               Flexible(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                   decoration: BoxDecoration(
                     color: repo.isRecentlyActive
-                        ? AppTheme.accentGreen.withValues(alpha: 0.12)
-                        : AppTheme.surfaceElevated,
+                      ? AppTheme.accentGreen.withValues(alpha: 0.10)
+                      : AppTheme.surfaceElevated,
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
                       color: repo.isRecentlyActive
-                          ? AppTheme.accentGreen.withValues(alpha: 0.35)
-                          : AppTheme.border,
+                        ? AppTheme.accentGreen.withValues(alpha: 0.25)
+                        : AppTheme.border,
+                      width: 0.8,
                     ),
                   ),
                   child: Row(
@@ -155,7 +206,7 @@ class RepoTile extends StatelessWidget {
                         repo.isRecentlyActive
                             ? Icons.update_rounded
                             : Icons.history_rounded,
-                        size: 12,
+                        size: 11,
                         color: repo.isRecentlyActive
                             ? AppTheme.accentGreen
                             : AppTheme.textMuted,
@@ -168,7 +219,7 @@ class RepoTile extends StatelessWidget {
                             color: repo.isRecentlyActive
                                 ? AppTheme.accentGreen
                                 : AppTheme.textMuted,
-                            fontSize: 11,
+                            fontSize: 10.5,
                             fontWeight: repo.isRecentlyActive
                                 ? FontWeight.w600
                                 : FontWeight.w500,

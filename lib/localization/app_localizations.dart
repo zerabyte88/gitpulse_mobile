@@ -90,6 +90,52 @@ class AppLocalizations {
     AppLanguage.korean: 'GitHub에서 열기',
   });
 
+  // App Version & About Info
+  String get aboutApp => _str({
+    AppLanguage.indonesian: 'Tentang GitPulse',
+    AppLanguage.english: 'About GitPulse',
+    AppLanguage.japanese: 'GitPulseについて',
+    AppLanguage.chineseSimplified: '关于 GitPulse',
+    AppLanguage.chineseTraditional: '關於 GitPulse',
+    AppLanguage.korean: 'GitPulse 정보',
+  });
+
+  String get appVersionLabel => _str({
+    AppLanguage.indonesian: 'Versi Aplikasi',
+    AppLanguage.english: 'App Version',
+    AppLanguage.japanese: 'アプリバージョン',
+    AppLanguage.chineseSimplified: '应用版本',
+    AppLanguage.chineseTraditional: '應用版本',
+    AppLanguage.korean: '앱 버전',
+  });
+
+  String get buildNumberLabel => _str({
+    AppLanguage.indonesian: 'Build',
+    AppLanguage.english: 'Build',
+    AppLanguage.japanese: 'ビルド',
+    AppLanguage.chineseSimplified: '构建号',
+    AppLanguage.chineseTraditional: '構建號',
+    AppLanguage.korean: '빌드',
+  });
+
+  String get appDescriptionLabel => _str({
+    AppLanguage.indonesian: 'Telemetri & Analitik Produktivitas Pengembang',
+    AppLanguage.english: 'Developer Telemetry & Productivity Analytics',
+    AppLanguage.japanese: '開発者テレメトリと生産性分析',
+    AppLanguage.chineseSimplified: '开发者遥测与生产力分析',
+    AppLanguage.chineseTraditional: '開發者遙測與生產力分析',
+    AppLanguage.korean: '개발자 텔레메트리 및 생산성 분석',
+  });
+
+  String get viewOnGitHub => _str({
+    AppLanguage.indonesian: 'Lihat Repositori di GitHub',
+    AppLanguage.english: 'View Repository on GitHub',
+    AppLanguage.japanese: 'GitHubでリポジトリを表示',
+    AppLanguage.chineseSimplified: '在 GitHub 查看代码仓库',
+    AppLanguage.chineseTraditional: '在 GitHub 查看代碼倉庫',
+    AppLanguage.korean: 'GitHub에서 저장소 보기',
+  });
+
   // Search & Home
   String get searchHint => _str({
     AppLanguage.indonesian: 'Cari username GitHub... (contoh: torvalds)',

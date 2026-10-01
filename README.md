@@ -12,12 +12,13 @@
 
 ### Enterprise-Grade Developer Telemetry & Productivity Analytics
 
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
+[![Release](https://img.shields.io/badge/Release-v1.0.1-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
+[![Build](https://img.shields.io/badge/Build-2-brightgreen?style=flat-square)](pubspec.yaml)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/build-apk.yml)
-[![Tests](https://img.shields.io/badge/Tests-Passing%20(100%25)-success?style=flat-square)](test/widget_test.dart)
+[![Tests](https://img.shields.io/badge/Tests-Passing%20(18%2F18)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
 
@@ -26,6 +27,7 @@
 </p>
 
 <p align="center">
+  <a href="#whats-new-in-v101">What's New (v1.0.1)</a> •
   <a href="#problem-statement--core-value">Problem Statement</a> •
   <a href="#key-features">Key Features</a> •
   <a href="#system-architecture--data-flow">Architecture & Data Flow</a> •
@@ -38,6 +40,19 @@
 </p>
 
 </div>
+
+---
+
+## What's New in v1.0.1
+
+Version **v1.0.1 (Build 2)** delivers a comprehensive UI/UX overhaul engineered to replace artificial, generic AI-style aesthetics with an authentic, professional, and minimalist developer tool experience:
+
+- 🎨 **Minimalist Developer Design System**: Shifted from high-contrast pitch black and fluorescent neon cyberpunk gradients to a refined **GitHub Dark & Linear-inspired Slate Theme** (`#0D1117` canvas, `#161B22` cards, `#30363D` borders, and `#58A6FF` accent blue).
+- 🔤 **Inter Typography Standard**: Switched global typography to `GoogleFonts.inter` for maximum readability and information density suited for engineering telemetry.
+- 🏷️ **Native Status & Tier Badges**: Eliminated gaudy pulsing rainbow shader masks in favor of crisp, understated developer badges (`AnimatedTierTitle`) with smooth ambient presence.
+- 📂 **GitHub-Native Repository Cards**: Redesigned `RepoTile` to mirror native GitHub cards with authentic programming language color dots, clean star/fork indicators, and compact relative time pills.
+- ⏱️ **Refined Rhythm & Language Charts**: Cleaned up `ActivityChart` and `LanguageChart` with semantic contribution colors (`#3FB950`), muted bar frames, and high-legibility legends.
+- 📦 **In-App Build & Version Telemetry**: Integrated `AppConfig` and added an **About GitPulse** card inside the settings sheet alongside an app-bar version badge (`v1.0.1`), ensuring the APK version and build code are always visible and auditable.
 
 ---
 
@@ -86,7 +101,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Interactive Multi-Language Breakdown</i>
       </td>
       <td>
-        Renders a donut chart illustrating primary programming languages across non-forked public repositories, weighted by repository size or codebase volume.
+        Renders a donut chart illustrating primary programming languages across non-forked public repositories, weighted by repository size or codebase volume using authentic ecosystem colors.
       </td>
     </tr>
     <tr>
@@ -122,7 +137,16 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Real-Time Industry Intelligence</i>
       </td>
       <td>
-        Integrates a live tech news stream directly inside the home screen, allowing developers to monitor ecosystem trends alongside GitHub activity.
+        Integrates a live engineering news stream directly inside the home screen, allowing developers to monitor ecosystem trends alongside GitHub activity without visual clutter.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>In-App Version & Build Telemetry</b><br/>
+        <i>Auditable Release Details</i>
+      </td>
+      <td>
+        Displays active release versions (<code>v1.0.1</code>) and build identifiers (<code>Build 2</code>) both in the home app bar and the comprehensive application information sheet.
       </td>
     </tr>
     <tr>
@@ -146,7 +170,7 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   PRESENTATION LAYER                                   │
-│                        (Flutter 3 • Material Design 3 • Slate Dark)                    │
+│                   (Flutter 3 • Minimalist GitHub Dark Slate • Inter)                   │
 │                                                                                        │
 │   ┌───────────────────────────┐                     ┌──────────────────────────────┐   │
 │   │        HomeScreen         │                     │      StatsDetailScreen       │   │
@@ -154,7 +178,8 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │   │ • Search Input Field      │                     │ • 24h Activity Histogram     │   │
 │   │ • Bookmarked Profiles     │                     │ • Language Distribution Donut│   │
 │   │ • GitHub Token Modal      │                     │ • Top Repositories Grid      │   │
-│   │ • Tech News Feeds         │                     │ • Persona Badge & Telemetry  │   │
+│   │ • About & Build Telemetry │                     │ • Persona Badge & Telemetry  │   │
+│   │ • Engineering Feeds       │                     │ • Commit Habit Banner        │   │
 │   └─────────────┬─────────────┘                     └──────────────▲───────────────┘   │
 └─────────────────┼──────────────────────────────────────────────────┼───────────────────┘
                   │ 1. Search Query (username)                       │ 5. Aggregated UI State
@@ -211,6 +236,8 @@ gitpulse_mobile/
 ├── lib/
 │   ├── main.dart                    # Application entrypoint & global theme configuration
 │   ├── localization/                # Multi-language internationalization support
+│   │   ├── app_language.dart        # Supported language enums & locales
+│   │   └── app_localizations.dart   # Localized string dictionaries (6 languages)
 │   ├── models/                      # Domain entities & analytical computation engines
 │   │   ├── bookmarked_user.dart     # Bookmarked profile serialization model
 │   │   ├── contribution_stats.dart  # Event activity & contribution metrics model
@@ -220,27 +247,27 @@ gitpulse_mobile/
 │   │   ├── tech_news.dart           # Tech news item model
 │   │   └── user_stats.dart          # Core telemetry calculation & persona engine
 │   ├── screens/                     # UI screens & controllers
-│   │   ├── home_screen.dart         # Search interface, bookmarks, & PAT configuration
+│   │   ├── home_screen.dart         # Minimalist search, bookmarks, news & version badge
 │   │   └── stats_detail_screen.dart # Interactive analytics dashboard & charts
 │   ├── services/                    # Networking & persistent storage layer
 │   │   ├── app_language_service.dart# Language preference manager
 │   │   ├── github_api_service.dart  # GitHub REST API v3 client with error handling
 │   │   ├── storage_service.dart     # SharedPreferences persistence wrapper
 │   │   └── tech_news_service.dart   # Curated tech news feed fetcher
-│   ├── theme/                       # Design system tokens
-│   │   └── app_theme.dart           # Slate Midnight color palette & typography
+│   ├── theme/                       # Design system tokens & application metadata
+│   │   └── app_theme.dart           # Minimalist slate palette, typography & AppConfig
 │   └── widgets/                     # Modular reusable UI components
 │       ├── activity_chart.dart      # 24-hour activity bar chart (fl_chart)
-│       ├── animated_tier_title.dart # Animated persona badge component
+│       ├── animated_tier_title.dart # Minimalist status badge component
 │       ├── language_chart.dart      # Language distribution donut chart (fl_chart)
-│       ├── repo_tile.dart           # Repository card with star and fork stats
-│       ├── settings_sheet.dart      # Modal bottom sheet for settings & PAT token
-│       ├── stat_card.dart           # Summary metric card with glassmorphism style
-│       └── tech_news_card.dart      # News card widget for the home screen
+│       ├── repo_tile.dart           # GitHub native repository card
+│       ├── settings_sheet.dart      # Modal sheet for settings, PAT token & About app
+│       ├── stat_card.dart           # Minimalist summary metric card
+│       └── tech_news_card.dart      # Engineering digest card widget
 ├── test/
-│   └── widget_test.dart             # Unit and widget test suite
+│   └── widget_test.dart             # Unit, widget, model & version test suite
 ├── web/                             # Web/PWA deployment entrypoint
-└── pubspec.yaml                     # Dependency manifest & project metadata
+└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.1+2)
 ```
 
 ---
@@ -279,7 +306,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 | **Language** | [Dart](https://dart.dev) | `>=3.5.0` | Sound null-safety, pattern matching, and structured concurrency |
 | **Visualization** | [fl_chart](https://pub.dev/packages/fl_chart) | `^1.2.0` | Hardware-accelerated vector charting engine with touch interactions |
 | **Networking** | [http](https://pub.dev/packages/http) | `^1.6.0` | Robust composable HTTP client for RESTful API communication |
-| **Typography** | [google_fonts](https://pub.dev/packages/google_fonts) | `^8.2.1` | Modern, high-legibility Outfit font family |
+| **Typography** | [google_fonts](https://pub.dev/packages/google_fonts) | `^8.2.1` | Professional, high-legibility Inter font family |
 | **Persistence** | [shared_preferences](https://pub.dev/packages/shared_preferences) | `^2.5.5` | Platform-native encrypted key-value storage abstraction |
 | **Formatting** | [intl](https://pub.dev/packages/intl) | `^0.20.3` | ISO 8601 timezone manipulation and localized number formatting |
 | **Deep Linking** | [url_launcher](https://pub.dev/packages/url_launcher) | `^6.3.2` | External browser navigation for repository links and articles |
@@ -356,7 +383,7 @@ This repository features an automated **GitHub Actions** CI/CD pipeline (`.githu
 │   [Stage 2: Code Verification & Quality Gate]                          │
 │   ├── flutter pub get           ──► Resolve & lock dependency graph    │
 │   ├── flutter analyze           ──► Static analysis (zero warnings)    │
-│   └── flutter test              ──► 100% Unit test pass rate           │
+│   └── flutter test              ──► 100% Unit test pass rate (18 tests)│
 │                                                                        │
 │   [Stage 3: Compilation & Optimization]                                │
 │   └── flutter build apk --release ──► Tree-shaking, AOT ARM64 binary   │
@@ -370,7 +397,7 @@ This repository features an automated **GitHub Actions** CI/CD pipeline (`.githu
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                           Release Artifact                             │
-│       Downloadable Production APK ready for deployment & install       │
+│       Downloadable Production APK v1.0.1 (Build 2) ready to install    │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -391,6 +418,8 @@ This repository features an automated **GitHub Actions** CI/CD pipeline (`.githu
 - [x] Top repository showcase sorted by star and fork volume.
 - [x] Persistent local bookmarking & sandboxed Personal Access Token support.
 - [x] Integrated real-time tech news feed.
+- [x] **v1.0.1 UI/UX Overhaul**: Professional minimalist GitHub Dark & Linear aesthetic.
+- [x] **In-App Build & Versioning**: `v1.0.1` (Build 2) telemetry on home bar and settings.
 - [ ] **Visual Card Export**: Generate high-resolution PNG/SVG summary cards for social platforms.
 - [ ] **Head-to-Head Compare**: Side-by-side productivity and language comparison between two developers.
 - [ ] **Yearly Wrapped Recap**: Annual retrospective report summarizing annual coding habits.

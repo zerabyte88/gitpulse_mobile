@@ -21,7 +21,7 @@ class TechNewsCard extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Tidak dapat membuka link: ${news.url}'),
-              backgroundColor: Colors.redAccent,
+              backgroundColor: AppTheme.accentRed,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -31,7 +31,7 @@ class TechNewsCard extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Gagal membuka link: $e'),
-              backgroundColor: Colors.redAccent,
+              backgroundColor: AppTheme.accentRed,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -46,17 +46,17 @@ class TechNewsCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceElevated,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.border),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.border, width: 1),
       ),
       clipBehavior: Clip.antiAlias,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _openArticle(context),
-          splashColor: AppTheme.primaryCyan.withValues(alpha: 0.1),
-          highlightColor: AppTheme.primaryCyan.withValues(alpha: 0.05),
+          splashColor: AppTheme.primaryCyan.withValues(alpha: 0.08),
+          highlightColor: AppTheme.primaryCyan.withValues(alpha: 0.04),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -64,7 +64,7 @@ class TechNewsCard extends StatelessWidget {
                 Stack(
                   children: [
                     SizedBox(
-                      height: 140,
+                      height: 130,
                       width: double.infinity,
                       child: Image.network(
                         news.coverImage!,
@@ -72,11 +72,11 @@ class TechNewsCard extends StatelessWidget {
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
-                            color: AppTheme.surface,
+                            color: AppTheme.surfaceElevated,
                             child: const Center(
                               child: SizedBox(
-                                width: 24,
-                                height: 24,
+                                width: 20,
+                                height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   color: AppTheme.primaryCyan,
@@ -94,14 +94,14 @@ class TechNewsCard extends StatelessWidget {
                       left: 0,
                       right: 0,
                       child: Container(
-                        height: 40,
+                        height: 36,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              AppTheme.surfaceElevated.withValues(alpha: 0.9),
+                              AppTheme.surface.withValues(alpha: 0.95),
                             ],
                           ),
                         ),
@@ -124,14 +124,15 @@ class TechNewsCard extends StatelessWidget {
                         children: news.tags.take(3).map((tag) {
                           return Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
+                              horizontal: 7,
+                              vertical: 2.5,
                             ),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryCyan.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(6),
+                              color: AppTheme.surfaceElevated,
+                              borderRadius: BorderRadius.circular(5),
                               border: Border.all(
-                                color: AppTheme.primaryCyan.withValues(alpha: 0.25),
+                                color: AppTheme.border,
+                                width: 0.8,
                               ),
                             ),
                             child: Text(
@@ -139,7 +140,7 @@ class TechNewsCard extends StatelessWidget {
                               style: const TextStyle(
                                 color: AppTheme.primaryCyan,
                                 fontSize: 11,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           );
@@ -154,8 +155,8 @@ class TechNewsCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: AppTheme.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w600,
                         height: 1.3,
                       ),
                     ),
@@ -169,7 +170,7 @@ class TechNewsCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: AppTheme.textSecondary,
-                          fontSize: 12.5,
+                          fontSize: 12,
                           height: 1.4,
                         ),
                       ),
@@ -182,12 +183,12 @@ class TechNewsCard extends StatelessWidget {
                           ClipOval(
                             child: Image.network(
                               news.authorAvatar!,
-                              width: 20,
-                              height: 20,
+                              width: 18,
+                              height: 18,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => const Icon(
-                                Icons.person,
-                                size: 16,
+                                Icons.person_outline_rounded,
+                                size: 15,
                                 color: AppTheme.textMuted,
                               ),
                             ),
@@ -195,7 +196,7 @@ class TechNewsCard extends StatelessWidget {
                         else
                           const Icon(
                             Icons.person_outline_rounded,
-                            size: 16,
+                            size: 15,
                             color: AppTheme.textMuted,
                           ),
                         const SizedBox(width: 6),
@@ -206,7 +207,7 @@ class TechNewsCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: AppTheme.textMuted,
-                              fontSize: 12,
+                              fontSize: 11.5,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -217,15 +218,16 @@ class TechNewsCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.surface,
+                            color: AppTheme.surfaceElevated,
                             borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: AppTheme.border, width: 0.8),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(
                                 Icons.access_time_rounded,
-                                size: 12,
+                                size: 11,
                                 color: AppTheme.textMuted,
                               ),
                               const SizedBox(width: 4),
@@ -233,7 +235,7 @@ class TechNewsCard extends StatelessWidget {
                                 '${news.readingTimeMinutes} ${AppLocalizations.of(context).minRead}',
                                 style: const TextStyle(
                                   color: AppTheme.textMuted,
-                                  fontSize: 11,
+                                  fontSize: 10.5,
                                 ),
                               ),
                             ],
@@ -242,8 +244,8 @@ class TechNewsCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         const Icon(
                           Icons.open_in_new_rounded,
-                          size: 14,
-                          color: AppTheme.primaryCyan,
+                          size: 13,
+                          color: AppTheme.textSecondary,
                         ),
                       ],
                     ),
@@ -259,34 +261,25 @@ class TechNewsCard extends StatelessWidget {
 
   Widget _buildCoverPlaceholder() {
     return Container(
-      height: 90,
+      height: 70,
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryCyan.withValues(alpha: 0.15),
-            AppTheme.primaryViolet.withValues(alpha: 0.15),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      color: AppTheme.surfaceElevated,
       child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.auto_awesome_rounded,
-              size: 20,
-              color: AppTheme.primaryCyan.withValues(alpha: 0.7),
+            const Icon(
+              Icons.article_outlined,
+              size: 16,
+              color: AppTheme.textSecondary,
             ),
             const SizedBox(width: 8),
             Text(
-              'GitPulse Tech Digest',
+              'Engineering Feed',
               style: TextStyle(
                 color: AppTheme.textSecondary.withValues(alpha: 0.8),
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
