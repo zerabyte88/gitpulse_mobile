@@ -325,7 +325,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                 onTap: () async {
                                   if (lang == currentLang) return;
                                   final messenger = ScaffoldMessenger.of(context);
-                                  final toastText = '${loc.languageChangedToast} ${lang.flag} ${lang.nativeName} (${lang.name})';
+                                  final toastText = '${loc.languageChangedToast}: ${lang.nativeName} (${lang.name})';
                                   await AppLanguageService.changeLanguage(
                                     lang,
                                     widget.storageService,

@@ -470,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const TextSpan(text: ' ➔ GitHub'),
+                    const TextSpan(text: ' > GitHub'),
                   ],
                 ),
               ),

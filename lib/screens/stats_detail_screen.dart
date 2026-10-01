@@ -82,17 +82,17 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
         : 'N/A';
 
     final text = '''
-⚡ GitPulse Profile Snapshot
-👤 @${u.login} (${u.name ?? 'Developer'})
-🎖️ Title: ${cStats.commitTitle.title} (${loc.getCommitTierLevelName(cStats.commitTitle.tier)})
-🔥 Streak: ${cStats.currentStreak} ${loc.daysUnit} (Max: ${cStats.longestStreak} ${loc.daysUnit})
-📅 ${loc.thisYearContributions}: ${cStats.thisYearContributions}
-🌐 ${loc.allYearsContributions}: ${cStats.totalContributions}
-🎭 Persona: ${widget.stats.developerPersona}
-⭐ ${loc.totalStars}: ${widget.stats.totalStars}
-📦 ${loc.repositoriesTitle}: ${u.publicRepos} | 👥 ${loc.followers}: ${u.followers}
-💻 ${loc.topLanguagesTitle}: $topLang
-🔗 https://github.com/${u.login}
+--- GitPulse Profile Snapshot ---
+Username: @${u.login} (${u.name ?? 'Developer'})
+Title: ${cStats.commitTitle.cleanTitle} (${loc.getCommitTierLevelName(cStats.commitTitle.tier)})
+Streak: ${cStats.currentStreak} ${loc.daysUnit} (Max: ${cStats.longestStreak} ${loc.daysUnit})
+${loc.thisYearContributions}: ${cStats.thisYearContributions}
+${loc.allYearsContributions}: ${cStats.totalContributions}
+Persona: ${widget.stats.developerPersona}
+${loc.totalStars}: ${widget.stats.totalStars}
+${loc.repositoriesTitle}: ${u.publicRepos} | ${loc.followers}: ${u.followers}
+${loc.topLanguagesTitle}: $topLang
+GitHub: https://github.com/${u.login}
 ''';
 
     Clipboard.setData(ClipboardData(text: text));
@@ -235,13 +235,17 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     final titleInfo = cStats.commitTitle;
     final habitStyle = _getCommitHabitStyle(titleInfo.tier);
 
+    final isTier1 = titleInfo.tier == 1;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: isTier1 ? const Color(0xFF150D0A) : AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: habitStyle.primary.withValues(alpha: 0.3),
+          color: isTier1
+              ? const Color(0xFFFF5722).withValues(alpha: 0.42)
+              : habitStyle.primary.withValues(alpha: 0.3),
           width: 1,
         ),
       ),

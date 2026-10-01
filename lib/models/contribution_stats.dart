@@ -51,7 +51,7 @@ class ContributionStats {
     // Tier 1: Sangat Rajin Ekstrem (Mythic/Legendary)
     if (currentStreak >= 14 || longestStreak >= 30 || thisYearContributions >= 350) {
       return const CommitTitleInfo(
-        title: '🔥 Code Titan',
+        title: 'Code Titan',
         levelName: 'Sangat Rajin (Master)',
         badgeText: 'Tier: Mythic',
         tier: 1,
@@ -61,7 +61,7 @@ class ContributionStats {
     // Tier 2: Rajin & Berkelanjutan
     else if (currentStreak >= 5 || longestStreak >= 14 || thisYearContributions >= 100) {
       return const CommitTitleInfo(
-        title: '⚡ Relentless Committer',
+        title: 'Relentless Committer',
         levelName: 'Sangat Rajin',
         badgeText: 'Tier: Diamond',
         tier: 2,
@@ -71,7 +71,7 @@ class ContributionStats {
     // Tier 3: Rutin & Teratur
     else if (currentStreak >= 2 || longestStreak >= 7 || thisYearContributions >= 30) {
       return const CommitTitleInfo(
-        title: '🚀 Consistent Builder',
+        title: 'Consistent Builder',
         levelName: 'Rajin & Stabil',
         badgeText: 'Tier: Platinum',
         tier: 3,
@@ -81,7 +81,7 @@ class ContributionStats {
     // Tier 4: Terkadang / Sewaktu-waktu (Casual)
     else if (currentStreak >= 1 || longestStreak >= 2 || thisYearContributions >= 8) {
       return const CommitTitleInfo(
-        title: '☕ Weekend Warrior',
+        title: 'Weekend Warrior',
         levelName: 'Commit Terkadang',
         badgeText: 'Tier: Gold',
         tier: 4,
@@ -91,7 +91,7 @@ class ContributionStats {
     // Tier 5: Jarang Commit (Low Activity)
     else if (thisYearContributions > 0 || totalContributions > 0) {
       return const CommitTitleInfo(
-        title: '💤 Dormant Explorer',
+        title: 'Dormant Explorer',
         levelName: 'Jarang Commit',
         badgeText: 'Tier: Silver',
         tier: 5,
@@ -101,7 +101,7 @@ class ContributionStats {
     // Tier 6: Belum Aktif / Newbie
     else {
       return const CommitTitleInfo(
-        title: '🌱 Fresh Sprout',
+        title: 'Fresh Sprout',
         levelName: 'Belum Aktif',
         badgeText: 'Tier: Bronze',
         tier: 6,

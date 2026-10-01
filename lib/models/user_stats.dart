@@ -79,22 +79,22 @@ class UserStats {
     String description;
 
     if (totalStars >= 100) {
-      persona = '🌟 Star Magnet';
+      persona = 'Star Magnet';
       description = 'Koleksi bintang repositorimu sangat memukau komunitas GitHub!';
     } else if (langCounts.length >= 4) {
-      persona = '⚡ Polyglot Architect';
+      persona = 'Polyglot Architect';
       description = 'Menguasai dan aktif menggunakan beragam bahasa pemrograman.';
     } else if (nightEvents > morningEvents && nightEvents > afternoonEvents) {
-      persona = '🦉 Midnight Owl Coder';
+      persona = 'Midnight Owl Coder';
       description = 'Fokus dan produktivitas tertinggi terpancar di keheningan malam.';
     } else if (morningEvents > afternoonEvents && morningEvents > nightEvents) {
-      persona = '🌅 Early Bird Developer';
+      persona = 'Early Bird Developer';
       description = 'Memulai hari dengan commit segar dan pikiran jernih di pagi hari.';
     } else if (repos.length > 20) {
-      persona = '🚀 Prolific Builder';
+      persona = 'Prolific Builder';
       description = 'Sangat produktif dalam mengeksekusi dan merilis ide ke publik.';
     } else {
-      persona = '💻 Dedicated Craftsman';
+      persona = 'Dedicated Craftsman';
       description = 'Terus konsisten mengasah kode dan membangun karya bermutu.';
     }
 

@@ -247,30 +247,30 @@ class AppLocalizations {
   });
 
   String get categoryAi => _str({
-    AppLanguage.indonesian: '🤖 AI & Machine Learning',
-    AppLanguage.english: '🤖 AI & Machine Learning',
-    AppLanguage.japanese: '🤖 AI＆機械学習',
-    AppLanguage.chineseSimplified: '🤖 人工智能与机器学习',
-    AppLanguage.chineseTraditional: '🤖 人工智能與機器學習',
-    AppLanguage.korean: '🤖 AI 및 머신러닝',
+    AppLanguage.indonesian: 'AI & Machine Learning',
+    AppLanguage.english: 'AI & Machine Learning',
+    AppLanguage.japanese: 'AI＆機械学習',
+    AppLanguage.chineseSimplified: '人工智能与机器学习',
+    AppLanguage.chineseTraditional: '人工智能與機器學習',
+    AppLanguage.korean: 'AI 및 머신러닝',
   });
 
   String get categoryTech => _str({
-    AppLanguage.indonesian: '💻 Teknologi & IT',
-    AppLanguage.english: '💻 Technology & IT',
-    AppLanguage.japanese: '💻 テクノロジー＆IT',
-    AppLanguage.chineseSimplified: '💻 科技与IT',
-    AppLanguage.chineseTraditional: '💻 科技與IT',
-    AppLanguage.korean: '💻 기술 및 IT',
+    AppLanguage.indonesian: 'Teknologi & IT',
+    AppLanguage.english: 'Technology & IT',
+    AppLanguage.japanese: 'テクノロジー＆IT',
+    AppLanguage.chineseSimplified: '科技与IT',
+    AppLanguage.chineseTraditional: '科技與IT',
+    AppLanguage.korean: '기술 및 IT',
   });
 
   String get categoryOpenSource => _str({
-    AppLanguage.indonesian: '🌐 Open Source',
-    AppLanguage.english: '🌐 Open Source',
-    AppLanguage.japanese: '🌐 オープンソース',
-    AppLanguage.chineseSimplified: '🌐 开源社区',
-    AppLanguage.chineseTraditional: '🌐 開源社群',
-    AppLanguage.korean: '🌐 오픈소스',
+    AppLanguage.indonesian: 'Open Source',
+    AppLanguage.english: 'Open Source',
+    AppLanguage.japanese: 'オープンソース',
+    AppLanguage.chineseSimplified: '开源社区',
+    AppLanguage.chineseTraditional: '開源社群',
+    AppLanguage.korean: '오픈소스',
   });
 
   String get loadingNews => _str({
@@ -452,37 +452,37 @@ class AppLocalizations {
 
   String get tokenGuideContent => _str({
     AppLanguage.indonesian:
-        '1. Buka github.com ➔ Profil ➔ Settings.\n'
+        '1. Buka github.com > Profil > Settings.\n'
         '2. Gulir ke bawah ke Developer Settings.\n'
         '3. Pilih Personal Access Tokens (Classic).\n'
         '4. Generate new token (tanpa perlu centang izin khusus).\n'
         '5. Salin token lalu tempelkan di atas.',
     AppLanguage.english:
-        '1. Open github.com ➔ Profile ➔ Settings.\n'
+        '1. Open github.com > Profile > Settings.\n'
         '2. Scroll down to Developer Settings.\n'
         '3. Select Personal Access Tokens (Classic).\n'
         '4. Generate new token (no special permissions required).\n'
         '5. Copy token and paste it above.',
     AppLanguage.japanese:
-        '1. github.com を開く ➔ プロフィール ➔ Settings。\n'
+        '1. github.com を開く > プロフィール > Settings。\n'
         '2. ページ下部の Developer Settings へ移動。\n'
         '3. Personal Access Tokens (Classic) を選択。\n'
         '4. Generate new token（特別な権限は不要です）。\n'
         '5. トークンをコピーして上記に入力。',
     AppLanguage.chineseSimplified:
-        '1. 打开 github.com ➔ 个人资料 ➔ Settings。\n'
+        '1. 打开 github.com > 个人资料 > Settings。\n'
         '2. 向下滚动至 Developer Settings。\n'
         '3. 选择 Personal Access Tokens (Classic)。\n'
         '4. Generate new token（无需勾选任何特殊权限）。\n'
         '5. 复制 Token 并粘贴至上方输入框。',
     AppLanguage.chineseTraditional:
-        '1. 開啟 github.com ➔ 個人檔案 ➔ Settings。\n'
+        '1. 開啟 github.com > 個人檔案 > Settings。\n'
         '2. 向下捲動至 Developer Settings。\n'
         '3. 選擇 Personal Access Tokens (Classic)。\n'
         '4. Generate new token（無需勾選任何特殊權限）。\n'
         '5. 複製 Token 並貼在上方輸入框。',
     AppLanguage.korean:
-        '1. github.com 접속 ➔ 프로필 ➔ Settings.\n'
+        '1. github.com 접속 > 프로필 > Settings.\n'
         '2. 아래로 스크롤하여 Developer Settings 선택.\n'
         '3. Personal Access Tokens (Classic) 선택.\n'
         '4. Generate new token 생성 (특수 권한 체크 불필요).\n'
@@ -932,12 +932,12 @@ class AppLocalizations {
   });
 
   String get activeNowBadge => _str({
-    AppLanguage.indonesian: 'Sedang aktif 🔥',
-    AppLanguage.english: 'Currently active 🔥',
-    AppLanguage.japanese: '現在アクティブ 🔥',
-    AppLanguage.chineseSimplified: '正在活跃 🔥',
-    AppLanguage.chineseTraditional: '正在活躍 🔥',
-    AppLanguage.korean: '현재 활동 중 🔥',
+    AppLanguage.indonesian: 'Sedang aktif',
+    AppLanguage.english: 'Currently active',
+    AppLanguage.japanese: '現在アクティブ',
+    AppLanguage.chineseSimplified: '正在活跃',
+    AppLanguage.chineseTraditional: '正在活躍',
+    AppLanguage.korean: '현재 활동 중',
   });
 
   String get notActiveYetBadge => _str({
