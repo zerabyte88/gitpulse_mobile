@@ -19,14 +19,11 @@ class MainActivity : FlutterActivity() {
 
     private fun enableHighRefreshRate() {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                window.setFrameRate(120f, WindowManager.LayoutParams.FRAME_RATE_COMPATIBILITY_DEFAULT)
-            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                @Suppress("DEPRECATION")
                 val display: Display? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     display
                 } else {
-                    @Suppress("DEPRECATION")
                     windowManager.defaultDisplay
                 }
                 val modes = display?.supportedModes
@@ -41,6 +38,7 @@ class MainActivity : FlutterActivity() {
                     }
                     val params = window.attributes
                     params.preferredDisplayModeId = bestMode.modeId
+                    params.preferredRefreshRate = maxFps
                     window.attributes = params
                 }
             }
