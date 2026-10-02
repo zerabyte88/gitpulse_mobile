@@ -33,6 +33,8 @@ jobs:
   release:
     name: Build & Publish 64-bit APK
     runs-on: ubuntu-latest
+    env:
+      APK_NAME: GitPulse-${{ github.event.inputs.tag_name }}-arm64-v8a.apk
 
     steps:
       - name: Checkout Source Code
@@ -67,11 +69,8 @@ jobs:
 
       - name: Package & Prepare Release Artifacts
         run: |
-          TAG="${{ github.event.inputs.tag_name }}"
-          APK_NAME="GitPulse-${TAG}-arm64-v8a.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "${APK_NAME}"
           sha256sum "${APK_NAME}" > "${APK_NAME}.sha256"
-          echo "APK_NAME=${APK_NAME}" >> $GITHUB_ENV
 
       - name: Upload APK to Workflow Artifacts
         uses: actions/upload-artifact@v4
