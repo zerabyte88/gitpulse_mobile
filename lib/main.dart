@@ -4,17 +4,23 @@ import 'localization/app_language.dart';
 import 'localization/app_localizations.dart';
 import 'screens/home_screen.dart';
 import 'services/app_language_service.dart';
+import 'services/app_theme_service.dart';
 import 'services/github_api_service.dart';
 import 'services/storage_service.dart';
+import 'services/update_service.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final storageService = await StorageService.init();
   AppLanguageService.init(storageService);
+  AppThemeService.init(storageService);
   final apiService = GitHubApiService(
     personalAccessToken: storageService.getToken(),
   );
+
+  // Auto-clean any leftover APK update file to free internal storage
+  UpdateService.cleanDownloadedApk();
 
   runApp(GitPulseApp(
     storageService: storageService,
@@ -37,22 +43,27 @@ class GitPulseApp extends StatelessWidget {
     return ValueListenableBuilder<AppLanguage>(
       valueListenable: AppLanguageService.currentLanguageNotifier,
       builder: (context, currentLang, _) {
-        return MaterialApp(
-          title: 'GitPulse',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.darkTheme,
-          locale: currentLang.locale,
-          supportedLocales: AppLanguage.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          home: HomeScreen(
-            storageService: storageService,
-            apiService: apiService,
-          ),
+        return ValueListenableBuilder<AppThemeMode>(
+          valueListenable: AppThemeService.currentThemeNotifier,
+          builder: (context, currentThemeMode, _) {
+            return MaterialApp(
+              title: 'GitPulse',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.getTheme(currentThemeMode),
+              locale: currentLang.locale,
+              supportedLocales: AppLanguage.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              home: HomeScreen(
+                storageService: storageService,
+                apiService: apiService,
+              ),
+            );
+          },
         );
       },
     );

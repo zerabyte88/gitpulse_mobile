@@ -273,6 +273,33 @@ class AppLocalizations {
     AppLanguage.korean: '오픈소스',
   });
 
+  String get categoryTrending => _str({
+    AppLanguage.indonesian: 'GitHub Trending',
+    AppLanguage.english: 'GitHub Trending',
+    AppLanguage.japanese: 'GitHub トレンド',
+    AppLanguage.chineseSimplified: 'GitHub 趋势',
+    AppLanguage.chineseTraditional: 'GitHub 趨勢',
+    AppLanguage.korean: 'GitHub 트렌딩',
+  });
+
+  String get categoryGithub => _str({
+    AppLanguage.indonesian: 'GitHub Digest',
+    AppLanguage.english: 'GitHub Digest',
+    AppLanguage.japanese: 'GitHub ダイジェスト',
+    AppLanguage.chineseSimplified: 'GitHub 摘要',
+    AppLanguage.chineseTraditional: 'GitHub 摘要',
+    AppLanguage.korean: 'GitHub 다이제스트',
+  });
+
+  String get categoryWebDev => _str({
+    AppLanguage.indonesian: 'Web & Mobile',
+    AppLanguage.english: 'Web & Mobile',
+    AppLanguage.japanese: 'ウェブ＆モバイル',
+    AppLanguage.chineseSimplified: 'Web 与移动开发',
+    AppLanguage.chineseTraditional: 'Web 與行動開發',
+    AppLanguage.korean: '웹 및 모바일',
+  });
+
   String get loadingNews => _str({
     AppLanguage.indonesian: 'Memuat berita terbaru...',
     AppLanguage.english: 'Loading latest news...',
@@ -355,6 +382,189 @@ class AppLocalizations {
     AppLanguage.korean: '언어가 다음으로 변경되었습니다: ',
   });
 
+  // Themes
+  String get themeSectionTitle => _str({
+    AppLanguage.indonesian: 'Tema Tampilan',
+    AppLanguage.english: 'App Theme',
+    AppLanguage.japanese: 'アプリテーマ',
+    AppLanguage.chineseSimplified: '应用主题',
+    AppLanguage.chineseTraditional: '應用主題',
+    AppLanguage.korean: '앱 테마',
+  });
+
+  String get themeSectionSubtitle => _str({
+    AppLanguage.indonesian: 'Pilih mode visual antarmuka aplikasi',
+    AppLanguage.english: 'Select visual interface mode',
+    AppLanguage.japanese: 'UIのビジュアルテーマを選択',
+    AppLanguage.chineseSimplified: '选择界面显示主题模式',
+    AppLanguage.chineseTraditional: '選擇介面顯示主題模式',
+    AppLanguage.korean: '앱의 시각적 테마 모드를 선택하세요',
+  });
+
+  String get themeDark => _str({
+    AppLanguage.indonesian: 'Gelap Biasa',
+    AppLanguage.english: 'Dark Slate',
+    AppLanguage.japanese: 'ダーク',
+    AppLanguage.chineseSimplified: '经典暗色',
+    AppLanguage.chineseTraditional: '經典暗色',
+    AppLanguage.korean: '다크',
+  });
+
+  String get themeAmoled => _str({
+    AppLanguage.indonesian: 'Gelap AMOLED',
+    AppLanguage.english: 'AMOLED Black',
+    AppLanguage.japanese: 'AMOLED ブラック',
+    AppLanguage.chineseSimplified: 'AMOLED 纯黑',
+    AppLanguage.chineseTraditional: 'AMOLED 純黑',
+    AppLanguage.korean: 'AMOLED 블랙',
+  });
+
+  String get themeAmoledJapanese => _str({
+    AppLanguage.indonesian: '🌸 Gelap AMOLED Jejepangan',
+    AppLanguage.english: '🌸 AMOLED Neo-Tokyo',
+    AppLanguage.japanese: '🌸 AMOLED 和風 (ネオ東京)',
+    AppLanguage.chineseSimplified: '🌸 AMOLED 日式和风',
+    AppLanguage.chineseTraditional: '🌸 AMOLED 日式和風',
+    AppLanguage.korean: '🌸 AMOLED 네오도쿄 와풍',
+  });
+
+  String get themeLight => _str({
+    AppLanguage.indonesian: 'Terang',
+    AppLanguage.english: 'Light Mode',
+    AppLanguage.japanese: 'ライト',
+    AppLanguage.chineseSimplified: '明亮模式',
+    AppLanguage.chineseTraditional: '明亮模式',
+    AppLanguage.korean: '라이트',
+  });
+
+  String get easterEggJapaneseToast => _str({
+    AppLanguage.indonesian: '🌸 Easter Egg Terbuka: Mode Gelap AMOLED Jejepangan! ようこそ!',
+    AppLanguage.english: '🌸 Easter Egg Unlocked: AMOLED Neo-Tokyo Mode! Welcome!',
+    AppLanguage.japanese: '🌸 イースターエッグ解除: AMOLED 和風モード！ようこそ！',
+    AppLanguage.chineseSimplified: '🌸 彩蛋解锁: AMOLED 日式和风主题！欢迎！',
+    AppLanguage.chineseTraditional: '🌸 彩蛋解鎖: AMOLED 日式和風主題！歡迎！',
+    AppLanguage.korean: '🌸 이스터에그 발견: AMOLED 네오도쿄 테마 활성화! 환영합니다!',
+  });
+
+  // App Updates
+  String get updateSectionTitle => _str({
+    AppLanguage.indonesian: 'Pembaruan Aplikasi',
+    AppLanguage.english: 'App Updates',
+    AppLanguage.japanese: 'アプリの更新',
+    AppLanguage.chineseSimplified: '应用更新',
+    AppLanguage.chineseTraditional: '應用更新',
+    AppLanguage.korean: '앱 업데이트',
+  });
+
+  String get checkForUpdates => _str({
+    AppLanguage.indonesian: 'Periksa Pembaruan',
+    AppLanguage.english: 'Check for Updates',
+    AppLanguage.japanese: '更新を確認',
+    AppLanguage.chineseSimplified: '检查更新',
+    AppLanguage.chineseTraditional: '檢查更新',
+    AppLanguage.korean: '업데이트 확인',
+  });
+
+  String get checkingForUpdates => _str({
+    AppLanguage.indonesian: 'Memeriksa pembaruan...',
+    AppLanguage.english: 'Checking for updates...',
+    AppLanguage.japanese: '更新を確認中...',
+    AppLanguage.chineseSimplified: '正在检查更新...',
+    AppLanguage.chineseTraditional: '正在檢查更新...',
+    AppLanguage.korean: '업데이트 확인 중...',
+  });
+
+  String get updateAvailable => _str({
+    AppLanguage.indonesian: 'Versi baru tersedia!',
+    AppLanguage.english: 'New version available!',
+    AppLanguage.japanese: '新しいバージョンがあります！',
+    AppLanguage.chineseSimplified: '发现新版本！',
+    AppLanguage.chineseTraditional: '發現新版本！',
+    AppLanguage.korean: '새 버전이 출시되었습니다!',
+  });
+
+  String get alreadyLatestVersion => _str({
+    AppLanguage.indonesian: 'Aplikasi sudah versi terbaru',
+    AppLanguage.english: 'App is up to date',
+    AppLanguage.japanese: '最新バージョンです',
+    AppLanguage.chineseSimplified: '已是最新版本',
+    AppLanguage.chineseTraditional: '已是最新版本',
+    AppLanguage.korean: '최신 버전입니다',
+  });
+
+  String get updateNow => _str({
+    AppLanguage.indonesian: 'Perbarui Sekarang',
+    AppLanguage.english: 'Update Now',
+    AppLanguage.japanese: '今すぐ更新',
+    AppLanguage.chineseSimplified: '立即更新',
+    AppLanguage.chineseTraditional: '立即更新',
+    AppLanguage.korean: '지금 업데이트',
+  });
+
+  String get downloadingUpdate => _str({
+    AppLanguage.indonesian: 'Mengunduh pembaruan...',
+    AppLanguage.english: 'Downloading update...',
+    AppLanguage.japanese: '更新をダウンロード中...',
+    AppLanguage.chineseSimplified: '正在下载更新...',
+    AppLanguage.chineseTraditional: '正在下載更新...',
+    AppLanguage.korean: '업데이트 다운로드 중...',
+  });
+
+  String get installingUpdate => _str({
+    AppLanguage.indonesian: 'Membuka installer paket...',
+    AppLanguage.english: 'Launching package installer...',
+    AppLanguage.japanese: 'インストーラーを起動中...',
+    AppLanguage.chineseSimplified: '正在启动安装程序...',
+    AppLanguage.chineseTraditional: '正在啟動安裝程式...',
+    AppLanguage.korean: '패키지 설치 프로그램 실행 중...',
+  });
+
+  String get updateFailed => _str({
+    AppLanguage.indonesian: 'Pembaruan otomatis gagal. Buka di browser?',
+    AppLanguage.english: 'Automatic update failed. Open in browser?',
+    AppLanguage.japanese: '自動更新に失敗しました。ブラウザで開きますか？',
+    AppLanguage.chineseSimplified: '自动更新失败，是否在浏览器中打开？',
+    AppLanguage.chineseTraditional: '自動更新失敗，是否在瀏覽器中開啟？',
+    AppLanguage.korean: '자동 업데이트에 실패했습니다. 브라우저에서 여시겠습니까?',
+  });
+
+  String get openInBrowser => _str({
+    AppLanguage.indonesian: 'Unduh via Browser',
+    AppLanguage.english: 'Download via Browser',
+    AppLanguage.japanese: 'ブラウザでダウンロード',
+    AppLanguage.chineseSimplified: '在浏览器中下载',
+    AppLanguage.chineseTraditional: '在瀏覽器中下載',
+    AppLanguage.korean: '브라우저에서 다운로드',
+  });
+
+  // Developer & Credits
+  String get developerLabel => _str({
+    AppLanguage.indonesian: 'Pengembang',
+    AppLanguage.english: 'Developer',
+    AppLanguage.japanese: '開発者',
+    AppLanguage.chineseSimplified: '开发者',
+    AppLanguage.chineseTraditional: '開發者',
+    AppLanguage.korean: '개발자',
+  });
+
+  String get developerRole => _str({
+    AppLanguage.indonesian: 'Creator & Maintainer',
+    AppLanguage.english: 'Creator & Maintainer',
+    AppLanguage.japanese: '作成者・メンテナー',
+    AppLanguage.chineseSimplified: '创建者与维护者',
+    AppLanguage.chineseTraditional: '創建者與維護者',
+    AppLanguage.korean: '제작자 및 유지관리자',
+  });
+
+  String get madeWithLove => _str({
+    AppLanguage.indonesian: 'Made with ❤️ by zerabyte88',
+    AppLanguage.english: 'Made with ❤️ by zerabyte88',
+    AppLanguage.japanese: 'Made with ❤️ by zerabyte88',
+    AppLanguage.chineseSimplified: 'Made with ❤️ by zerabyte88',
+    AppLanguage.chineseTraditional: 'Made with ❤️ by zerabyte88',
+    AppLanguage.korean: 'Made with ❤️ by zerabyte88',
+  });
+
   // API Rate Limit
   String get rateLimitStatus => _str({
     AppLanguage.indonesian: 'Status Kuota API GitHub',
@@ -429,6 +639,17 @@ class AppLocalizations {
     AppLanguage.chineseTraditional: '可選',
     AppLanguage.korean: '선택',
   });
+
+  String get tokenActiveBadge => _str({
+    AppLanguage.indonesian: 'Aktif',
+    AppLanguage.english: 'Active',
+    AppLanguage.japanese: '有効',
+    AppLanguage.chineseSimplified: '已激活',
+    AppLanguage.chineseTraditional: '已啟用',
+    AppLanguage.korean: '활성',
+  });
+
+  String get tokenSubtitle => tokenDescription;
 
   String get tokenDescription => _str({
     AppLanguage.indonesian: 'Tambahkan token GitHub untuk menaikkan kuota dari 60 menjadi 5.000 request per jam.',

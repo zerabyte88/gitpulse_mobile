@@ -73,7 +73,7 @@ class TechNewsCard extends StatelessWidget {
                           if (loadingProgress == null) return child;
                           return Container(
                             color: AppTheme.surfaceElevated,
-                            child: const Center(
+                            child: Center(
                               child: SizedBox(
                                 width: 20,
                                 height: 20,
@@ -137,7 +137,7 @@ class TechNewsCard extends StatelessWidget {
                             ),
                             child: Text(
                               '#$tag',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.primaryCyan,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
@@ -153,7 +153,7 @@ class TechNewsCard extends StatelessWidget {
                       news.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.textPrimary,
                         fontSize: 14.5,
                         fontWeight: FontWeight.w600,
@@ -168,7 +168,7 @@ class TechNewsCard extends StatelessWidget {
                         news.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 12,
                           height: 1.4,
@@ -186,7 +186,7 @@ class TechNewsCard extends StatelessWidget {
                               width: 18,
                               height: 18,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const Icon(
+                              errorBuilder: (context, error, stackTrace) => Icon(
                                 Icons.person_outline_rounded,
                                 size: 15,
                                 color: AppTheme.textMuted,
@@ -194,7 +194,7 @@ class TechNewsCard extends StatelessWidget {
                             ),
                           )
                         else
-                          const Icon(
+                          Icon(
                             Icons.person_outline_rounded,
                             size: 15,
                             color: AppTheme.textMuted,
@@ -205,7 +205,7 @@ class TechNewsCard extends StatelessWidget {
                             news.authorName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textMuted,
                               fontSize: 11.5,
                               fontWeight: FontWeight.w500,
@@ -225,7 +225,7 @@ class TechNewsCard extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.access_time_rounded,
                                 size: 11,
                                 color: AppTheme.textMuted,
@@ -233,7 +233,7 @@ class TechNewsCard extends StatelessWidget {
                               const SizedBox(width: 4),
                               Text(
                                 '${news.readingTimeMinutes} ${AppLocalizations.of(context).minRead}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: AppTheme.textMuted,
                                   fontSize: 10.5,
                                 ),
@@ -242,7 +242,7 @@ class TechNewsCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        const Icon(
+                        Icon(
                           Icons.open_in_new_rounded,
                           size: 13,
                           color: AppTheme.textSecondary,
@@ -268,7 +268,7 @@ class TechNewsCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.article_outlined,
               size: 16,
               color: AppTheme.textSecondary,

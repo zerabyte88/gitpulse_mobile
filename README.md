@@ -18,7 +18,7 @@
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-Passing%20(18%2F18)-success?style=flat-square)](test/widget_test.dart)
+[![Tests](https://img.shields.io/badge/Tests-Passing%20(20%2F20)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
 
@@ -27,15 +27,16 @@
 </p>
 
 <p align="center">
-  <a href="#whats-new-in-v101">What's New (v1.0.1)</a> •
   <a href="#problem-statement--core-value">Problem Statement</a> •
   <a href="#key-features">Key Features</a> •
   <a href="#system-architecture--data-flow">Architecture & Data Flow</a> •
+  <a href="#theme-system--secret-easter-egg">Themes & Easter Egg</a> •
+  <a href="#in-app-updater-ota-pipeline">In-App Updater (OTA)</a> •
   <a href="#developer-persona-classification-matrix">Persona Matrix</a> •
+  <a href="#commit-activity-tier-matrix">Tier Animations</a> •
   <a href="#security--privacy-governance">Security</a> •
   <a href="#technology-stack">Tech Stack</a> •
   <a href="#installation--getting-started">Installation</a> •
-  <a href="#cicd-pipeline--apk-distribution">CI/CD APK</a> •
   <a href="#strategic-roadmap">Roadmap</a>
 </p>
 
@@ -49,8 +50,9 @@ The standard GitHub contribution graph ("green squares") displays daily activity
 - **Absence of Temporal Context**: It does not distinguish whether commits occur at midnight, early dawn, or during core business hours.
 - **Fragmented Portfolio Impact**: Users must manually calculate aggregate stargazers and forks scattered across dozens of repositories.
 - **Lack of Qualitative Profiling**: It fails to capture an engineer's architectural habits (e.g., deep focus within a single ecosystem vs. polyglot versatility).
+- **Update Friction on Mobile**: Open-source APK users typically endure cumbersome manual uninstall and reinstall cycles to update their apps.
 
-**GitPulse Mobile** solves these gaps by aggregating public repository metadata, user profiles, and event streams into a unified, privacy-first, on-device intelligence dashboard.
+**GitPulse Mobile** solves these gaps by aggregating public repository metadata, user profiles, and event streams into a unified, privacy-first, on-device intelligence dashboard with built-in in-app OTA update capabilities and zero bloat.
 
 ---
 
@@ -59,18 +61,95 @@ The standard GitHub contribution graph ("green squares") displays daily activity
 <table>
   <thead>
     <tr>
-      <th width="40%">Feature</th>
-      <th width="60%">Technical Specification</th>
+      <th width="35%">Feature</th>
+      <th width="65%">Technical Specification</th>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>
+        <b>In-App OTA Updater</b><br/>
+        <i>Seamless In-Place Upgrades</i>
+      </td>
+      <td>
+        Queries GitHub Releases API for new semantic version tags. Downloads APK assets in the background with live percentage streaming (<code>ota_update</code>) and triggers Android Package Installer directly without requiring uninstall/reinstall. User tokens, bookmarks, and settings are fully preserved. Includes a dedicated browser fallback button.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Automatic Post-Install APK Deletion</b><br/>
+        <i>Zero Storage Waste</i>
+      </td>
+      <td>
+        Automatically purges leftover APK binaries from internal storage (<code>/files/ota_update/gitpulse-latest.apk</code>) upon app launch or installation completion, preventing downloaded update packages from consuming device storage.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Adaptive 4-Theme Engine + Secret Easter Egg</b><br/>
+        <i>OLED, Dark, Light & Japanese Cyberpunk</i>
+      </td>
+      <td>
+        Features <b>Gelap Biasa</b> (GitHub Dark #0D1117), <b>Gelap AMOLED</b> (True Pitch Black #000000 for OLED battery savings), and <b>Terang</b> (GitHub Light #F6F8FA). Includes an exclusive secret <b>Gelap AMOLED Jejepangan</b> mode (Mystic Obsidian #040207, Neo Sakura Pink, Kyoto Wisteria, and Torii Crimson) unlocked by tapping the AMOLED option 10 times in Settings.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Dynamic Tier Badges & Full Name Display</b><br/>
+        <i>Zero Truncation Geometry</i>
+      </td>
+      <td>
+        Places commit tier badges (<code>AnimatedTierTitle</code>) adjacent to the user's display name using a responsive <code>Wrap</code> layout. Long developer names (e.g., <i>Adrian Gunawan</i>) render completely without truncation or ellipsis dots.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Tier-Tailored Animation Engine</b><br/>
+        <i>Level-Specific Particle & Shimmer FX</i>
+      </td>
+      <td>
+        - <b>Tier 1 (Code Titan):</b> Floating flame particle physics with glowing gradient sweep.<br/>
+        - <b>Tier 2 (Relentless Committer):</b> High-voltage electric plasma arc with lightning crackle.<br/>
+        - <b>Tier 3 (Consistent Builder):</b> Emerald cyber matrix sweep with digital scanlines.<br/>
+        - <b>Tier 4 (Weekend Warrior):</b> Solar amber sunburst shimmer with rotating angular gleam.<br/>
+        - <b>Tier 5 (Dormant Explorer):</b> Cosmic starlight nebula drift with gentle pulsing star dust.<br/>
+        - <b>Tier 6 (Fresh Sprout):</b> Spring dewdrop bloom pulse with organic respiratory scale.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>GitHub Trending & Curated Tech News</b><br/>
+        <i>Ecosystem & Trending Repositories</i>
+      </td>
+      <td>
+        Fetches top trending open-source GitHub repositories via GitHub Search API alongside curated engineering articles from dev.to. Supports category filter chips (<b>Trending</b>, <b>Semua</b>, <b>GitHub</b>, <b>Web Dev</b>) with offline fallback data and external browser navigation.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Developer Attribution & Live Avatar CDN</b><br/>
+        <i>Auto-Updating Profile Picture</i>
+      </td>
+      <td>
+        Interactive developer credits in the About section and settings footer (<code>Made with ❤️ by zerabyte88</code>). Leverages GitHub's live CDN (<code>https://github.com/zerabyte88.png</code>) with circular clipping and subtle borders to automatically reflect avatar updates without app updates.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Multi-Language Localization (i18n)</b><br/>
+        <i>6 International Languages</i>
+      </td>
+      <td>
+        Full native translation coverage across 6 languages: <b>Bahasa Indonesia</b>, <b>English</b>, <b>日本語 (Japanese)</b>, <b>한국어 (Korean)</b>, <b>中文 (Chinese)</b>, and <b>Español (Spanish)</b>, switchable on-the-fly without restarting the app.
+      </td>
+    </tr>
     <tr>
       <td>
         <b>24-Hour Productivity Rhythm</b><br/>
         <i>Peak Coding Hours Detection</i>
       </td>
       <td>
-        Maps public event streams into an interactive 24-bar histogram using <code>fl_chart</code>. Automatically converts UTC timestamps to local device time to pinpoint when an engineer is most active in commits, PRs, and reviews.
+        Maps public event streams into an interactive 24-bar histogram using <code>fl_chart</code>. Automatically converts UTC timestamps to local device time (00:00–23:00) to pinpoint when an engineer is most active in commits, PRs, and reviews.
       </td>
     </tr>
     <tr>
@@ -85,7 +164,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     <tr>
       <td>
         <b>Language Footprint Distribution</b><br/>
-        <i>Interactive Multi-Language Breakdown</i>
+        <i>Interactive Multi-Language Donut Chart</i>
       </td>
       <td>
         Renders a donut chart illustrating primary programming languages across non-forked public repositories, weighted by repository size or codebase volume using authentic ecosystem colors.
@@ -120,29 +199,11 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>Curated Tech News & Engineering Feeds</b><br/>
-        <i>Real-Time Industry Intelligence</i>
+        <b>Lean APK & Zero Bloat Optimization</b><br/>
+        <i>Clean Binary Footprint</i>
       </td>
       <td>
-        Integrates a live engineering news stream directly inside the home screen, allowing developers to monitor ecosystem trends alongside GitHub activity without visual clutter.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <b>In-App Version & Build Telemetry</b><br/>
-        <i>Auditable Release Details</i>
-      </td>
-      <td>
-        Displays active release versions (<code>v1.0.1</code>) and build identifiers (<code>Build 2</code>) both in the home app bar and the comprehensive application information sheet.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <b>One-Click Shareable Telemetry</b><br/>
-        <i>Social Summary Generator</i>
-      </td>
-      <td>
-        Formats high-impact developer metrics into structured markdown text optimized for quick sharing on LinkedIn, X/Twitter, or technical portfolios.
+        Unused packages and font assets (`cupertino_icons`) have been completely eliminated. The release pipeline compiles exclusively for 64-bit ARM (`arm64-v8a`), cutting APK size in half and accelerating cold startup.
       </td>
     </tr>
   </tbody>
@@ -157,19 +218,21 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   PRESENTATION LAYER                                   │
-│                   (Flutter 3 • Minimalist GitHub Dark Slate • Inter)                   │
+│       (Flutter 3 • 4-Mode Reactive Theme • 6-Language i18n • Inter Google Fonts)       │
 │                                                                                        │
 │   ┌───────────────────────────┐                     ┌──────────────────────────────┐   │
 │   │        HomeScreen         │                     │      StatsDetailScreen       │   │
 │   ├───────────────────────────┤                     ├──────────────────────────────┤   │
-│   │ • Search Input Field      │                     │ • 24h Activity Histogram     │   │
-│   │ • Bookmarked Profiles     │                     │ • Language Distribution Donut│   │
-│   │ • GitHub Token Modal      │                     │ • Top Repositories Grid      │   │
-│   │ • About & Build Telemetry │                     │ • Persona Badge & Telemetry  │   │
-│   │ • Engineering Feeds       │                     │ • Commit Habit Banner        │   │
+│   │ • Search Input Field      │                     │ • Full Name & Tier Title Wrap│   │
+│   │ • Bookmarked Profiles     │                     │ • 24h Activity Histogram     │   │
+│   │ • GitHub Token Modal      │                     │ • Language Distribution Donut│   │
+│   │ • 4-Theme Selection Card  │                     │ • Top Repositories Grid      │   │
+│   │ • In-App OTA Updater Card │                     │ • Persona Badge & Telemetry  │   │
+│   │ • GitHub Trending Feeds   │                     │ • Clean Habit Summary Banner │   │
+│   │ • Live Avatar Settings    │                     │ • Stargazer & Fork Metrics   │   │
 │   └─────────────┬─────────────┘                     └──────────────▲───────────────┘   │
 └─────────────────┼──────────────────────────────────────────────────┼───────────────────┘
-                  │ 1. Search Query (username)                       │ 5. Aggregated UI State
+                  │ 1. Search Query / Theme / Update Event           │ 5. Aggregated UI State
                   ▼                                                  │
 ┌────────────────────────────────────────────────────────────────────┴───────────────────┐
 │                                   DOMAIN & LOGIC LAYER                                 │
@@ -179,6 +242,14 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │   │  • Metric Aggregator (Total Stars, Forks, Repo Volume, Primary Languages)      │   │
 │   │  • 24-Hour Event Binner (Converts ISO-8601 UTC to Local Time 00:00–23:00)      │   │
 │   │  • Deterministic Persona Classifier (Star Magnet, Midnight Owl, Polyglot, etc.)│   │
+│   ├────────────────────────────────────────────────────────────────────────────────┤   │
+│   │                              UpdateService & OTA Engine                        │   │
+│   │  • Semantic Version Comparator (e.g., v1.0.2 > v1.0.1)                         │   │
+│   │  • Android PackageInstaller Stream Handler & Auto-Cleanup Routine              │   │
+│   ├────────────────────────────────────────────────────────────────────────────────┤   │
+│   │                              AppLanguageService & AppThemeService              │   │
+│   │  • 6-Language Reactive Notifier & 4-Mode Theme State Machine                   │   │
+│   │  • 10x Tap Secret Easter Egg Evaluator & Persistence Controller                │   │
 │   └────────────────────────────────────────▲───────────────────────────────────────┘   │
 └────────────────────────────────────────────┼───────────────────────────────────────────┘
                                              │ 4. Deserialized Models (User, Repos, Events)
@@ -186,82 +257,90 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │                                  DATA & PERSISTENCE LAYER                              │
 │                                                                                        │
 │   ┌───────────────────────────────────┐            ┌───────────────────────────────┐   │
-│   │         GitHubApiService          │            │        StorageService         │   │
+│   │    GitHubApiService & TechNews    │            │        StorageService         │   │
 │   ├───────────────────────────────────┤            ├───────────────────────────────┤   │
 │   │ • GET /users/{username}           │            │ • SharedPreferences Engine    │   │
 │   │ • GET /users/{username}/repos     │            │ • Persistent Bookmark Cache   │   │
 │   │ • GET /users/{username}/events    │            │ • Sandboxed GitHub PAT Secret │   │
-│   │ • Dual Rate Limit (60 vs 5,000/hr)│            │ • Offline-First Read Fallback │   │
+│   │ • GET /repos/.../releases/latest  │            │ • Theme Preference Persistence│   │
+│   │ • Trending Repositories API       │            │ • Japanese Theme Secret State │   │
+│   │ • Dual Rate Limit (60 vs 5,000/hr)│            │ • Selected Language Code (i18n│   │
 │   └─────────────────┬─────────────────┘            └───────────────▲───────────────┘   │
 └─────────────────────┼──────────────────────────────────────────────┼───────────────────┘
                       │ 2. HTTPS / TLS 1.3 Requests                  │ 3. Read / Write Cache
                       ▼                                              ▼
 ┌───────────────────────────────────────────┐  ┌─────────────────────────────────────────┐
 │          GitHub REST API v3               │  │           Device Local Storage          │
-│       (api.github.com Endpoints)          │  │        (Android Sandbox / Browser)      │
+│       (api.github.com Endpoints)          │  │        (Android Sandbox / Files)        │
 └───────────────────────────────────────────┘  └─────────────────────────────────────────┘
 ```
 
-### Data Flow Lifecycle
+---
 
-1. **User Query**: The developer enters a GitHub handle on `HomeScreen`.
-2. **Network Ingestion**: `GitHubApiService` orchestrates concurrent GET requests to GitHub REST API v3 (`/users`, `/repos`, and `/events`). If a Personal Access Token exists in `StorageService`, the request is sent with `Bearer` authorization.
-3. **Model Deserialization**: JSON responses are deserialized into strongly-typed domain models (`GitHubUser`, `GitHubRepo`, and event payloads).
-4. **On-Device Analytics**: `UserStats.calculate()` aggregates cumulative stars and forks, maps timestamps into 24-hour hourly bins adjusted to the device's local timezone, and evaluates developer persona traits.
-5. **Reactive Presentation**: `StatsDetailScreen` renders charts via `fl_chart`, displays repository rankings, and allows the profile to be saved to offline storage via `StorageService`.
+## Theme System & Secret Easter Egg
+
+GitPulse Mobile features a centralized `AppThemeService` paired with dynamic color tokens in `AppTheme`, allowing instantaneous runtime switching without requiring an app restart:
+
+1. **Gelap Biasa (`dark`)**: Classic GitHub Dark palette (`#0D1117` background, `#161B22` surface, `#30363D` borders, GitHub Blue `#58A6FF` accents).
+2. **Gelap AMOLED (`amoled`)**: True pitch black (`#000000` background, `#0A0A0A` surface) engineered for OLED/AMOLED power savings and ultra-high contrast.
+3. **Terang (`light`)**: High-contrast GitHub Light palette (`#F6F8FA` background, `#FFFFFF` cards, GitHub Light Blue `#0969DA`).
+4. **Gelap AMOLED Jejepangan (`amoledJapanese`)**: Exclusive Japanese cyberpunk aesthetic (`#040207` background, Neo Sakura Pink `#FF6B9D`, Kyoto Wisteria `#B57EDC`, and Torii Crimson `#FF3366`).
+
+### 🌸 How to Unlock the Japanese AMOLED Secret:
+1. Open **Settings** (gear icon in the top-right corner).
+2. Locate the **Tema Aplikasi** (Theme) section.
+3. Tap the **Gelap AMOLED** option rapidly **10 times**.
+4. Upon the 10th tap:
+   - A heavy haptic vibration triggers.
+   - A celebratory toast announces: *"🎉 Selamat! Anda membuka tema rahasia: Gelap AMOLED Jejepangan 🌸"*.
+   - The theme switches immediately and is permanently saved to device storage.
 
 ---
 
-### Project Directory Structure
+## In-App Updater (OTA) Pipeline
 
 ```text
-gitpulse_mobile/
-├── .github/
-│   └── workflows/
-│       └── build-apk.yml            # CI/CD pipeline for automated release APK builds
-├── android/                         # Android platform host files (Gradle, Manifests)
-├── lib/
-│   ├── main.dart                    # Application entrypoint & global theme configuration
-│   ├── localization/                # Multi-language internationalization support
-│   │   ├── app_language.dart        # Supported language enums & locales
-│   │   └── app_localizations.dart   # Localized string dictionaries (6 languages)
-│   ├── models/                      # Domain entities & analytical computation engines
-│   │   ├── bookmarked_user.dart     # Bookmarked profile serialization model
-│   │   ├── contribution_stats.dart  # Event activity & contribution metrics model
-│   │   ├── github_rate_limit.dart   # API rate-limit state tracking model
-│   │   ├── github_repo.dart         # Repository schema deserializer
-│   │   ├── github_user.dart         # User profile schema deserializer
-│   │   ├── tech_news.dart           # Tech news item model
-│   │   └── user_stats.dart          # Core telemetry calculation & persona engine
-│   ├── screens/                     # UI screens & controllers
-│   │   ├── home_screen.dart         # Minimalist search, bookmarks, news & version badge
-│   │   └── stats_detail_screen.dart # Interactive analytics dashboard & charts
-│   ├── services/                    # Networking & persistent storage layer
-│   │   ├── app_language_service.dart# Language preference manager
-│   │   ├── github_api_service.dart  # GitHub REST API v3 client with error handling
-│   │   ├── storage_service.dart     # SharedPreferences persistence wrapper
-│   │   └── tech_news_service.dart   # Curated tech news feed fetcher
-│   ├── theme/                       # Design system tokens & application metadata
-│   │   └── app_theme.dart           # Minimalist slate palette, typography & AppConfig
-│   └── widgets/                     # Modular reusable UI components
-│       ├── activity_chart.dart      # 24-hour activity bar chart (fl_chart)
-│       ├── animated_tier_title.dart # Minimalist status badge component
-│       ├── language_chart.dart      # Language distribution donut chart (fl_chart)
-│       ├── repo_tile.dart           # GitHub native repository card
-│       ├── settings_sheet.dart      # Modal sheet for settings, PAT token & About app
-│       ├── stat_card.dart           # Minimalist summary metric card
-│       └── tech_news_card.dart      # Engineering digest card widget
-├── test/
-│   └── widget_test.dart             # Unit, widget, model & version test suite
-├── web/                             # Web/PWA deployment entrypoint
-└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.1+2)
+[Settings: "Periksa Pembaruan" or Auto-Check]
+                    │
+                    ▼
+       1. GitHub Releases API Query
+   (api.github.com/repos/zerabyte88/gitpulse_mobile/releases/latest)
+                    │
+                    ▼
+       2. Semantic Version Comparator
+         (Compares Tag e.g. v1.0.2 vs Installed v1.0.1)
+                    │
+       ┌────────────┴────────────┐
+       ▼                         ▼
+Already Up-to-Date       New Version Available!
+ "Sudah versi terbaru"           │
+                                 ▼
+                         3. Extract APK Asset URL
+                         (e.g., GitPulse-v1.0.2-arm64-v8a.apk)
+                                 │
+                                 ▼
+                         4. Background OTA Download Stream
+                            (Live Progress: 0% ──► 100%)
+                                 │
+                 ┌───────────────┴───────────────┐
+                 ▼                               ▼
+       [Native PackageInstaller]         [Fallback: Browser]
+       Directly overwrites APK           Opens release asset in
+       in-place (data preserved)         external browser
+                 │
+                 ▼
+       [Auto-Cleanup Routine]
+       Automatically deletes downloaded
+       gitpulse-latest.apk on launch / finish
 ```
+
+- **In-Place Upgrade**: Upgrades the APK without requiring users to uninstall, preserving tokens, bookmarks, and preferences.
+- **Auto-Cleanup**: Automatically cleans up `gitpulse-latest.apk` from internal cache (`/data/user/0/com.gitpulse.gitpulse_mobile/files/ota_update/`) upon app launch or completion, keeping device storage lean.
+- **Browser Fallback**: If OEM permission restrictions block native installation, a dedicated button opens the release asset directly in the system browser.
 
 ---
 
 ## Developer Persona Classification Matrix
-
-The persona classification engine assigns a title based on the following deterministic priority order:
 
 | Persona | Evaluation Criteria | Characteristic Profile |
 | :--- | :--- | :--- |
@@ -274,14 +353,33 @@ The persona classification engine assigns a title based on the following determi
 
 ---
 
+## Commit Activity Tier Matrix
+
+Each developer profile is assigned an activity tier based on public commit volume over recent event history, with tailored particle physics and shader effects:
+
+| Tier Level | Title Badge | Commits | Visual Animation FX | Motif |
+| :--- | :--- | :--- | :--- | :--- |
+| **Tier 1** | **Code Titan** | 100+ | Autonomous floating flame particle physics (`CustomPainter`) with radiant gradient sweep | 🔥 Blazing Fire & Magma |
+| **Tier 2** | **Relentless Committer** | 50–99 | High-voltage electric plasma arc with lightning shockwave crackle & micro-sparkles | ⚡ Electric Plasma Arc |
+| **Tier 3** | **Consistent Builder** | 25–49 | Emerald cyber matrix sweep with digital scanline data stream | 💻 Emerald Cyber Matrix |
+| **Tier 4** | **Weekend Warrior** | 10–24 | Solar amber sunburst shimmer with rotating angular gleam | ☀️ Solar Amber Gleam |
+| **Tier 5** | **Dormant Explorer** | 1–9 | Cosmic starlight nebula drift with gentle pulsing star dust | ✨ Starlight Nebula |
+| **Tier 6** | **Fresh Sprout** | 0 | Spring dewdrop bloom pulse with gentle organic scale respiration | 🌱 Spring Dewdrop |
+
+> [!NOTE]
+> The tier badge is rendered alongside the developer's full display name (e.g., *Adrian Gunawan*) within a flexible `Wrap` layout, ensuring zero text truncation (`...`) across all screen densities.
+
+---
+
 ## Security & Privacy Governance
 
 GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 1. **Direct Client-to-API Communication**: All HTTPS transactions occur directly between the user's device and official GitHub endpoints (`api.github.com`) using TLS 1.3. No third-party proxy or intermediary server is involved.
-2. **Sandboxed Personal Access Token (PAT)**: Optional GitHub tokens are stored solely in the application's internal sandboxed storage (`shared_preferences`). Tokens are never sent to external telemetry servers or logged to console output in release builds.
+2. **Sandboxed Personal Access Token (PAT)**: Optional GitHub tokens are stored solely in the application's internal sandboxed storage (`shared_preferences`). Tokens are never sent to external telemetry servers.
 3. **Least Privilege Enforcement**: The application operates exclusively with read permissions on public data. No write scopes or private repository permissions are requested.
 4. **Zero Third-Party Telemetry**: Contains no third-party tracking scripts, advertising SDKs, or invasive user analytics.
+5. **Safe In-App Updates**: APKs are fetched directly from GitHub Releases (`api.github.com`) over secure TLS connections and verified against Android package signatures.
 
 ---
 
@@ -291,6 +389,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 | :--- | :--- | :--- | :--- |
 | **Framework** | [Flutter](https://flutter.dev) | `>=3.24.0` | High-performance Ahead-Of-Time (AOT) cross-platform compilation for Android and Web |
 | **Language** | [Dart](https://dart.dev) | `>=3.5.0` | Sound null-safety, pattern matching, and structured concurrency |
+| **In-App Updater** | [ota_update](https://pub.dev/packages/ota_update) | `^7.1.0` | Background native Android PackageInstaller OTA update streaming |
 | **Visualization** | [fl_chart](https://pub.dev/packages/fl_chart) | `^1.2.0` | Hardware-accelerated vector charting engine with touch interactions |
 | **Networking** | [http](https://pub.dev/packages/http) | `^1.6.0` | Robust composable HTTP client for RESTful API communication |
 | **Typography** | [google_fonts](https://pub.dev/packages/google_fonts) | `^8.2.1` | Professional, high-legibility Inter font family |
@@ -301,12 +400,62 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 ---
 
+## Project Directory Structure
+
+```text
+gitpulse_mobile/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                   # Automated quality gate (analyze + 20 tests)
+│       └── release.yml              # Manual workflow_dispatch 64-bit APK publisher
+├── android/                         # Android platform host files (Gradle, Manifests)
+├── lib/
+│   ├── main.dart                    # Application entrypoint & auto-cleanup initialization
+│   ├── localization/                # Multi-language internationalization support
+│   │   ├── app_language.dart        # Supported language enums & locales (6 languages)
+│   │   └── app_localizations.dart   # Comprehensive translation dictionaries
+│   ├── models/                      # Domain entities & analytical computation engines
+│   │   ├── bookmarked_user.dart     # Bookmarked profile serialization model
+│   │   ├── contribution_stats.dart  # Event activity & commit habit tier models
+│   │   ├── github_rate_limit.dart   # API rate-limit state tracking model
+│   │   ├── github_repo.dart         # Repository schema deserializer
+│   │   ├── github_user.dart         # User profile schema deserializer
+│   │   ├── tech_news.dart           # Tech news & GitHub trending item model
+│   │   └── user_stats.dart          # Core telemetry calculation & persona engine
+│   ├── screens/                     # UI screens & controllers
+│   │   ├── home_screen.dart         # Search, bookmarks, trending news & version badge
+│   │   └── stats_detail_screen.dart # Interactive analytics dashboard & charts
+│   ├── services/                    # Networking & persistent storage layer
+│   │   ├── app_language_service.dart# Language preference manager (6 languages)
+│   │   ├── app_theme_service.dart   # Reactive 4-mode theme notifier & easter egg unlocker
+│   │   ├── github_api_service.dart  # GitHub REST API v3 client with error handling
+│   │   ├── storage_service.dart     # SharedPreferences persistence wrapper
+│   │   ├── tech_news_service.dart   # Curated tech news & GitHub trending fetcher
+│   │   └── update_service.dart      # Semantic version check, OTA download & auto-cleanup
+│   ├── theme/                       # Design system tokens & application metadata
+│   │   └── app_theme.dart           # 4-theme color definitions, typography & AppConfig
+│   └── widgets/                     # Modular reusable UI components
+│       ├── activity_chart.dart      # 24-hour activity bar chart (fl_chart)
+│       ├── animated_tier_title.dart # Level-tailored animated status badge (Tiers 1-6)
+│       ├── language_chart.dart      # Language distribution donut chart (fl_chart)
+│       ├── repo_tile.dart           # GitHub native repository card
+│       ├── settings_sheet.dart      # Modal sheet for theme, updates, PAT, & About
+│       ├── stat_card.dart           # Summary metric card
+│       └── tech_news_card.dart      # Engineering digest & trending card widget
+├── test/
+│   └── widget_test.dart             # Complete unit, model, and OTA update test suite (20 tests)
+├── web/                             # Web/PWA deployment entrypoint
+└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.1+2)
+```
+
+---
+
 ## Installation & Getting Started
 
 ### Prerequisites
 - **Flutter SDK**: Version `3.24.0` or higher
 - **Dart SDK**: Version `3.5.0` or higher
-- **Java Development Kit (JDK)**: OpenJDK 17 (Eclipse Temurin recommended)
+- **Java Development Kit (JDK)**: OpenJDK 17
 - **Target Device**: Physical Android device with USB debugging enabled, Android Emulator (API 28+), or Google Chrome
 
 ### Step-by-Step Setup
@@ -348,57 +497,16 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 
 ## CI/CD Pipeline & GitHub Releases
 
-This repository utilizes a two-tier GitHub Actions architecture separating automated quality gates from release binary publishing:
+This repository utilizes a two-tier GitHub Actions architecture:
 
 1. **Automated CI Quality Gate (`.github/workflows/ci.yml`)**:
-   - Triggers on every push and pull request to `main` and `master`.
-   - Runs `flutter pub get`, `flutter analyze` (zero lint warnings), and `flutter test` (100% test coverage).
-   - **Does NOT build APKs on commit**, keeping CI execution under 25 seconds and preserving runner quotas.
+   - Triggers on every push and pull request.
+   - Runs `flutter pub get`, `flutter analyze` (zero lint warnings), and `flutter test` (**20/20 tests passing**).
 
 2. **Manual Release Pipeline (`.github/workflows/release.yml`)**:
-   - Triggered **manually via `workflow_dispatch`** only when you are ready to publish a new version.
+   - Triggered **manually via `workflow_dispatch`** when ready to publish.
    - Compiles **strictly 64-bit ARM APK** (`--target-platform android-arm64`, with `arm64-v8a` ABI filter).
-   - Packages the artifact as `GitPulse-v1.0.1-arm64-v8a.apk` and calculates SHA-256 checksums (`.sha256`).
-   - Automatically publishes the release to **GitHub Releases** and uploads the assets.
-
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│              Manual Release Workflow (workflow_dispatch)               │
-│                  (.github/workflows/release.yml)                       │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│   [Stage 1: Manual Trigger via GitHub Actions UI]                      │
-│   └── Inputs: tag_name (e.g. v1.0.1), release_title, notes             │
-│                                                                        │
-│   [Stage 2: Verification & Quality Gate]                               │
-│   ├── flutter analyze           ──► Static analysis (zero warnings)    │
-│   └── flutter test              ──► 100% Unit test pass rate           │
-│                                                                        │
-│   [Stage 3: 64-bit Compilation & Optimization]                         │
-│   └── flutter build apk --release --target-platform android-arm64      │
-│       (Excludes legacy 32-bit & universal bloat; ~50% smaller APK)     │
-│                                                                        │
-│   [Stage 4: Checksum & Distribution]                                   │
-│   ├── sha256sum GitPulse-v1.0.1-arm64-v8a.apk                          │
-│   └── softprops/action-gh-release@v2                                   │
-│       ├── Creates GitHub Release Tag                                   │
-│       ├── Attaches GitPulse-v1.0.1-arm64-v8a.apk                       │
-│       └── Attaches GitPulse-v1.0.1-arm64-v8a.apk.sha256                │
-│                                                                        │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                       GitHub Releases Dashboard                        │
-│            Production 64-bit APK ready for user downloads              │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
-### How to Trigger a Release Build:
-1. Navigate to the **Actions** tab on GitHub.
-2. Select **Release 64-bit APK** from the left sidebar.
-3. Click **Run workflow**, verify the tag (e.g., `v1.0.1`), and click the green **Run workflow** button.
-4. Once completed, your new APK will automatically appear under [Releases](https://github.com/zerabyte88/gitpulse_mobile/releases).
+   - Generates SHA-256 checksums (`.sha256`) and attaches artifacts directly to GitHub Releases for seamless consumption by the In-App OTA Updater.
 
 ---
 
@@ -409,9 +517,15 @@ This repository utilizes a two-tier GitHub Actions architecture separating autom
 - [x] Rule-based deterministic developer persona classification engine.
 - [x] Top repository showcase sorted by star and fork volume.
 - [x] Persistent local bookmarking & sandboxed Personal Access Token support.
-- [x] Integrated real-time tech news feed.
-- [x] **v1.0.1 UI/UX Overhaul**: Professional minimalist GitHub Dark & Linear aesthetic.
-- [x] **In-App Build & Versioning**: `v1.0.1` (Build 2) telemetry on home bar and settings.
+- [x] **In-App OTA Updater**: GitHub Releases API check, background download & PackageInstaller integration.
+- [x] **Auto-Cleanup Routine**: Automatically deletes downloaded update APK on startup to free storage.
+- [x] **4-Theme System & Secret Easter Egg**: Dark, AMOLED, Light, and 10x-tap Japanese AMOLED mode.
+- [x] **Responsive Name & Tier Title**: Dynamic `Wrap` geometry and full un-truncated user names.
+- [x] **Upgraded Title Animations**: Level-specific particle & lightning effects for Tiers 1 through 6.
+- [x] **GitHub Trending Feed**: Real-time trending open-source repositories with category filtering.
+- [x] **Creator Attribution**: Live auto-updating GitHub avatar CDN integration (`zerabyte88.png`).
+- [x] **6-Language Internationalization (i18n)**: Indonesian, English, Japanese, Korean, Chinese, Spanish.
+- [x] **Lean APK Optimization**: Pruned unused dependencies (`cupertino_icons`) and dead font assets.
 - [ ] **Visual Card Export**: Generate high-resolution PNG/SVG summary cards for social platforms.
 - [ ] **Head-to-Head Compare**: Side-by-side productivity and language comparison between two developers.
 - [ ] **Yearly Wrapped Recap**: Annual retrospective report summarizing annual coding habits.
@@ -419,27 +533,15 @@ This repository utilizes a two-tier GitHub Actions architecture separating autom
 
 ---
 
-## Contributing Guidelines
-
-Contributions are welcome! Please follow these steps:
-
-1. **Fork** the repository on GitHub.
-2. Create a dedicated feature branch with semantic naming:
-   ```bash
-   git checkout -b feat/add-pr-merge-ratio-metric
-   ```
-3. Commit your changes adhering to **Conventional Commits**:
-   ```bash
-   git commit -m "feat(analytics): add PR merge velocity calculation"
-   ```
-4. Verify code quality and ensure all tests pass:
-   ```bash
-   flutter analyze && flutter test
-   ```
-5. Push to your branch and open a **Pull Request** with a detailed summary of your changes.
-
----
-
 ## License
 
-This project is open-source software licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this project in accordance with the license conditions.
+This project is open-source software licensed under the [MIT License](LICENSE).
+
+<div align="center">
+  <br/>
+  <a href="https://github.com/zerabyte88">
+    <img src="https://github.com/zerabyte88.png" width="48" height="48" style="border-radius: 50%;" alt="zerabyte88" />
+  </a>
+  <br/>
+  <sub>Developed with ❤️ by <a href="https://github.com/zerabyte88">zerabyte88</a> (Creator & Maintainer)</sub>
+</div>

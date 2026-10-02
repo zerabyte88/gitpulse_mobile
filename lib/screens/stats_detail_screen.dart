@@ -173,7 +173,7 @@ GitHub: https://github.com/${u.login}
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textMuted,
                     fontSize: 11,
                   ),
@@ -183,7 +183,7 @@ GitHub: https://github.com/${u.login}
           ),
           if (isSelected) ...[
             const SizedBox(width: 6),
-            const Icon(Icons.check_rounded, size: 15, color: AppTheme.primaryCyan),
+            Icon(Icons.check_rounded, size: 15, color: AppTheme.primaryCyan),
           ],
         ],
       ),
@@ -256,9 +256,8 @@ GitHub: https://github.com/${u.login}
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
+              Expanded(
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       habitStyle.icon,
@@ -266,11 +265,17 @@ GitHub: https://github.com/${u.login}
                       color: habitStyle.primary,
                     ),
                     const SizedBox(width: 7),
-                    Flexible(
-                      child: AnimatedTierTitle(
-                        titleInfo: titleInfo,
-                        fontSize: 14.5,
-                        showBadgeContainer: false,
+                    Expanded(
+                      child: Text(
+                        loc.getCommitTierCleanTitle(titleInfo.tier),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: habitStyle.primary,
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
+                        ),
                       ),
                     ),
                   ],
@@ -336,7 +341,7 @@ GitHub: https://github.com/${u.login}
                 Expanded(
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.emoji_events_rounded,
                         size: 13,
                         color: AppTheme.accentAmber,
@@ -345,7 +350,7 @@ GitHub: https://github.com/${u.login}
                       Flexible(
                         child: Text(
                           'Max: ${cStats.longestStreak} ${loc.daysUnit}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.accentAmber,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -413,7 +418,7 @@ GitHub: https://github.com/${u.login}
           ),
           IconButton(
             tooltip: loc.shareProfile,
-            icon: const Icon(Icons.share_outlined, size: 20, color: AppTheme.textSecondary),
+            icon: Icon(Icons.share_outlined, size: 20, color: AppTheme.textSecondary),
             onPressed: _shareSummary,
           ),
         ],
@@ -472,23 +477,33 @@ GitHub: https://github.com/${u.login}
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              (user.name != null && user.name!.trim().isNotEmpty)
-                                  ? user.name!
-                                  : user.login,
-                              style: const TextStyle(
-                                color: AppTheme.textPrimary,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.2,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 8,
+                              runSpacing: 5,
+                              children: [
+                                Text(
+                                  (user.name != null && user.name!.trim().isNotEmpty)
+                                      ? user.name!
+                                      : user.login,
+                                  style: TextStyle(
+                                    color: AppTheme.textPrimary,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                                AnimatedTierTitle(
+                                  titleInfo: titleInfo,
+                                  fontSize: 11,
+                                  showBadgeContainer: true,
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 3),
                             Text(
                               '@${user.login}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.primaryCyan,
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w500,
@@ -498,7 +513,7 @@ GitHub: https://github.com/${u.login}
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.location_on_outlined,
                                     size: 13,
                                     color: AppTheme.textMuted,
@@ -507,7 +522,7 @@ GitHub: https://github.com/${u.login}
                                   Expanded(
                                     child: Text(
                                       user.location!.trim(),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: AppTheme.textMuted,
                                         fontSize: 11.5,
                                       ),
@@ -522,7 +537,7 @@ GitHub: https://github.com/${u.login}
                               const SizedBox(height: 3),
                               Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.business_outlined,
                                     size: 13,
                                     color: AppTheme.textMuted,
@@ -531,7 +546,7 @@ GitHub: https://github.com/${u.login}
                                   Expanded(
                                     child: Text(
                                       user.company!.trim(),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: AppTheme.textMuted,
                                         fontSize: 11.5,
                                       ),
@@ -559,7 +574,7 @@ GitHub: https://github.com/${u.login}
                       ),
                       child: Text(
                         user.bio!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 12.5,
                           height: 1.4,
@@ -579,7 +594,7 @@ GitHub: https://github.com/${u.login}
             // Section: GitHub Contributions & Streak Statistics
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.local_fire_department_rounded,
                   size: 18,
                   color: AppTheme.accentOrange,
@@ -588,7 +603,7 @@ GitHub: https://github.com/${u.login}
                 Expanded(
                   child: Text(
                     loc.streakStatsTitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -654,7 +669,7 @@ GitHub: https://github.com/${u.login}
             // Key Metrics Grid
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.analytics_outlined,
                   size: 18,
                   color: AppTheme.primaryCyan,
@@ -663,7 +678,7 @@ GitHub: https://github.com/${u.login}
                 Expanded(
                   child: Text(
                     loc.accountOverviewTitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -737,7 +752,7 @@ GitHub: https://github.com/${u.login}
                 Expanded(
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.folder_special_outlined,
                         size: 18,
                         color: AppTheme.primaryCyan,
@@ -746,7 +761,7 @@ GitHub: https://github.com/${u.login}
                       Flexible(
                         child: Text(
                           loc.repositoriesTitle,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -765,7 +780,7 @@ GitHub: https://github.com/${u.login}
                         ),
                         child: Text(
                           '${widget.stats.repos.length} ${loc.totalCountBadge}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.textSecondary,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -787,7 +802,7 @@ GitHub: https://github.com/${u.login}
                   color: AppTheme.surfaceElevated,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: const BorderSide(color: AppTheme.border, width: 1),
+                    side: BorderSide(color: AppTheme.border, width: 1),
                   ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
@@ -799,7 +814,7 @@ GitHub: https://github.com/${u.login}
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.sort_rounded,
                           size: 14,
                           color: AppTheme.primaryCyan,
@@ -807,14 +822,14 @@ GitHub: https://github.com/${u.login}
                         const SizedBox(width: 5),
                         Text(
                           _getFilterLabel(_currentFilter, loc),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 11.5,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(width: 3),
-                        const Icon(
+                        Icon(
                           Icons.arrow_drop_down_rounded,
                           size: 16,
                           color: AppTheme.textSecondary,
@@ -856,7 +871,7 @@ GitHub: https://github.com/${u.login}
                 child: Center(
                   child: Text(
                     loc.noPublicRepos,
-                    style: const TextStyle(color: AppTheme.textMuted),
+                    style: TextStyle(color: AppTheme.textMuted),
                   ),
                 ),
               )
@@ -882,7 +897,7 @@ GitHub: https://github.com/${u.login}
                       _showAllRepos
                           ? loc.showFewerRepos
                           : loc.showAllReposCount(repos.length),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.primaryCyan,
                         fontWeight: FontWeight.w600,
                         fontSize: 12.5,

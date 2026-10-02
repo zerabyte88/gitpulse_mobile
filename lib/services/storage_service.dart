@@ -143,4 +143,24 @@ class StorageService {
   Future<void> setLanguageCode(String code) async {
     await _prefs.setString(_keyLanguage, code);
   }
+
+  // Theme Settings
+  static const String _keyThemeMode = 'gitpulse_theme_mode';
+  static const String _keyJapaneseEasterEgg = 'gitpulse_japanese_theme_unlocked';
+
+  String getThemeMode() {
+    return _prefs.getString(_keyThemeMode) ?? 'dark';
+  }
+
+  Future<void> setThemeMode(String mode) async {
+    await _prefs.setString(_keyThemeMode, mode);
+  }
+
+  bool isJapaneseThemeUnlocked() {
+    return _prefs.getBool(_keyJapaneseEasterEgg) ?? false;
+  }
+
+  Future<void> setJapaneseThemeUnlocked(bool unlocked) async {
+    await _prefs.setBool(_keyJapaneseEasterEgg, unlocked);
+  }
 }

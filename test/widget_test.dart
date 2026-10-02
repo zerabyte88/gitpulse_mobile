@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gitpulse_mobile/localization/app_language.dart';
@@ -11,6 +12,7 @@ import 'package:gitpulse_mobile/models/tech_news.dart';
 import 'package:gitpulse_mobile/models/user_stats.dart';
 import 'package:gitpulse_mobile/screens/stats_detail_screen.dart';
 import 'package:gitpulse_mobile/services/storage_service.dart';
+import 'package:gitpulse_mobile/services/update_service.dart';
 import 'package:gitpulse_mobile/theme/app_theme.dart';
 import 'package:gitpulse_mobile/widgets/animated_tier_title.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -652,6 +654,34 @@ void main() {
       expect(enLoc.buildNumberLabel, 'Build');
       expect(idLoc.viewOnGitHub, 'Lihat Repositori di GitHub');
       expect(enLoc.viewOnGitHub, 'View Repository on GitHub');
+    });
+
+    test('UpdateService compareVersions handles semantic versions correctly', () {
+      expect(UpdateService.compareVersions('v1.0.2', 'v1.0.1'), 1);
+      expect(UpdateService.compareVersions('1.0.1', 'v1.0.1'), 0);
+      expect(UpdateService.compareVersions('v1.0.1', 'v1.0.2'), -1);
+      expect(UpdateService.compareVersions('v1.0.10', 'v1.0.2'), 1);
+      expect(UpdateService.compareVersions('v2.0.0', 'v1.9.9'), 1);
+    });
+
+    test('UpdateService cleanDownloadedApk removes leftover apk files successfully', () async {
+      final tempDir = await Directory.systemTemp.createTemp('gitpulse_ota_test');
+      try {
+        final apkFile = File('${tempDir.path}/gitpulse-test.apk');
+        await apkFile.writeAsString('dummy apk content');
+        expect(await apkFile.exists(), true);
+
+        final nonApkFile = File('${tempDir.path}/important_notes.txt');
+        await nonApkFile.writeAsString('keep me');
+        expect(await nonApkFile.exists(), true);
+
+        final deleted = await UpdateService.cleanDownloadedApk(customPath: tempDir.path);
+        expect(deleted, true);
+        expect(await apkFile.exists(), false);
+        expect(await nonApkFile.exists(), true);
+      } finally {
+        await tempDir.delete(recursive: true);
+      }
     });
   });
 }

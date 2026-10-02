@@ -43,7 +43,7 @@ class LanguageChart extends StatelessWidget {
         child: Center(
           child: Text(
             loc.noLanguageData,
-            style: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+            style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
           ),
         ),
       );
@@ -129,7 +129,7 @@ class LanguageChart extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.code_rounded,
                 size: 16,
                 color: AppTheme.primaryCyan,
@@ -138,7 +138,7 @@ class LanguageChart extends StatelessWidget {
               Expanded(
                 child: Text(
                   loc.languageDistribution,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 14.5,
                     fontWeight: FontWeight.w600,
@@ -192,7 +192,7 @@ class LanguageChart extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '$name ',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textPrimary,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -200,7 +200,7 @@ class LanguageChart extends StatelessWidget {
                           ),
                           TextSpan(
                             text: subtitle,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textMuted,
                               fontSize: 11,
                             ),

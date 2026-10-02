@@ -28,11 +28,18 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   @override
   void initState() {
     super.initState();
-    final isTier1 = widget.titleInfo.tier == 1;
-    // Tier 1 uses dynamic fire loop; other tiers use smooth rhythmic pulse
+    final tier = widget.titleInfo.tier;
+    final durationMs = switch (tier) {
+      1 => 2200,
+      2 => 1800, // fast energetic electric crackle
+      3 => 2400, // digital matrix rhythm
+      4 => 2600, // golden sunlight sweep
+      5 => 3200, // calm cosmic drift
+      _ => 3000, // gentle organic breath
+    };
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: isTier1 ? 2200 : 3000),
+      duration: Duration(milliseconds: durationMs),
     )..repeat();
   }
 
@@ -53,14 +60,19 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
       builder: (context, child) {
         final progress = _controller.value;
 
-        if (tier == 1) {
-          return _buildTier1FireEffect(cleanTitle, progress);
-        } else if (tier == 2) {
-          return _buildTier2ElectricEffect(cleanTitle, progress);
-        } else if (tier == 3) {
-          return _buildTier3EmeraldEffect(cleanTitle, progress);
-        } else {
-          return _buildStandardTierBadge(tier, cleanTitle, progress);
+        switch (tier) {
+          case 1:
+            return _buildTier1FireEffect(cleanTitle, progress);
+          case 2:
+            return _buildTier2ElectricEffect(cleanTitle, progress);
+          case 3:
+            return _buildTier3EmeraldEffect(cleanTitle, progress);
+          case 4:
+            return _buildTier4SolarAmberEffect(cleanTitle, progress);
+          case 5:
+            return _buildTier5CosmicSilverEffect(cleanTitle, progress);
+          default:
+            return _buildTier6SpringSproutEffect(cleanTitle, progress);
         }
       },
     );
@@ -177,22 +189,118 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     );
   }
 
-  /// Tier 2 (Relentless Committer): High-energy electric plasma shimmer
+  /// Tier 2 (Relentless Committer - Diamond): Electric Lightning Plasma Arc Shimmer
   Widget _buildTier2ElectricEffect(String title, double t) {
+    // High-frequency electric spark micro-jitter
+    final crackle = math.sin(t * 8 * math.pi) * 0.25 + math.sin(t * 14 * math.pi) * 0.15;
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
 
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(-1.5 + 3.0 * t, -0.2),
-          end: Alignment(1.5 + 3.0 * t, 0.2),
+          begin: Alignment(-1.8 + 3.6 * t, -0.4),
+          end: Alignment(1.8 + 3.6 * t, 0.4),
           colors: const [
-            Color(0xFF0072FF),
-            Color(0xFF00C6FF),
-            Color(0xFF7DD3FC),
-            Color(0xFF0072FF),
+            Color(0xFF0072FF), // Deep cosmic blue
+            Color(0xFF00D2FF), // Electric cyan
+            Color(0xFF7000FF), // Neon plasma violet
+            Color(0xFFE0F2FE), // White-hot electric core
+            Color(0xFF00D2FF), // Electric cyan
+            Color(0xFF0072FF), // Deep cosmic blue
           ],
+          stops: const [0.0, 0.25, 0.50, 0.70, 0.85, 1.0],
+        ).createShader(bounds);
+      },
+      child: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: widget.fontSize,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.2,
+          shadows: [
+            Shadow(
+              color: const Color(0xFF00D2FF).withValues(alpha: 0.75 + crackle.abs()),
+              blurRadius: 5 + 4 * pulse,
+              offset: const Offset(0, -0.5),
+            ),
+            Shadow(
+              color: const Color(0xFF7000FF).withValues(alpha: 0.55 + 0.2 * pulse),
+              blurRadius: 10 + 6 * pulse,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (!widget.showBadgeContainer) {
+      return textWidget;
+    }
+
+    return Container(
+      padding: widget.padding ??
+          const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF031024).withValues(alpha: 0.90),
+            const Color(0xFF08061E).withValues(alpha: 0.92),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: const Color(0xFF00D2FF).withValues(alpha: 0.45 + 0.35 * pulse),
+          width: 1.1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0072FF).withValues(alpha: 0.30 + 0.25 * pulse),
+            blurRadius: 8 + 6 * pulse,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.bolt_rounded,
+            size: widget.fontSize * 1.1,
+            color: Color.lerp(
+              const Color(0xFF00D2FF),
+              const Color(0xFFE0F2FE),
+              pulse,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Flexible(child: textWidget),
+        ],
+      ),
+    );
+  }
+
+  /// Tier 3 (Consistent Builder - Platinum): Emerald Cyber Matrix Pulse
+  Widget _buildTier3EmeraldEffect(String title, double t) {
+    final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+
+    final textWidget = ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) {
+        return LinearGradient(
+          begin: Alignment(-1.6 + 3.2 * t, 0.0),
+          end: Alignment(1.6 + 3.2 * t, 0.0),
+          colors: const [
+            Color(0xFF059669), // Deep emerald
+            Color(0xFF10B981), // Matrix green
+            Color(0xFF6EE7B7), // Light cyber mint
+            Color(0xFF00FF87), // Vivid neon emerald
+            Color(0xFF059669), // Deep emerald
+          ],
+          stops: const [0.0, 0.30, 0.55, 0.80, 1.0],
         ).createShader(bounds);
       },
       child: Text(
@@ -205,7 +313,85 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           letterSpacing: -0.2,
           shadows: [
             Shadow(
-              color: const Color(0xFF00C6FF).withValues(alpha: 0.5 + 0.3 * pulse),
+              color: const Color(0xFF10B981).withValues(alpha: 0.55 + 0.35 * pulse),
+              blurRadius: 4 + 5 * pulse,
+            ),
+            Shadow(
+              color: const Color(0xFF00FF87).withValues(alpha: 0.30 + 0.20 * pulse),
+              blurRadius: 9 + 4 * pulse,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (!widget.showBadgeContainer) {
+      return textWidget;
+    }
+
+    return Container(
+      padding: widget.padding ??
+          const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+      decoration: BoxDecoration(
+        color: const Color(0xFF04190F).withValues(alpha: 0.88),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: const Color(0xFF10B981).withValues(alpha: 0.40 + 0.30 * pulse),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF059669).withValues(alpha: 0.20 + 0.20 * pulse),
+            blurRadius: 6 + 5 * pulse,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.code_rounded,
+            size: widget.fontSize * 1.05,
+            color: const Color(0xFF00FF87),
+          ),
+          const SizedBox(width: 4),
+          Flexible(child: textWidget),
+        ],
+      ),
+    );
+  }
+
+  /// Tier 4 (Weekend Warrior - Gold): Solar Amber Sunburst Gleam
+  Widget _buildTier4SolarAmberEffect(String title, double t) {
+    final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+
+    final textWidget = ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) {
+        return LinearGradient(
+          begin: Alignment(-1.8 + 3.6 * t, -0.3),
+          end: Alignment(1.8 + 3.6 * t, 0.3),
+          colors: const [
+            Color(0xFFD97706), // Deep solar amber
+            Color(0xFFF59E0B), // Radiant gold
+            Color(0xFFFEF3C7), // White solar flare
+            Color(0xFFFBBF24), // Bright gold
+            Color(0xFFD97706), // Deep solar amber
+          ],
+          stops: const [0.0, 0.35, 0.60, 0.80, 1.0],
+        ).createShader(bounds);
+      },
+      child: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: widget.fontSize,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.2,
+          shadows: [
+            Shadow(
+              color: const Color(0xFFF59E0B).withValues(alpha: 0.50 + 0.30 * pulse),
               blurRadius: 4 + 4 * pulse,
             ),
           ],
@@ -221,15 +407,15 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
       decoration: BoxDecoration(
-        color: const Color(0xFF061526).withValues(alpha: 0.85),
+        color: const Color(0xFF201604).withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: const Color(0xFF00C6FF).withValues(alpha: 0.35 + 0.25 * pulse),
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.35 + 0.25 * pulse),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0072FF).withValues(alpha: 0.15 + 0.15 * pulse),
+            color: const Color(0xFFD97706).withValues(alpha: 0.18 + 0.16 * pulse),
             blurRadius: 6 + 4 * pulse,
           ),
         ],
@@ -238,9 +424,9 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.bolt_rounded,
+            Icons.wb_sunny_rounded,
             size: widget.fontSize * 1.05,
-            color: const Color(0xFF38BDF8),
+            color: const Color(0xFFFBBF24),
           ),
           const SizedBox(width: 4),
           Flexible(child: textWidget),
@@ -249,25 +435,41 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     );
   }
 
-  /// Tier 3 (Consistent Builder): GitHub emerald matrix pulse
-  Widget _buildTier3EmeraldEffect(String title, double t) {
+  /// Tier 5 (Dormant Explorer - Silver): Cosmic Starlight Nebula Drift
+  Widget _buildTier5CosmicSilverEffect(String title, double t) {
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
 
-    final textWidget = Text(
-      title,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-        fontSize: widget.fontSize,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.2,
-        color: const Color(0xFF3FB950),
-        shadows: [
-          Shadow(
-            color: const Color(0xFF3FB950).withValues(alpha: 0.35 + 0.25 * pulse),
-            blurRadius: 3 + 3 * pulse,
-          ),
-        ],
+    final textWidget = ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) {
+        return LinearGradient(
+          begin: Alignment(-1.5 + 3.0 * t, 0.0),
+          end: Alignment(1.5 + 3.0 * t, 0.0),
+          colors: const [
+            Color(0xFF94A3B8), // Slate silver
+            Color(0xFFCBD5E1), // Cool moonlit silver
+            Color(0xFFE2E8F0), // Pure starlight
+            Color(0xFFC4B5FD), // Soft nebula lavender
+            Color(0xFF94A3B8), // Slate silver
+          ],
+          stops: const [0.0, 0.30, 0.55, 0.80, 1.0],
+        ).createShader(bounds);
+      },
+      child: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: widget.fontSize,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.2,
+          shadows: [
+            Shadow(
+              color: const Color(0xFFC4B5FD).withValues(alpha: 0.30 + 0.20 * pulse),
+              blurRadius: 3 + 3 * pulse,
+            ),
+          ],
+        ),
       ),
     );
 
@@ -279,15 +481,15 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
       decoration: BoxDecoration(
-        color: const Color(0xFF061E10).withValues(alpha: 0.80),
+        color: const Color(0xFF10141D).withValues(alpha: 0.82),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: const Color(0xFF3FB950).withValues(alpha: 0.30 + 0.20 * pulse),
-          width: 1,
+          color: const Color(0xFF94A3B8).withValues(alpha: 0.25 + 0.20 * pulse),
+          width: 0.9,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2EA043).withValues(alpha: 0.12 + 0.10 * pulse),
+            color: const Color(0xFFC4B5FD).withValues(alpha: 0.10 + 0.10 * pulse),
             blurRadius: 5 + 3 * pulse,
           ),
         ],
@@ -296,9 +498,9 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.trending_up_rounded,
+            Icons.explore_outlined,
             size: widget.fontSize * 1.05,
-            color: const Color(0xFF3FB950),
+            color: const Color(0xFFCBD5E1),
           ),
           const SizedBox(width: 4),
           Flexible(child: textWidget),
@@ -307,30 +509,10 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     );
   }
 
-  /// Tiers 4, 5, 6: Minimalist ergonomic developer badge with subtle ambient breath
-  Widget _buildStandardTierBadge(int tier, String title, double t) {
-    final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
-    final ({Color accent, Color background, Color border, IconData icon}) style =
-        switch (tier) {
-      4 => (
-          accent: const Color(0xFFD29922),
-          background: const Color(0xFFD29922).withValues(alpha: 0.12),
-          border: const Color(0xFFD29922).withValues(alpha: 0.35),
-          icon: Icons.coffee_rounded,
-        ),
-      5 => (
-          accent: const Color(0xFF8B949E),
-          background: const Color(0xFF8B949E).withValues(alpha: 0.12),
-          border: const Color(0xFF8B949E).withValues(alpha: 0.30),
-          icon: Icons.bedtime_rounded,
-        ),
-      _ => (
-          accent: const Color(0xFF56D364),
-          background: const Color(0xFF56D364).withValues(alpha: 0.10),
-          border: const Color(0xFF56D364).withValues(alpha: 0.28),
-          icon: Icons.eco_rounded,
-        ),
-    };
+  /// Tier 6 (Fresh Sprout - Bronze): Spring Dewdrop Bloom Pulse
+  Widget _buildTier6SpringSproutEffect(String title, double t) {
+    // Gentle natural breath rhythm
+    final breath = (math.sin(t * 2 * math.pi) + 1) / 2;
 
     final textWidget = Text(
       title,
@@ -340,7 +522,17 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         fontSize: widget.fontSize,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.2,
-        color: style.accent,
+        color: Color.lerp(
+          const Color(0xFF4ADE80),
+          const Color(0xFF86EFAC),
+          breath,
+        ),
+        shadows: [
+          Shadow(
+            color: const Color(0xFF22C55E).withValues(alpha: 0.25 + 0.25 * breath),
+            blurRadius: 3 + 3 * breath,
+          ),
+        ],
       ),
     );
 
@@ -352,20 +544,24 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
       decoration: BoxDecoration(
-        color: style.background,
+        color: const Color(0xFF09170E).withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: style.accent.withValues(alpha: 0.25 + 0.15 * pulse),
-          width: 1,
+          color: const Color(0xFF22C55E).withValues(alpha: 0.25 + 0.20 * breath),
+          width: 0.9,
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            style.icon,
+            Icons.eco_rounded,
             size: widget.fontSize * 1.05,
-            color: style.accent,
+            color: Color.lerp(
+              const Color(0xFF4ADE80),
+              const Color(0xFF86EFAC),
+              breath,
+            ),
           ),
           const SizedBox(width: 4),
           Flexible(child: textWidget),
@@ -373,6 +569,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
       ),
     );
   }
+
 }
 
 /// Lightweight hardware-accelerated canvas painter rendering floating fire embers

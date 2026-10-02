@@ -69,7 +69,7 @@ class RepoTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.book_outlined,
                 size: 16,
                 color: AppTheme.textSecondary,
@@ -78,7 +78,7 @@ class RepoTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   repo.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.primaryCyan,
                     fontSize: 14.5,
                     fontWeight: FontWeight.w600,
@@ -96,7 +96,7 @@ class RepoTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: AppTheme.border, width: 0.8),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Fork',
                     style: TextStyle(
                       color: AppTheme.textMuted,
@@ -111,7 +111,7 @@ class RepoTile extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               repo.description!,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 12.5,
                 height: 1.35,
@@ -141,7 +141,7 @@ class RepoTile extends StatelessWidget {
                       constraints: const BoxConstraints(maxWidth: 80),
                       child: Text(
                         repo.language!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -152,7 +152,7 @@ class RepoTile extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                   ],
-                  const Icon(
+                  Icon(
                     Icons.star_outline_rounded,
                     size: 15,
                     color: AppTheme.accentAmber,
@@ -160,14 +160,14 @@ class RepoTile extends StatelessWidget {
                   const SizedBox(width: 3),
                   Text(
                     '${repo.stargazersCount}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Icon(
+                  Icon(
                     Icons.call_split_rounded,
                     size: 14,
                     color: AppTheme.textMuted,
@@ -175,7 +175,7 @@ class RepoTile extends StatelessWidget {
                   const SizedBox(width: 3),
                   Text(
                     '${repo.forksCount}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,

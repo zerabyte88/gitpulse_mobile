@@ -81,7 +81,7 @@ class ActivityChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Expanded(
+              Expanded(
                 child: Row(
                   children: [
                     Icon(
@@ -89,7 +89,7 @@ class ActivityChart extends StatelessWidget {
                       size: 16,
                       color: AppTheme.primaryCyan,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Ritme Jam Produktif',
@@ -119,7 +119,7 @@ class ActivityChart extends StatelessWidget {
                   ),
                   child: Text(
                     'Peak: ${intervals[peakIndex]['label']}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.accentGreen,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -129,7 +129,7 @@ class ActivityChart extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'Distribusi aktivitas commit & event menurut jam lokal perangkat',
             style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
           ),
@@ -148,7 +148,7 @@ class ActivityChart extends StatelessWidget {
                       final item = intervals[group.x.toInt()];
                       return BarTooltipItem(
                         '${item['label']}\n${rod.toY.toInt()} event',
-                        const TextStyle(
+                        TextStyle(
                           color: AppTheme.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 11.5,
@@ -175,7 +175,7 @@ class ActivityChart extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
                             intervals[index]['label'] as String,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textSecondary,
                               fontSize: 11,
                               fontWeight: FontWeight.w500,

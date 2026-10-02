@@ -34,14 +34,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSearchFocused = false;
 
   // News State
-  String _selectedCategory = 'ai';
+  String _selectedCategory = 'trending';
   List<TechNews> _newsList = [];
   bool _isNewsLoading = true;
 
   List<Map<String, String>> _getCategories(AppLocalizations loc) => [
+    {'id': 'trending', 'label': loc.categoryTrending},
+    {'id': 'github', 'label': loc.categoryGithub},
     {'id': 'ai', 'label': loc.categoryAi},
     {'id': 'technology', 'label': loc.categoryTech},
     {'id': 'opensource', 'label': loc.categoryOpenSource},
+    {'id': 'webdev', 'label': loc.categoryWebDev},
   ];
 
   @override
@@ -84,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     try {
+      _newsService.personalAccessToken = widget.storageService.getToken();
       final news = await _newsService.fetchNews(tag: _selectedCategory);
       if (mounted) {
         setState(() {
@@ -188,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: AppTheme.border, width: 1),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.terminal_rounded,
                   color: AppTheme.primaryCyan,
                   size: 18,
@@ -211,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppTheme.border, width: 0.8),
                 ),
-                child: const Text(
+                child: Text(
                   AppConfig.appVersion,
                   style: TextStyle(
                     color: AppTheme.textMuted,
@@ -247,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 5),
                       Text(
                         '${rateLimit.used}/${rateLimit.limit}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -259,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             IconButton(
               tooltip: loc.settingsTitle,
-              icon: const Icon(Icons.tune_rounded, size: 20, color: AppTheme.textSecondary),
+              icon: Icon(Icons.tune_rounded, size: 20, color: AppTheme.textSecondary),
               onPressed: _openSettingsSheet,
             ),
           ],
@@ -300,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.error_outline_rounded,
                           color: AppTheme.accentRed,
                           size: 17,
@@ -309,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: Text(
                             _errorMessage!,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.accentRed,
                               fontSize: 12,
                             ),
@@ -353,9 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: _isSearchFocused ? AppTheme.primaryCyan : AppTheme.textSecondary,
         ),
         suffixIcon: _isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(12),
-                child: SizedBox(
+            ? Padding(padding: EdgeInsets.all(12), child: SizedBox(
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(
@@ -369,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   if (_searchController.text.isNotEmpty || _isSearchFocused)
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
+                      icon: Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
                       tooltip: loc.close,
                       onPressed: () {
                         _searchController.clear();
@@ -378,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   IconButton(
-                    icon: const Icon(Icons.arrow_forward_rounded, size: 18, color: AppTheme.primaryCyan),
+                    icon: Icon(Icons.arrow_forward_rounded, size: 18, color: AppTheme.primaryCyan),
                     tooltip: 'GitHub',
                     onPressed: () => _searchUser(_searchController.text),
                   ),
@@ -409,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(left: 14, right: 8, top: 10, bottom: 6),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.history_rounded,
                   size: 16,
                   color: AppTheme.textSecondary,
@@ -417,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 8),
                 Text(
                   loc.recentSearches,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -436,14 +438,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Text(
                       loc.clearAll,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.accentRed,
                         fontSize: 11,
                       ),
                     ),
                   ),
                 IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 18, color: AppTheme.textMuted),
+                  icon: Icon(Icons.keyboard_arrow_up_rounded, size: 18, color: AppTheme.textMuted),
                   tooltip: loc.close,
                   onPressed: () => _searchFocusNode.unfocus(),
                   visualDensity: VisualDensity.compact,
@@ -451,21 +453,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppTheme.border),
+          Divider(height: 1, color: AppTheme.border),
 
           // Quick action if typed query does not exactly match
           if (_searchController.text.trim().isNotEmpty) ...[
             ListTile(
               dense: true,
               visualDensity: VisualDensity.compact,
-              leading: const Icon(Icons.search_rounded, size: 16, color: AppTheme.primaryCyan),
+              leading: Icon(Icons.search_rounded, size: 16, color: AppTheme.primaryCyan),
               title: RichText(
                 text: TextSpan(
-                  style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13),
+                  style: TextStyle(color: AppTheme.textPrimary, fontSize: 13),
                   children: [
                     TextSpan(
                       text: '"${_searchController.text.trim()}"',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.primaryCyan,
                         fontWeight: FontWeight.w600,
                       ),
@@ -474,10 +476,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              trailing: const Icon(Icons.arrow_forward_rounded, size: 15, color: AppTheme.primaryCyan),
+              trailing: Icon(Icons.arrow_forward_rounded, size: 15, color: AppTheme.primaryCyan),
               onTap: () => _searchUser(_searchController.text),
             ),
-            const Divider(height: 1, color: AppTheme.border),
+            Divider(height: 1, color: AppTheme.border),
           ],
 
           // History items list
@@ -495,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: Text(
                       loc.noRecentSearches,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.textMuted,
                         fontSize: 12,
                       ),
@@ -509,21 +511,21 @@ class _HomeScreenState extends State<HomeScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: filteredRecents.length,
-              separatorBuilder: (context, index) => const Divider(height: 1, color: AppTheme.border),
+              separatorBuilder: (context, index) => Divider(height: 1, color: AppTheme.border),
               itemBuilder: (context, index) {
                 final username = filteredRecents[index];
                 return ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,
                   contentPadding: const EdgeInsets.only(left: 14, right: 6),
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.history_rounded,
                     size: 16,
                     color: AppTheme.textMuted,
                   ),
                   title: Text(
                     username,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -533,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.north_west_rounded, size: 14, color: AppTheme.textMuted),
+                        icon: Icon(Icons.north_west_rounded, size: 14, color: AppTheme.textMuted),
                         tooltip: username,
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
@@ -544,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, size: 15, color: AppTheme.textMuted),
+                        icon: Icon(Icons.close_rounded, size: 15, color: AppTheme.textMuted),
                         tooltip: loc.close,
                         visualDensity: VisualDensity.compact,
                         onPressed: () async {
@@ -584,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppTheme.border, width: 0.8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.star_outline_rounded,
                 color: AppTheme.accentAmber,
                 size: 18,
@@ -597,7 +599,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     loc.favoriteProfiles,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
@@ -606,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 2),
                   Text(
                     loc.emptyBookmarks,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textMuted,
                       fontSize: 11.5,
                     ),
@@ -624,7 +626,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Row(
           children: [
-            const Icon(
+            Icon(
               Icons.bookmark_outline_rounded,
               size: 17,
               color: AppTheme.accentAmber,
@@ -632,7 +634,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 8),
             Text(
               loc.favoriteProfiles,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textPrimary,
                 fontSize: 14.5,
                 fontWeight: FontWeight.w600,
@@ -648,7 +650,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Text(
                 '${bookmarks.length}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textSecondary,
                   fontSize: 10.5,
                   fontWeight: FontWeight.w600,
@@ -704,9 +706,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (loadingProgress == null) return child;
                               return Container(
                                 color: AppTheme.surfaceElevated,
-                                child: const Center(
-                                  child: SizedBox(
-                                    width: 14,
+                                child: Center(child: SizedBox(width: 14,
                                     height: 14,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1.5,
@@ -718,7 +718,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             errorBuilder: (context, error, stackTrace) => Container(
                               color: AppTheme.surfaceElevated,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.person_outline_rounded,
                                 size: 18,
                                 color: AppTheme.textMuted,
@@ -739,14 +739,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               user.username,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppTheme.textPrimary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 2),
-                            const Text(
+                            Text(
                               'github.com',
                               style: TextStyle(
                                 color: AppTheme.textMuted,
@@ -760,7 +760,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // Remove favorite button
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.close_rounded,
                           size: 14,
                           color: AppTheme.textMuted,
@@ -795,7 +795,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.feed_outlined,
                   size: 18,
                   color: AppTheme.primaryCyan,
@@ -803,7 +803,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 8),
                 Text(
                   loc.techNewsTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -812,7 +812,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             IconButton(
-              icon: const Icon(Icons.refresh_rounded, size: 18, color: AppTheme.textSecondary),
+              icon: Icon(Icons.refresh_rounded, size: 18, color: AppTheme.textSecondary),
               tooltip: loc.refresh,
               onPressed: () => _loadNews(refresh: true),
               visualDensity: VisualDensity.compact,
@@ -873,10 +873,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(vertical: 36),
               child: Column(
                 children: [
-                  const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
+                  SizedBox(width: 24, height: 24, child: CircularProgressIndicator(
                       strokeWidth: 2,
                       color: AppTheme.primaryCyan,
                     ),
