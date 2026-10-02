@@ -657,12 +657,12 @@ void main() {
       expect(find.text('150'), findsOneWidget);
     });
 
-    test('AppConfig provides accurate release and version telemetry for v1.0.2', () {
+    test('AppConfig provides accurate release and version telemetry for v1.0.3', () {
       expect(AppConfig.appName, 'GitPulse');
-      expect(AppConfig.appVersion, 'v1.0.2');
-      expect(AppConfig.buildNumber, '3');
-      expect(AppConfig.fullVersion, 'v1.0.2 (Build 3)');
-      expect(AppConfig.releaseTag, 'v1.0.2');
+      expect(AppConfig.appVersion, 'v1.0.3');
+      expect(AppConfig.buildNumber, '4');
+      expect(AppConfig.fullVersion, 'v1.0.3 (Build 4)');
+      expect(AppConfig.releaseTag, 'v1.0.3');
       expect(AppConfig.license, 'MIT License');
       expect(AppConfig.githubRepoUrl, contains('github.com'));
     });
@@ -728,6 +728,47 @@ void main() {
       service.clearCache();
       final thirdFetch = await service.fetchNews(tag: 'ai');
       expect(thirdFetch.isNotEmpty, true);
+    });
+
+    test('UpdateService backupApkToDownloads handles missing files safely without throwing', () async {
+      final result = await UpdateService.backupApkToDownloads(versionTag: 'v1.0.3');
+      // In unit test environment (not Android or source file not present), should safely return null
+      expect(result, isNull);
+    });
+
+    test('UpdateService cleanInstalledBackupApk deletes only installed GitPulse APK and preserves user data', () async {
+      final tempDir = await Directory.systemTemp.createTemp('gitpulse_download_test');
+      try {
+        final installedApk = File('${tempDir.path}/GitPulse-v1.0.3.apk');
+        final newerApk = File('${tempDir.path}/GitPulse-v1.0.4.apk');
+        final otherApk = File('${tempDir.path}/OtherApp.apk');
+        final userDocument = File('${tempDir.path}/important_document.pdf');
+        final userPhoto = File('${tempDir.path}/family_photo.jpg');
+
+        await installedApk.writeAsString('mock apk 1.0.3');
+        await newerApk.writeAsString('mock apk 1.0.4');
+        await otherApk.writeAsString('mock other apk');
+        await userDocument.writeAsString('mock user pdf document');
+        await userPhoto.writeAsString('mock user photo');
+
+        final deleted = await UpdateService.cleanInstalledBackupApk(
+          currentVersion: '1.0.3',
+          customPath: tempDir.path,
+        );
+
+        expect(deleted, true);
+        // The installed APK must be deleted
+        expect(await installedApk.exists(), false);
+        // Newer APK (not yet installed) must be preserved
+        expect(await newerApk.exists(), true);
+        // Other app APK must NEVER be touched
+        expect(await otherApk.exists(), true);
+        // User personal documents and photos must NEVER be touched
+        expect(await userDocument.exists(), true);
+        expect(await userPhoto.exists(), true);
+      } finally {
+        await tempDir.delete(recursive: true);
+      }
     });
   });
 }

@@ -180,4 +180,176 @@ class UpdateService {
     }
     return deletedAny;
   }
+
+  /// Copies the downloaded update APK to standard Android public downloads directory
+  /// (/storage/emulated/0/Download) as a permanent fallback backup for manual installation.
+  static Future<String?> backupApkToDownloads({String? versionTag}) async {
+    if (!Platform.isAndroid) return null;
+    try {
+      final sourceCandidates = <String>[];
+      try {
+        final parentDir = Directory.systemTemp.parent.path;
+        sourceCandidates.add('$parentDir/files/ota_update/gitpulse-latest.apk');
+      } catch (_) {}
+      sourceCandidates.addAll([
+        '/data/user/0/com.gitpulse.gitpulse_mobile/files/ota_update/gitpulse-latest.apk',
+        '/data/data/com.gitpulse.gitpulse_mobile/files/ota_update/gitpulse-latest.apk',
+      ]);
+
+      File? sourceFile;
+      for (final p in sourceCandidates) {
+        final f = File(p);
+        if (await f.exists() && await f.length() > 0) {
+          sourceFile = f;
+          break;
+        }
+      }
+
+      if (sourceFile == null) return null;
+
+      final apkName = 'GitPulse-${versionTag ?? AppConfig.appVersion}.apk';
+      final targetDirs = [
+        '/storage/emulated/0/Download',
+        '/storage/emulated/0/downloads',
+        '/sdcard/Download',
+      ];
+
+      for (final dirPath in targetDirs) {
+        try {
+          final dir = Directory(dirPath);
+          if (!await dir.exists()) {
+            await dir.create(recursive: true);
+          }
+          final targetFile = File('$dirPath/$apkName');
+          await sourceFile.copy(targetFile.path);
+          if (await targetFile.exists()) {
+            return targetFile.path;
+          }
+        } catch (_) {
+          // Continue to next candidate directory
+        }
+      }
+    } catch (_) {
+      // Ignore copy error
+    }
+    return null;
+  }
+
+  /// Downloads the APK directly and saves a copy in /storage/emulated/0/Download
+  static Future<String?> downloadApkToDownloads(
+    String downloadUrl, {
+    String? versionTag,
+  }) async {
+    if (!Platform.isAndroid) return null;
+    try {
+      final apkName = 'GitPulse-${versionTag ?? AppConfig.appVersion}.apk';
+      final targetDirs = [
+        '/storage/emulated/0/Download',
+        '/storage/emulated/0/downloads',
+        '/sdcard/Download',
+      ];
+
+      final client = http.Client();
+      final response = await client
+          .get(Uri.parse(downloadUrl))
+          .timeout(const Duration(seconds: 45));
+      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+        for (final dirPath in targetDirs) {
+          try {
+            final dir = Directory(dirPath);
+            if (!await dir.exists()) {
+              await dir.create(recursive: true);
+            }
+            final targetFile = File('$dirPath/$apkName');
+            await targetFile.writeAsBytes(response.bodyBytes);
+            if (await targetFile.exists()) {
+              return targetFile.path;
+            }
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  /// Automatically removes GitPulse update APKs from the Android public downloads
+  /// directory (/storage/emulated/0/Download) once they have been successfully installed.
+  ///
+  /// STRICT SAFETY GUARD:
+  /// - Only targets files whose filename strictly starts with "gitpulse-" or "gitpulse_"
+  ///   and ends with ".apk".
+  /// - ONLY deletes the file if its version is <= the installed [currentVersion].
+  /// - NEVER deletes or modifies any user files, documents, pictures, or other APKs in the folder.
+  static Future<bool> cleanInstalledBackupApk({
+    String? currentVersion,
+    String? customPath,
+  }) async {
+    if (customPath == null && !Platform.isAndroid) return false;
+    bool deletedAny = false;
+    final activeVersion = currentVersion ?? AppConfig.appVersion;
+
+    try {
+      final targetDirs = <String>[];
+      if (customPath != null) {
+        targetDirs.add(customPath);
+      } else {
+        targetDirs.addAll([
+          '/storage/emulated/0/Download',
+          '/storage/emulated/0/downloads',
+          '/sdcard/Download',
+        ]);
+      }
+
+      for (final dirPath in targetDirs) {
+        try {
+          final dir = Directory(dirPath);
+          if (!await dir.exists()) continue;
+
+          final entries = await dir.list().toList();
+          for (final entry in entries) {
+            if (entry is! File) continue;
+
+            final fileName = entry.uri.pathSegments.isNotEmpty
+                ? entry.uri.pathSegments.last
+                : entry.path.split(Platform.pathSeparator).last;
+            final lowerName = fileName.toLowerCase();
+
+            // Strict safety check: must end with .apk
+            if (!lowerName.endsWith('.apk')) {
+              continue;
+            }
+
+            // Strict safety check: must start with gitpulse- or gitpulse_
+            if (!lowerName.startsWith('gitpulse-') &&
+                !lowerName.startsWith('gitpulse_')) {
+              continue;
+            }
+
+            // Extract version from filename: e.g. "GitPulse-v1.0.2.apk" -> "1.0.2"
+            final match = RegExp(
+              r'^gitpulse[-_]v?([0-9]+(?:\.[0-9]+)*).*\.apk$',
+              caseSensitive: false,
+            ).firstMatch(fileName);
+
+            if (match != null) {
+              final fileVersion = match.group(1);
+              if (fileVersion != null) {
+                // If the file version is <= the currently installed app version,
+                // it has been successfully installed, so safely delete the backup APK!
+                if (compareVersions(fileVersion, activeVersion) <= 0) {
+                  await entry.delete();
+                  deletedAny = true;
+                }
+              }
+            } else if (lowerName == 'gitpulse-latest.apk') {
+              await entry.delete();
+              deletedAny = true;
+            }
+          }
+        } catch (_) {}
+      }
+    } catch (_) {}
+
+    return deletedAny;
+  }
 }

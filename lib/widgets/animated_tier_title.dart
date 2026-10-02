@@ -82,18 +82,20 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
 
   /// Tier 1 (Code Titan): Authentic animated fire & flame embers effect
   Widget _buildTier1FireEffect(String title, double t) {
-    // Natural flame flicker physics (harmonic superposition)
-    final flicker = (math.sin(t * 2 * math.pi) * 0.65 +
-        math.sin(t * 6 * math.pi + 1.2) * 0.35);
-    final wave = math.sin(t * 2 * math.pi) * 0.25;
+    // Smooth natural flame flicker physics (harmonic continuous waves)
+    final flamePulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+    final flameFlutter = (math.sin(t * 4 * math.pi) + 1) / 2;
+    final flameIntensity = (flamePulse * 0.70 + flameFlutter * 0.30).clamp(0.0, 1.0);
+    final wave = math.sin(t * 2 * math.pi) * 0.18;
+    final heatRise = math.sin(t * 2 * math.pi) * 0.08;
 
     // Fiery blazing text with dynamic vertical heatwave gradient
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(wave, 1.2),
-          end: Alignment(-wave, -1.0),
+          begin: Alignment(wave, 1.1 + heatRise),
+          end: Alignment(-wave, -1.0 + heatRise),
           colors: const [
             Color(0xFFFF1744), // Base deep ruby ember
             Color(0xFFFF3D00), // Blazing flame red
@@ -115,19 +117,19 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           shadows: [
             Shadow(
               color: const Color(0xFFFF9100)
-                  .withValues(alpha: 0.85 + 0.15 * flicker.abs()),
-              blurRadius: 3.5 + 2.5 * flicker.abs(),
+                  .withValues(alpha: 0.80 + 0.20 * flameIntensity),
+              blurRadius: 3.5 + 2.5 * flameIntensity,
               offset: const Offset(0, -1),
             ),
             Shadow(
               color: const Color(0xFFFF3D00)
-                  .withValues(alpha: 0.65 + 0.20 * flicker.abs()),
-              blurRadius: 8.0 + 4.0 * flicker.abs(),
+                  .withValues(alpha: 0.60 + 0.25 * flameIntensity),
+              blurRadius: 7.0 + 4.0 * flameIntensity,
               offset: const Offset(0, -2),
             ),
             Shadow(
               color: const Color(0xFFFF1744).withValues(alpha: 0.35),
-              blurRadius: 14.0,
+              blurRadius: 12.0,
             ),
           ],
         ),
@@ -147,7 +149,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     final borderHeat = Color.lerp(
       const Color(0xFFFF3D00),
       const Color(0xFFFF9100),
-      (flicker + 1) / 2,
+      flameIntensity,
     )!;
 
     return Container(
@@ -164,14 +166,14 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         ),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: borderHeat.withValues(alpha: 0.55 + 0.25 * flicker.abs()),
+          color: borderHeat.withValues(alpha: 0.55 + 0.25 * flameIntensity),
           width: 1.1,
         ),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFFF3D00)
-                .withValues(alpha: 0.25 + 0.15 * flicker.abs()),
-            blurRadius: 8 + 6 * flicker.abs(),
+                .withValues(alpha: 0.25 + 0.15 * flameIntensity),
+            blurRadius: 8 + 6 * flameIntensity,
             spreadRadius: 0,
           ),
         ],
@@ -194,24 +196,27 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   /// Tier 2 (Relentless Committer - Diamond): Electric Lightning Plasma Arc Shimmer
   Widget _buildTier2ElectricEffect(String title, double t) {
     // High-frequency electric spark micro-jitter
-    final crackle = math.sin(t * 8 * math.pi) * 0.25 + math.sin(t * 14 * math.pi) * 0.15;
+    final crackle = math.sin(t * 8 * math.pi) * 0.20 + math.sin(t * 14 * math.pi) * 0.10;
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+    final sweep = -2.6 + 5.2 * t;
 
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(-1.8 + 3.6 * t, -0.4),
-          end: Alignment(1.8 + 3.6 * t, 0.4),
+          begin: Alignment(sweep - 1.2, -0.4),
+          end: Alignment(sweep + 1.2, 0.4),
           colors: const [
-            Color(0xFF0072FF), // Deep cosmic blue
+            Color(0xFF0072FF), // Deep cosmic blue (base)
+            Color(0xFF0072FF),
             Color(0xFF00D2FF), // Electric cyan
-            Color(0xFF7000FF), // Neon plasma violet
             Color(0xFFE0F2FE), // White-hot electric core
+            Color(0xFF7000FF), // Neon plasma violet
             Color(0xFF00D2FF), // Electric cyan
-            Color(0xFF0072FF), // Deep cosmic blue
+            Color(0xFF0072FF),
+            Color(0xFF0072FF), // Deep cosmic blue (base)
           ],
-          stops: const [0.0, 0.25, 0.50, 0.70, 0.85, 1.0],
+          stops: const [0.0, 0.20, 0.40, 0.50, 0.60, 0.80, 0.90, 1.0],
         ).createShader(bounds);
       },
       child: Text(
@@ -288,21 +293,24 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   /// Tier 3 (Consistent Builder - Platinum): Emerald Cyber Matrix Pulse
   Widget _buildTier3EmeraldEffect(String title, double t) {
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+    final sweep = -2.6 + 5.2 * t;
 
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(-1.6 + 3.2 * t, 0.0),
-          end: Alignment(1.6 + 3.2 * t, 0.0),
+          begin: Alignment(sweep - 1.2, 0.0),
+          end: Alignment(sweep + 1.2, 0.0),
           colors: const [
-            Color(0xFF059669), // Deep emerald
+            Color(0xFF059669), // Deep emerald (base)
+            Color(0xFF059669),
             Color(0xFF10B981), // Matrix green
+            Color(0xFF00FF87), // Vivid neon emerald highlight
             Color(0xFF6EE7B7), // Light cyber mint
-            Color(0xFF00FF87), // Vivid neon emerald
-            Color(0xFF059669), // Deep emerald
+            Color(0xFF059669),
+            Color(0xFF059669), // Deep emerald (base)
           ],
-          stops: const [0.0, 0.30, 0.55, 0.80, 1.0],
+          stops: const [0.0, 0.20, 0.42, 0.50, 0.58, 0.80, 1.0],
         ).createShader(bounds);
       },
       child: Text(
@@ -366,21 +374,24 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   /// Tier 4 (Weekend Warrior - Gold): Solar Amber Sunburst Gleam
   Widget _buildTier4SolarAmberEffect(String title, double t) {
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+    final sweep = -2.6 + 5.2 * t;
 
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(-1.8 + 3.6 * t, -0.3),
-          end: Alignment(1.8 + 3.6 * t, 0.3),
+          begin: Alignment(sweep - 1.2, -0.3),
+          end: Alignment(sweep + 1.2, 0.3),
           colors: const [
-            Color(0xFFD97706), // Deep solar amber
+            Color(0xFFD97706), // Deep solar amber (base)
+            Color(0xFFD97706),
             Color(0xFFF59E0B), // Radiant gold
-            Color(0xFFFEF3C7), // White solar flare
+            Color(0xFFFEF3C7), // White solar flare highlight
             Color(0xFFFBBF24), // Bright gold
-            Color(0xFFD97706), // Deep solar amber
+            Color(0xFFD97706),
+            Color(0xFFD97706), // Deep solar amber (base)
           ],
-          stops: const [0.0, 0.35, 0.60, 0.80, 1.0],
+          stops: const [0.0, 0.20, 0.42, 0.50, 0.58, 0.80, 1.0],
         ).createShader(bounds);
       },
       child: Text(
@@ -440,21 +451,24 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
   /// Tier 5 (Dormant Explorer - Silver): Cosmic Starlight Nebula Drift
   Widget _buildTier5CosmicSilverEffect(String title, double t) {
     final pulse = (math.sin(t * 2 * math.pi) + 1) / 2;
+    final sweep = -2.6 + 5.2 * t;
 
     final textWidget = ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) {
         return LinearGradient(
-          begin: Alignment(-1.5 + 3.0 * t, 0.0),
-          end: Alignment(1.5 + 3.0 * t, 0.0),
+          begin: Alignment(sweep - 1.2, 0.0),
+          end: Alignment(sweep + 1.2, 0.0),
           colors: const [
-            Color(0xFF94A3B8), // Slate silver
+            Color(0xFF94A3B8), // Slate silver (base)
+            Color(0xFF94A3B8),
             Color(0xFFCBD5E1), // Cool moonlit silver
-            Color(0xFFE2E8F0), // Pure starlight
+            Color(0xFFE2E8F0), // Pure starlight highlight
             Color(0xFFC4B5FD), // Soft nebula lavender
-            Color(0xFF94A3B8), // Slate silver
+            Color(0xFF94A3B8),
+            Color(0xFF94A3B8), // Slate silver (base)
           ],
-          stops: const [0.0, 0.30, 0.55, 0.80, 1.0],
+          stops: const [0.0, 0.20, 0.42, 0.50, 0.58, 0.80, 1.0],
         ).createShader(bounds);
       },
       child: Text(
@@ -584,12 +598,14 @@ class _FlameEmbersPainter extends CustomPainter {
   static final Paint _corePaint = Paint();
 
   static const List<_EmberSpec> _embers = [
-    _EmberSpec(xRatio: 0.10, speed: 1.0, size: 1.6, phase: 0.05, color: Color(0xFFFF9100)),
-    _EmberSpec(xRatio: 0.26, speed: 1.3, size: 1.3, phase: 0.40, color: Color(0xFFFFD600)),
-    _EmberSpec(xRatio: 0.48, speed: 0.9, size: 2.0, phase: 0.75, color: Color(0xFFFF3D00)),
-    _EmberSpec(xRatio: 0.65, speed: 1.4, size: 1.4, phase: 0.20, color: Color(0xFFFF9100)),
-    _EmberSpec(xRatio: 0.82, speed: 1.1, size: 1.8, phase: 0.60, color: Color(0xFFFFEA00)),
-    _EmberSpec(xRatio: 0.95, speed: 0.95, size: 1.2, phase: 0.90, color: Color(0xFFFF5722)),
+    _EmberSpec(xRatio: 0.08, size: 1.5, phase: 0.00, color: Color(0xFFFF9100)),
+    _EmberSpec(xRatio: 0.22, size: 1.2, phase: 0.25, color: Color(0xFFFFD600)),
+    _EmberSpec(xRatio: 0.38, size: 1.8, phase: 0.50, color: Color(0xFFFF3D00)),
+    _EmberSpec(xRatio: 0.52, size: 1.4, phase: 0.75, color: Color(0xFFFFEA00)),
+    _EmberSpec(xRatio: 0.68, size: 1.6, phase: 0.12, color: Color(0xFFFF9100)),
+    _EmberSpec(xRatio: 0.82, size: 1.3, phase: 0.38, color: Color(0xFFFFD600)),
+    _EmberSpec(xRatio: 0.94, size: 1.7, phase: 0.62, color: Color(0xFFFF5722)),
+    _EmberSpec(xRatio: 0.44, size: 1.1, phase: 0.88, color: Color(0xFFFFC107)),
   ];
 
   @override
@@ -597,17 +613,20 @@ class _FlameEmbersPainter extends CustomPainter {
     if (size.width <= 0 || size.height <= 0) return;
 
     for (final ember in _embers) {
-      final t = (progress * ember.speed + ember.phase) % 1.0;
-      // Drift upwards from slightly below text to above text
-      final y = size.height * 1.05 - t * (size.height * 1.35);
+      // 1 full continuous cycle per animation loop: (progress + phase) % 1.0
+      // Eliminates any teleportation when animation controller repeats
+      final t = (progress + ember.phase) % 1.0;
 
-      // Natural draft air sway
-      final sway = math.sin((t * 2 + ember.phase) * math.pi) * 3.5;
+      // Drift upwards continuously from below text to above text
+      final y = size.height * 1.05 - t * (size.height * 1.40);
+
+      // Natural draft air sway: sin(t * 2 * pi) == 0 at t=0 and t=1
+      final sway = math.sin(t * 2 * math.pi) * 3.0;
       final x = (size.width * ember.xRatio + sway).clamp(0.0, size.width);
 
-      // Opacity bell curve
+      // Smooth opacity bell curve: 0 at start, 1 at midpoint, 0 at end
       final alpha = math.sin(t * math.pi).clamp(0.0, 1.0);
-      if (alpha <= 0.02) continue;
+      if (alpha <= 0.01) continue;
 
       // Outer glowing halo
       _glowPaint.color = ember.color.withValues(alpha: alpha * 0.70);
@@ -626,14 +645,12 @@ class _FlameEmbersPainter extends CustomPainter {
 
 class _EmberSpec {
   final double xRatio;
-  final double speed;
   final double size;
   final double phase;
   final Color color;
 
   const _EmberSpec({
     required this.xRatio,
-    required this.speed,
     required this.size,
     required this.phase,
     required this.color,

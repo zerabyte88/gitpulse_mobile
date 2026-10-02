@@ -9,13 +9,13 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Release Tag (e.g., v1.0.2)'
+        description: 'Release Tag (e.g., v1.0.3)'
         required: true
-        default: 'v1.0.2'
+        default: 'v1.0.3'
       release_name:
         description: 'Release Title'
         required: true
-        default: 'GitPulse v1.0.2 (64-bit ARM)'
+        default: 'GitPulse v1.0.3 (64-bit ARM)'
       release_notes:
         description: 'Release Notes'
         required: false
@@ -78,7 +78,7 @@ jobs:
           elif [ -n "$PUBSPEC_VER" ]; then
             TAG="v$PUBSPEC_VER"
           else
-            TAG="v1.0.2"
+            TAG="v1.0.3"
           fi
           APK_NAME="GitPulse-${TAG}-arm64-v8a.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "${APK_NAME}"

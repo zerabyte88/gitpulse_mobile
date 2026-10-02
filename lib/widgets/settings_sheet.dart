@@ -61,6 +61,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
   bool _isDownloadingUpdate = false;
   String _downloadProgress = '';
   String? _updateError;
+  String? _backupApkPath;
   StreamSubscription<OtaEvent>? _otaSubscription;
 
   // Easter Egg State
@@ -114,6 +115,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
       });
       if (!info.hasUpdate) {
         UpdateService.cleanDownloadedApk();
+        UpdateService.cleanInstalledBackupApk();
       }
     }
   }
@@ -135,13 +137,32 @@ class _SettingsSheetState extends State<SettingsSheet> {
           } else if (event.status == OtaStatus.INSTALLING) {
             _downloadProgress = loc.installingUpdate;
             _isDownloadingUpdate = false;
+            UpdateService.backupApkToDownloads(
+              versionTag: _updateInfo?.latestVersion,
+            ).then((path) {
+              if (path != null && mounted) {
+                setState(() {
+                  _backupApkPath = path;
+                });
+              }
+            });
           } else if (event.status == OtaStatus.INSTALLATION_DONE) {
             _downloadProgress = loc.alreadyLatestVersion;
             _isDownloadingUpdate = false;
             UpdateService.cleanDownloadedApk();
+            UpdateService.cleanInstalledBackupApk();
           } else {
             _isDownloadingUpdate = false;
             _updateError = loc.updateFailed;
+            UpdateService.backupApkToDownloads(
+              versionTag: _updateInfo?.latestVersion,
+            ).then((path) {
+              if (path != null && mounted) {
+                setState(() {
+                  _backupApkPath = path;
+                });
+              }
+            });
             UpdateService.cleanDownloadedApk();
           }
         });
@@ -1176,6 +1197,39 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       Text(
                         '$_updateError. ${loc.openInBrowser}',
                         style: TextStyle(color: AppTheme.accentRed, fontSize: 11),
+                      ),
+                    ],
+
+                    if (_backupApkPath != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentGreen.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppTheme.accentGreen.withValues(alpha: 0.35),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.folder_zip_outlined, size: 15, color: AppTheme.accentGreen),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Backup APK tersimpan di: $_backupApkPath',
+                                style: TextStyle(
+                                  color: AppTheme.accentGreen,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ],

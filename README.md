@@ -12,13 +12,13 @@
 
 ### Enterprise-Grade Developer Telemetry & Productivity Analytics
 
-[![Release](https://img.shields.io/badge/Release-v1.0.2-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
-[![Build](https://img.shields.io/badge/Build-3-brightgreen?style=flat-square)](pubspec.yaml)
+[![Release](https://img.shields.io/badge/Release-v1.0.3-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
+[![Build](https://img.shields.io/badge/Build-4-brightgreen?style=flat-square)](pubspec.yaml)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/main.yml)
-[![Tests](https://img.shields.io/badge/Tests-Passing%20(20%2F20)-success?style=flat-square)](test/widget_test.dart)
+[![Tests](https://img.shields.io/badge/Tests-Passing%20(23%2F23)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
 
@@ -77,11 +77,20 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>Automatic Post-Install APK Deletion</b><br/>
-        <i>Zero Storage Waste</i>
+        <b>OTA Update & Dual Backup Protection</b><br/>
+        <i>Seamless In-Place Upgrades & Manual Fallback</i>
       </td>
       <td>
-        Automatically purges leftover APK binaries from internal storage (<code>/files/ota_update/gitpulse-latest.apk</code>) upon app launch or installation completion, preventing downloaded update packages from consuming device storage.
+        Queries GitHub Releases API for new semantic version tags. Downloads APK assets in the background with live percentage streaming (<code>ota_update</code>) and triggers Android Package Installer directly without requiring uninstall/reinstall. In addition, automatically copies a fallback backup to the public <code>/storage/emulated/0/Download</code> directory so users can install manually if system installers fail. Includes a dedicated browser fallback button.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <b>Safe Post-Install Auto-Deletion</b><br/>
+        <i>Zero Storage Waste with Strict User Data Protection</i>
+      </td>
+      <td>
+        Automatically purges internal update caches upon completion and safely cleans installed GitPulse update packages from the public Download folder once the new version is active. Uses strict name and version filters to ensure user documents, photos, and other files remain completely untouched.
       </td>
     </tr>
     <tr>
@@ -90,7 +99,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>OLED, Dark, Light & Japanese Cyberpunk</i>
       </td>
       <td>
-        Features <b>Gelap Biasa</b> (GitHub Dark #0D1117), <b>Gelap AMOLED</b> (True Pitch Black #000000 for OLED battery savings), and <b>Terang</b> (GitHub Light #F6F8FA). Includes an exclusive secret <b>Gelap AMOLED Jejepangan</b> mode (Mystic Obsidian #040207, Neo Sakura Pink, Kyoto Wisteria, and Torii Crimson) unlocked by tapping the AMOLED option 10 times in Settings.
+        Features <b>Gelap</b> (GitHub Dark #0D1117), <b>Gelap AMOLED</b> (True Pitch Black #000000 for OLED battery savings), and <b>Terang</b> (GitHub Light #F6F8FA). Includes an exclusive secret <b>Gelap AMOLED Sakura</b> mode (Mystic Obsidian #040207, Neo Sakura Pink, Kyoto Wisteria, and Torii Crimson) unlocked by tapping the AMOLED option 10 times in Settings.
       </td>
     </tr>
     <tr>
@@ -104,14 +113,14 @@ The standard GitHub contribution graph ("green squares") displays daily activity
     </tr>
     <tr>
       <td>
-        <b>Tier-Tailored Animation Engine</b><br/>
-        <i>Level-Specific Particle & Shimmer FX</i>
+        <b>Continuous Tier Animation Engine</b><br/>
+        <i>Seamless Organic Particle & Shimmer FX</i>
       </td>
       <td>
-        - <b>Tier 1 (Code Titan):</b> Floating flame particle physics with glowing gradient sweep.<br/>
-        - <b>Tier 2 (Relentless Committer):</b> High-voltage electric plasma arc with lightning crackle.<br/>
-        - <b>Tier 3 (Consistent Builder):</b> Emerald cyber matrix sweep with digital scanlines.<br/>
-        - <b>Tier 4 (Weekend Warrior):</b> Solar amber sunburst shimmer with rotating angular gleam.<br/>
+        - <b>Tier 1 (Code Titan):</b> Continuous organic flame particle physics with seamless glowing gradient waves (zero loop resets).<br/>
+        - <b>Tier 2 (Relentless Committer):</b> High-voltage electric plasma arc with continuous off-screen sweep shimmer.<br/>
+        - <b>Tier 3 (Consistent Builder):</b> Emerald cyber matrix sweep with smooth continuous illumination.<br/>
+        - <b>Tier 4 (Weekend Warrior):</b> Solar amber sunburst shimmer with continuous angular gleam.<br/>
         - <b>Tier 5 (Dormant Explorer):</b> Cosmic starlight nebula drift with gentle pulsing star dust.<br/>
         - <b>Tier 6 (Fresh Sprout):</b> Spring dewdrop bloom pulse with organic respiratory scale.
       </td>
@@ -244,7 +253,7 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │   │  • Deterministic Persona Classifier (Star Magnet, Midnight Owl, Polyglot, etc.)│   │
 │   ├────────────────────────────────────────────────────────────────────────────────┤   │
 │   │                              UpdateService & OTA Engine                        │   │
-│   │  • Semantic Version Comparator (e.g., v1.0.2 > v1.0.1)                         │   │
+│   │  • Semantic Version Comparator (e.g., v1.0.3 > v1.0.2)                         │   │
 │   │  • Android PackageInstaller Stream Handler & Auto-Cleanup Routine              │   │
 │   ├────────────────────────────────────────────────────────────────────────────────┤   │
 │   │                              AppLanguageService & AppThemeService              │   │
@@ -308,7 +317,7 @@ GitPulse Mobile features a centralized `AppThemeService` paired with dynamic col
                     │
                     ▼
        2. Semantic Version Comparator
-         (Compares Tag e.g. v1.0.2 vs Installed v1.0.1)
+         (Compares Tag e.g. v1.0.3 vs Installed v1.0.2)
                     │
        ┌────────────┴────────────┐
        ▼                         ▼
@@ -316,26 +325,28 @@ Already Up-to-Date       New Version Available!
  "Sudah versi terbaru"           │
                                  ▼
                          3. Extract APK Asset URL
-                         (e.g., GitPulse-v1.0.2-arm64-v8a.apk)
+                         (e.g., GitPulse-v1.0.3-arm64-v8a.apk)
                                  │
                                  ▼
                          4. Background OTA Download Stream
                             (Live Progress: 0% ──► 100%)
                                  │
-                 ┌───────────────┴───────────────┐
-                 ▼                               ▼
-       [Native PackageInstaller]         [Fallback: Browser]
-       Directly overwrites APK           Opens release asset in
-       in-place (data preserved)         external browser
-                 │
-                 ▼
-       [Auto-Cleanup Routine]
-       Automatically deletes downloaded
-       gitpulse-latest.apk on launch / finish
+                 ┌───────────────┼───────────────┐
+                 ▼               ▼               ▼
+       [Native PackageInstaller] [Download Backup] [Fallback: Browser]
+       Directly overwrites APK   Copies backup to  Opens release asset in
+       in-place (data preserved) /Download folder  external browser
+                 │               │
+                 └───────┬───────┘
+                         ▼
+             [Auto-Cleanup Routine]
+             Automatically cleans internal cache & deletes
+             installed GitPulse-*.apk on startup (user files safe)
 ```
 
 - **In-Place Upgrade**: Upgrades the APK without requiring users to uninstall, preserving tokens, bookmarks, and preferences.
-- **Auto-Cleanup**: Automatically cleans up `gitpulse-latest.apk` from internal cache (`/data/user/0/com.gitpulse.gitpulse_mobile/files/ota_update/`) upon app launch or completion, keeping device storage lean.
+- **Automatic Download Backup**: Copies the downloaded APK into `/storage/emulated/0/Download/GitPulse-v1.0.3.apk` as a permanent offline safeguard if system installer fails.
+- **Safe Post-Install Auto-Cleanup**: Once the app runs the newer version, the installed update APK is automatically pruned from Downloads without ever modifying any user documents or photos.
 - **Browser Fallback**: If OEM permission restrictions block native installation, a dedicated button opens the release asset directly in the system browser.
 
 ---
@@ -442,9 +453,9 @@ gitpulse_mobile/
 │       ├── stat_card.dart           # Summary metric card
 │       └── tech_news_card.dart      # Engineering digest & trending card widget
 ├── test/
-│   └── widget_test.dart             # Complete unit, model, and OTA update test suite (20 tests)
+│   └── widget_test.dart             # Complete unit, model, and OTA update test suite (23 tests)
 ├── web/                             # Web/PWA deployment entrypoint
-└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.2+3)
+└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.3+4)
 ```
 
 ---
