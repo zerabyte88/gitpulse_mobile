@@ -17,7 +17,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
-[![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/main.yml)
 [![Tests](https://img.shields.io/badge/Tests-Passing%20(20%2F20)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
@@ -406,8 +406,7 @@ GitPulse Mobile is engineered around a **Privacy-First** ethos:
 gitpulse_mobile/
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml                   # Automated quality gate (analyze + 20 tests)
-│       └── release.yml              # Manual workflow_dispatch 64-bit APK publisher
+│       └── main.yml                 # Unified CI/CD (Test, 64-bit APK Build & Release)
 ├── android/                         # Android platform host files (Gradle, Manifests)
 ├── lib/
 │   ├── main.dart                    # Application entrypoint & auto-cleanup initialization
@@ -497,16 +496,17 @@ gitpulse_mobile/
 
 ## CI/CD Pipeline & GitHub Releases
 
-This repository utilizes a two-tier GitHub Actions architecture:
+This repository utilizes a unified GitHub Actions pipeline (`.github/workflows/main.yml`):
 
-1. **Automated CI Quality Gate (`.github/workflows/ci.yml`)**:
-   - Triggers on every push and pull request.
+1. **Automated Quality Gate & Binary Compilation**:
+   - Triggers on every push and pull request to `main` and `master`.
    - Runs `flutter pub get`, `flutter analyze` (zero lint warnings), and `flutter test` (**20/20 tests passing**).
-
-2. **Manual Release Pipeline (`.github/workflows/release.yml`)**:
-   - Triggered **manually via `workflow_dispatch`** when ready to publish.
    - Compiles **strictly 64-bit ARM APK** (`--target-platform android-arm64`, with `arm64-v8a` ABI filter).
-   - Generates SHA-256 checksums (`.sha256`) and attaches artifacts directly to GitHub Releases for seamless consumption by the In-App OTA Updater.
+   - Generates SHA-256 checksums (`.sha256`) and attaches artifacts directly to the workflow run summary for immediate download.
+
+2. **Automated & Manual Release Publishing**:
+   - Triggered either **manually via `workflow_dispatch`** or automatically when pushing release tags (`v*`).
+   - Packages and publishes the release bundle directly to **GitHub Releases**, ready for instant consumption by the In-App OTA Updater.
 
 ---
 

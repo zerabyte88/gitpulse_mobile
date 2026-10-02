@@ -1,6 +1,11 @@
-name: Release 64-bit APK
+name: GitPulse CI/CD Pipeline
 
 on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       tag_name:
@@ -15,26 +20,19 @@ on:
         description: 'Release Notes'
         required: false
         default: 'Official release bundle compiled exclusively for 64-bit ARM architecture (arm64-v8a).'
-      draft:
-        description: 'Create as Draft Release'
+      publish_to_release:
+        description: 'Publish to GitHub Releases'
         required: false
         type: boolean
-        default: false
-      prerelease:
-        description: 'Mark as Pre-release'
-        required: false
-        type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build & Publish 64-bit APK
+  build:
+    name: Test, Build & Release APK
     runs-on: ubuntu-latest
-    env:
-      APK_NAME: GitPulse-${{ github.event.inputs.tag_name }}-arm64-v8a.apk
 
     steps:
       - name: Checkout Source Code
@@ -67,30 +65,39 @@ jobs:
       - name: Build 64-bit Release APK (ARM64 Only)
         run: flutter build apk --release --target-platform android-arm64 --android-skip-build-dependency-validation
 
-      - name: Package & Prepare Release Artifacts
+      - name: Prepare Release Artifacts
+        id: prep
         run: |
+          RAW_TAG="${{ inputs.tag_name || github.ref_name }}"
+          if [ -z "$RAW_TAG" ] || [ "$RAW_TAG" = "master" ] || [ "$RAW_TAG" = "main" ]; then
+            TAG="v1.0.1"
+          else
+            TAG="$RAW_TAG"
+          fi
+          APK_NAME="GitPulse-${TAG}-arm64-v8a.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "${APK_NAME}"
           sha256sum "${APK_NAME}" > "${APK_NAME}.sha256"
+          echo "tag_name=${TAG}" >> $GITHUB_OUTPUT
+          echo "apk_name=${APK_NAME}" >> $GITHUB_OUTPUT
 
       - name: Upload APK to Workflow Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APK_NAME }}
+          name: ${{ steps.prep.outputs.apk_name }}
           path: |
-            ${{ env.APK_NAME }}
-            ${{ env.APK_NAME }}.sha256
+            ${{ steps.prep.outputs.apk_name }}
+            ${{ steps.prep.outputs.apk_name }}.sha256
 
       - name: Publish to GitHub Releases
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.publish_to_release) || startsWith(github.ref, 'refs/tags/v') }}
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag_name }}
-          name: ${{ github.event.inputs.release_name }}
-          body: ${{ github.event.inputs.release_notes }}
-          draft: ${{ github.event.inputs.draft }}
-          prerelease: ${{ github.event.inputs.prerelease }}
+          tag_name: ${{ steps.prep.outputs.tag_name }}
+          name: ${{ inputs.release_name || steps.prep.outputs.tag_name }}
+          body: ${{ inputs.release_notes || 'Official GitPulse Mobile release bundle.' }}
           generate_release_notes: true
           files: |
-            ${{ env.APK_NAME }}
-            ${{ env.APK_NAME }}.sha256
+            ${{ steps.prep.outputs.apk_name }}
+            ${{ steps.prep.outputs.apk_name }}.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
