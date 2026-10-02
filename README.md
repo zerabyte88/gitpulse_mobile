@@ -37,8 +37,7 @@
   <a href="#performance--lag-free-optimization">Performance Optimization</a> •
   <a href="#security--privacy-governance">Security</a> •
   <a href="#technology-stack">Tech Stack</a> •
-  <a href="#installation--getting-started">Installation</a> •
-  <a href="#strategic-roadmap">Roadmap</a>
+  <a href="#installation--getting-started">Installation</a>
 </p>
 
 </div>
@@ -91,10 +90,10 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>OLED, Dark Slate, Light & Sakura Mode</i>
       </td>
       <td>
-        - <b>Gelap (Dark):</b> Deep Midnight Navy/Slate (<code>#0E131F</code>) with Slate surfaces (<code>#171F30</code>) and Electric Sky Cyan (<code>#38BDF8</code>) & Iris Violet (<code>#A78BFA</code>) accents.<br/>
+        - <b>Dark (Gelap):</b> Deep Midnight Navy/Slate (<code>#0E131F</code>) with Slate surfaces (<code>#171F30</code>) and Electric Sky Cyan (<code>#38BDF8</code>) & Iris Violet (<code>#A78BFA</code>) accents.<br/>
         - <b>AMOLED:</b> True OLED Pure Black (<code>#000000</code>) with obsidian onyx cards (<code>#0C0E12</code>) and vivid Ice Cyan (<code>#00D2FF</code>) accents.<br/>
         - <b>AMOLED Sakura:</b> Pure Black (<code>#000000</code>) with wisteria plum surfaces (<code>#0E0B14</code>), Sakura Blossom Rose (<code>#FF7597</code>), and spring bamboo jade (<code>#4ADE80</code>). Unlocked via 10-tap secret interaction.<br/>
-        - <b>Terang (Light):</b> Crisp, high-contrast light palette engineered for bright outdoor environments.
+        - <b>Light (Terang):</b> Crisp, high-contrast light palette engineered for bright outdoor environments.
       </td>
     </tr>
     <tr>
@@ -103,7 +102,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Full Language & Theme Name Geometry</i>
       </td>
       <td>
-        Rombak layout tombol bahasa dan tema di pengaturan menggunakan arsitektur <code>Stack</code> non-squeezing dengan <code>maxLines: 2</code> dan <code>softWrap: true</code>. Nama bahasa (seperti <i>Bahasa Indonesia</i>) selalu tampil 100% lengkap dan tidak pernah terpotong dengan tanda elipsis (<code>...</code>) saat dipilih. Semua tombol aksi di pengaturan terpusat (center aligned).
+        Redesigned language and theme option layouts in settings using a non-squeezing <code>Stack</code> architecture with <code>maxLines: 2</code> and <code>softWrap: true</code>. Language names (such as <i>Bahasa Indonesia</i>) always display 100% in full and are never truncated with ellipsis (<code>...</code>) when selected. All action buttons in settings are center-aligned.
       </td>
     </tr>
     <tr>
@@ -112,11 +111,11 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Jank-Free 60fps Scrolling & Transitions</i>
       </td>
       <td>
-        - <b>Sliver Virtualization:</b> List repositori di <code>StatsDetailScreen</code> dimigrasikan ke <code>CustomScrollView</code> + <code>SliverList.builder</code>, mengeliminasi lag pada profil dengan hingga 100 repositori.<br/>
-        - <b>Sorting Memoization:</b> Pengurutan repositori di-cache dan hanya dijalankan ulang saat filter berubah.<br/>
-        - <b>Repaint Boundary Isolation:</b> Kartu repositori dibungkus <code>RepaintBoundary</code> untuk isolasi cat rendering.<br/>
-        - <b>Image Optimization:</b> Decoding gambar berita dibatasi pada <code>cacheWidth: 450</code> dengan placeholder statis ringan.<br/>
-        - <b>In-Memory Caching:</b> Cache in-memory untuk bookmark dan riwayat pencarian di <code>HomeScreen</code>.
+        - <b>Sliver Virtualization:</b> The repository list in <code>StatsDetailScreen</code> is migrated to <code>CustomScrollView</code> + <code>SliverList.builder</code>, eliminating frame drops on profiles with up to 100 repositories.<br/>
+        - <b>Sorting Memoization:</b> Repository sorting routines are cached and only recalculated when filter options change.<br/>
+        - <b>Repaint Boundary Isolation:</b> Repository cards are isolated with <code>RepaintBoundary</code> to eliminate unnecessary viewport repaints during scroll.<br/>
+        - <b>Image Optimization:</b> Tech news image decoding is constrained to <code>cacheWidth: 450</code> with lightweight static placeholders.<br/>
+        - <b>In-Memory Caching:</b> In-memory caching for bookmarks and search history in <code>HomeScreen</code> avoids repeated JSON decoding on every frame build.
       </td>
     </tr>
     <tr>
@@ -125,7 +124,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Proactive Error Handling</i>
       </td>
       <td>
-        <code>GitHubApiException</code> membawa flag strongly-typed <code>isRateLimit</code> dan <code>statusCode</code>. Menangkap HTTP 403, 429, dan <code>x-ratelimit-remaining == 0</code> secara presisi untuk menampilkan pesan edukatif bahwa kuota token/API telah habis, alih-alih menampilkan pesan keliru seperti kesalahan koneksi internet.
+        <code>GitHubApiException</code> provides strongly-typed <code>isRateLimit</code> and <code>statusCode</code> flags. Precisely intercepts HTTP 403, 429, and <code>x-ratelimit-remaining == 0</code> to display clear, educational messages indicating that the token/API quota has expired, rather than erroneous network error prompts.
       </td>
     </tr>
     <tr>
@@ -148,7 +147,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Ecosystem & Trending Repositories</i>
       </td>
       <td>
-        Fetches top trending open-source GitHub repositories via GitHub Search API alongside curated engineering articles from dev.to. Supports category filter chips (<b>Trending</b>, <b>Semua</b>, <b>GitHub</b>, <b>Web Dev</b>) with offline fallback data and external browser navigation.
+        Fetches top trending open-source GitHub repositories via GitHub Search API alongside curated engineering articles from dev.to. Supports category filter chips (<b>Trending</b>, <b>All</b>, <b>GitHub</b>, <b>Web Dev</b>) with offline fallback data and external browser navigation.
       </td>
     </tr>
     <tr>
@@ -273,26 +272,26 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 
 GitPulse Mobile features a centralized `AppThemeService` paired with dynamic color tokens in `AppTheme`, allowing instantaneous runtime switching without requiring an app restart:
 
-1. **Gelap (`dark`)**: Deep Midnight Navy/Slate (`#0E131F` background, `#171F30` cards, `#1E293B` elevated surfaces, Electric Sky Cyan `#38BDF8`, and Iris Violet `#A78BFA` accents).
-2. **Gelap AMOLED (`amoled`)**: True OLED Pure Black (`#000000` background, `#0C0E12` surface) engineered for OLED/AMOLED power savings, vivid Ice Cyan (`#00D2FF`), and softened off-white text (`#F8FAFC`).
-3. **Terang (`light`)**: High-contrast GitHub Light palette (`#F6F8FA` background, `#FFFFFF` cards, GitHub Light Blue `#0969DA`).
+1. **Dark (`dark`)**: Deep Midnight Navy/Slate (`#0E131F` background, `#171F30` cards, `#1E293B` elevated surfaces, Electric Sky Cyan `#38BDF8`, and Iris Violet `#A78BFA` accents).
+2. **AMOLED (`amoled`)**: True OLED Pure Black (`#000000` background, `#0C0E12` surface) engineered for OLED/AMOLED power savings, vivid Ice Cyan (`#00D2FF`), and softened off-white text (`#F8FAFC`).
+3. **Light (`light`)**: High-contrast GitHub Light palette (`#F6F8FA` background, `#FFFFFF` cards, GitHub Light Blue `#0969DA`).
 4. **AMOLED Sakura (`amoledJapanese`)**: Aesthetic Japanese floral cyberpunk (`#000000` background, Wisteria Plum `#0E0B14`, Sakura Blossom Rose `#FF7597`, Spring Bamboo Jade `#4ADE80`, and Sakura Snow text `#FFF1F5`).
 
-### 🌸 Cara Membuka Mode Rahasia AMOLED Sakura:
-1. Buka **Pengaturan** (ikon gerigi di pojok kanan atas).
-2. Temukan bagian **Tema Aplikasi** (Theme).
-3. Ketuk opsi **Gelap AMOLED** secara cepat sebanyak **10 kali**.
-4. Pada ketukan ke-10:
-   - Getaran haptik aktif.
-   - Pesan toast muncul: *"Mode AMOLED Sakura aktif! ✨"*.
-   - Tema langsung berubah dan tersimpan permanen di memori lokal perangkat.
+### 🌸 How to Unlock the Secret AMOLED Sakura Mode:
+1. Open **Settings** (gear icon in the top-right corner).
+2. Locate the **Theme** section.
+3. Rapidly tap the **AMOLED** option **10 times**.
+4. On the 10th tap:
+   - Haptic vibration feedback triggers.
+   - A celebratory toast appears: *"Mode AMOLED Sakura aktif! ✨"*.
+   - The theme immediately switches and is permanently stored in device preferences.
 
 ---
 
 ## In-App Updater & Dedicated Storage Pipeline
 
 ```text
-[Settings: "Periksa Pembaruan" or Auto-Check]
+[Settings: "Check for Updates" or Auto-Check]
                     │
                     ▼
        1. GitHub Releases API Query
@@ -305,7 +304,7 @@ GitPulse Mobile features a centralized `AppThemeService` paired with dynamic col
        ┌────────────┴────────────┐
        ▼                         ▼
 Already Up-to-Date       New Version Available!
- "Sudah versi terbaru"           │
+ "Already up to date"            │
                                  ▼
                          3. Extract APK Asset URL
                          (e.g., GitPulse-v1.0.4.apk)
@@ -327,10 +326,10 @@ Already Up-to-Date       New Version Available!
              installed GitPulse-*.apk on startup (user files safe)
 ```
 
-- **In-Place Upgrade**: Memperbarui aplikasi secara langsung tanpa mengharuskan pengguna melakukan uninstall, sehingga token, bookmark, dan pengaturan tetap utuh.
-- **Folder Khusus `/Download/GitPulse`**: File APK unduhan utama otomatis tersimpan rapi di `/storage/emulated/0/Download/GitPulse/GitPulse-v1.0.4.apk`.
-- **Pembersihan Otomatis Pasca-Update**: Begitu aplikasi berjalan di versi terbaru, file APK yang versinya sudah terpasang akan otomatis dihapus dan folder kosong dibersihkan, tanpa pernah menyentuh file dokumen atau foto pengguna.
-- **Browser Fallback**: Jika izin instalasi sistem dibatasi oleh pabrikan perangkat, tombol terdedikasi membuka asset rilis langsung di browser default.
+- **In-Place Upgrade**: Directly upgrades the app without requiring an uninstall, keeping tokens, bookmarks, and preferences completely intact.
+- **Dedicated `/Download/GitPulse` Folder**: The primary downloaded APK file is automatically saved into `/storage/emulated/0/Download/GitPulse/GitPulse-v1.0.4.apk`.
+- **Post-Install Storage Auto-Cleanup**: Once the app launches on the updated version, installed APK packages are automatically purged and empty folders are removed, with zero risk to user documents or personal media.
+- **Browser Fallback**: If system installer permissions are restricted by OEM device policies, a dedicated button opens the release asset directly in the system browser.
 
 ---
 
@@ -364,12 +363,12 @@ Each developer profile is assigned an activity tier based on public commit volum
 
 ## Performance & Lag-Free Optimization
 
-Aplikasi dirancang agar tetap responsif pada perangkat dengan spesifikasi rendah sekalipun:
-1. **Sliver List Virtualization**: Daftar repositori menggunakan `CustomScrollView` + `SliverList.builder`. Repositori hanya dibuat dan dirender saat masuk ke viewport layar, menghemat konsumsi memori secara masif.
-2. **Memoized Repository Sorting**: Logika sorting repositori di-cache dan hanya dijalankan ulang saat filter atau daftar berubah, mencegah eksekusi berulang pada setiap frame transisi halaman.
-3. **Repaint Boundary Isolation**: Setiap kartu `RepoTile` diisolasi dengan `RepaintBoundary` agar scrolling list tidak memicu repaint pada keseluruhan widget tree layar.
-4. **Optimasi Kartu Berita**: Decoding gambar berita dibatasi pada `cacheWidth: 450` dan spinner animasi digantikan dengan placeholder ikon ringan, memangkas beban GPU.
-5. **In-Memory Cache**: Bookmark dan riwayat pencarian disimpan dalam memori RAM setelah dibaca dari disk, menghindari decoding JSON berulang di setiap frame `build()`.
+The application is engineered to maintain buttery-smooth responsiveness even on low-spec hardware:
+1. **Sliver List Virtualization**: The repository list utilizes `CustomScrollView` + `SliverList.builder`. Repositories are instantiated and rendered only when entering the viewport, massively conserving memory.
+2. **Memoized Repository Sorting**: Repository sorting routines are cached and recomputed only when the active filter or repository list changes, preventing redundant calculations during route transition animations.
+3. **Repaint Boundary Isolation**: Each `RepoTile` card is isolated within a `RepaintBoundary` so that list scrolling does not trigger repaints across the surrounding screen tree.
+4. **Tech News Image Optimization**: Feed image decoding is strictly clamped to `cacheWidth: 450` and rotating spinners are replaced with lightweight static icon placeholders, significantly reducing GPU pressure.
+5. **In-Memory Caching**: Bookmarked profiles and recent searches are cached in memory after reading from disk, avoiding repeated JSON decoding passes on every `build()` frame.
 
 ---
 
@@ -509,31 +508,6 @@ This repository utilizes a unified GitHub Actions pipeline (`.github/workflows/m
 2. **Automated & Manual Release Publishing**:
    - Triggered either **manually via `workflow_dispatch`** or automatically when pushing release tags (`v*`).
    - Packages and publishes the release bundle directly to **GitHub Releases**, ready for instant consumption by the In-App OTA Updater.
-
----
-
-## Strategic Roadmap
-
-- [x] Comprehensive cross-repo metric aggregation (Stars, Forks, Repos).
-- [x] 24-hour developer productivity rhythm histogram.
-- [x] Rule-based deterministic developer persona classification engine.
-- [x] Top repository showcase sorted by star and fork volume.
-- [x] Persistent local bookmarking & sandboxed Personal Access Token support.
-- [x] **In-App OTA Updater**: GitHub Releases API check, background download & PackageInstaller integration.
-- [x] **Dedicated Storage Directory**: Direct APK storage in `/storage/emulated/0/Download/GitPulse`.
-- [x] **Auto-Cleanup Routine**: Automatically deletes installed update APKs on startup and cleans empty folders.
-- [x] **4-Theme System & Secret Easter Egg**: Dark Slate, Pure AMOLED, Light, and AMOLED Sakura.
-- [x] **Zero-Truncation Settings UI**: Full un-clipped language & theme names with non-squeezing Stack layout.
-- [x] **High-Performance Architecture**: Virtualized sliver repository list, memoized sorting & repaint boundaries.
-- [x] **Upgraded Title Animations**: Level-specific particle & lightning effects for Tiers 1 through 6.
-- [x] **GitHub Trending Feed**: Real-time trending open-source repositories with category filtering.
-- [x] **Creator Attribution**: Live auto-updating GitHub avatar CDN integration (`zerabyte88.png`).
-- [x] **6-Language Internationalization (i18n)**: Indonesian, English, Japanese, Korean, Chinese (Simplified & Traditional).
-- [x] **Lean APK Optimization**: Pruned unused dependencies (`cupertino_icons`) and dead font assets.
-- [ ] **Visual Card Export**: Generate high-resolution PNG/SVG summary cards for social platforms.
-- [ ] **Head-to-Head Compare**: Side-by-side productivity and language comparison between two developers.
-- [ ] **Yearly Wrapped Recap**: Annual retrospective report summarizing annual coding habits.
-- [ ] **Android Home Screen Widget**: Quick glance at productivity metrics via a native desktop widget.
 
 ---
 
