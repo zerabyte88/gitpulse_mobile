@@ -61,7 +61,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
   bool _isDownloadingUpdate = false;
   String _downloadProgress = '';
   String? _updateError;
-  String? _backupApkPath;
+  String? _downloadedApkPath;
   StreamSubscription<OtaEvent>? _otaSubscription;
 
   // Easter Egg State
@@ -137,12 +137,12 @@ class _SettingsSheetState extends State<SettingsSheet> {
           } else if (event.status == OtaStatus.INSTALLING) {
             _downloadProgress = loc.installingUpdate;
             _isDownloadingUpdate = false;
-            UpdateService.backupApkToDownloads(
+            UpdateService.saveApkToDownloads(
               versionTag: _updateInfo?.latestVersion,
             ).then((path) {
               if (path != null && mounted) {
                 setState(() {
-                  _backupApkPath = path;
+                  _downloadedApkPath = path;
                 });
               }
             });
@@ -154,12 +154,12 @@ class _SettingsSheetState extends State<SettingsSheet> {
           } else {
             _isDownloadingUpdate = false;
             _updateError = loc.updateFailed;
-            UpdateService.backupApkToDownloads(
+            UpdateService.saveApkToDownloads(
               versionTag: _updateInfo?.latestVersion,
             ).then((path) {
               if (path != null && mounted) {
                 setState(() {
-                  _backupApkPath = path;
+                  _downloadedApkPath = path;
                 });
               }
             });
@@ -641,7 +641,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                 },
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 150),
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                  constraints: const BoxConstraints(minHeight: 52),
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? AppTheme.primaryCyan.withValues(alpha: 0.10)
@@ -652,49 +652,64 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                       width: isSelected ? 1.2 : 0.8,
                                     ),
                                   ),
-                                  child: Row(
+                                  child: Stack(
                                     children: [
-                                      Text(
-                                        lang.flag,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                                        child: Row(
                                           children: [
                                             Text(
-                                              lang.nativeName,
-                                              style: TextStyle(
-                                                color: isSelected
-                                                    ? AppTheme.primaryCyan
-                                                    : AppTheme.textPrimary,
-                                                fontSize: 12,
-                                                fontWeight: isSelected
-                                                    ? FontWeight.w600
-                                                    : FontWeight.w500,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                              lang.flag,
+                                              style: const TextStyle(fontSize: 16),
                                             ),
-                                            Text(
-                                              lang.name,
-                                              style: TextStyle(
-                                                color: AppTheme.textMuted,
-                                                fontSize: 9.5,
+                                            const SizedBox(width: 7),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    lang.nativeName,
+                                                    style: TextStyle(
+                                                      color: isSelected
+                                                          ? AppTheme.primaryCyan
+                                                          : AppTheme.textPrimary,
+                                                      fontSize: 11.5,
+                                                      fontWeight: isSelected
+                                                          ? FontWeight.w600
+                                                          : FontWeight.w500,
+                                                      height: 1.15,
+                                                    ),
+                                                    maxLines: 2,
+                                                    softWrap: true,
+                                                  ),
+                                                  if (lang.name != lang.nativeName) ...[
+                                                    const SizedBox(height: 1),
+                                                    Text(
+                                                      lang.name,
+                                                      style: TextStyle(
+                                                        color: AppTheme.textMuted,
+                                                        fontSize: 9.5,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ],
                                               ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
                                         ),
                                       ),
                                       if (isSelected)
-                                        Icon(
-                                          Icons.check_circle_rounded,
-                                          size: 15,
-                                          color: AppTheme.primaryCyan,
+                                        Positioned(
+                                          top: 5,
+                                          right: 5,
+                                          child: Icon(
+                                            Icons.check_circle_rounded,
+                                            size: 13,
+                                            color: AppTheme.primaryCyan,
+                                          ),
                                         ),
                                     ],
                                   ),
@@ -959,25 +974,27 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     const SizedBox(height: 14),
 
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (hasToken)
+                        if (hasToken) ...[
                           TextButton.icon(
                             icon: const Icon(Icons.delete_outline_rounded, size: 15),
                             label: Text(loc.deleteToken),
                             style: TextButton.styleFrom(
                               foregroundColor: AppTheme.accentRed,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                               visualDensity: VisualDensity.compact,
                             ),
                             onPressed: () => _clearToken(loc),
                           ),
-                        const Spacer(),
+                          const SizedBox(width: 12),
+                        ],
                         ElevatedButton(
                           onPressed: () => _saveToken(loc),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryCyan,
                             foregroundColor: const Color(0xFF0D1117),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -1133,31 +1150,36 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         ),
                       ] else ...[
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_updateInfo!.apkDownloadUrl != null)
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  icon: const Icon(Icons.download_rounded, size: 15),
-                                  label: Text(loc.updateNow),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppTheme.accentGreen,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                  ),
-                                  onPressed: () => _runOtaUpdate(
-                                    _updateInfo!.apkDownloadUrl!,
-                                    loc,
+                              ElevatedButton.icon(
+                                icon: const Icon(Icons.download_rounded, size: 15),
+                                label: Text(loc.updateNow),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.accentGreen,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
+                                onPressed: () => _runOtaUpdate(
+                                  _updateInfo!.apkDownloadUrl!,
+                                  loc,
+                                ),
                               ),
-                            const SizedBox(width: 8),
+                            if (_updateInfo!.apkDownloadUrl != null) const SizedBox(width: 10),
                             OutlinedButton.icon(
                               icon: const Icon(Icons.open_in_browser_rounded, size: 14),
                               label: Text(loc.openInBrowser),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.primaryCyan,
-                                side: BorderSide(color: AppTheme.border, width: 0.8),
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                side: BorderSide(color: AppTheme.border, width: 1.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                               onPressed: () => UpdateService.openReleaseInBrowser(
                                 _updateInfo!.releaseUrl,
@@ -1167,26 +1189,36 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         ),
                       ],
                     ] else ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            _updateInfo != null
-                                ? loc.alreadyLatestVersion
-                                : '${AppConfig.appName} ${AppConfig.appVersion}',
-                            style: TextStyle(
-                              color: AppTheme.textSecondary,
-                              fontSize: 12,
+                          Center(
+                            child: Text(
+                              _updateInfo != null
+                                  ? loc.alreadyLatestVersion
+                                  : '${AppConfig.appName} ${AppConfig.appVersion}',
+                              style: TextStyle(
+                                color: AppTheme.textSecondary,
+                                fontSize: 12,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          TextButton.icon(
-                            icon: const Icon(Icons.refresh_rounded, size: 14),
-                            label: Text(loc.checkForUpdates),
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppTheme.primaryCyan,
-                              visualDensity: VisualDensity.compact,
+                          const SizedBox(height: 10),
+                          Center(
+                            child: OutlinedButton.icon(
+                              icon: const Icon(Icons.refresh_rounded, size: 14),
+                              label: Text(loc.checkForUpdates),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppTheme.primaryCyan,
+                                side: BorderSide(color: AppTheme.border, width: 1.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                              ),
+                              onPressed: _isCheckingUpdate ? null : _checkUpdateManually,
                             ),
-                            onPressed: _isCheckingUpdate ? null : _checkUpdateManually,
                           ),
                         ],
                       ),
@@ -1200,7 +1232,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       ),
                     ],
 
-                    if (_backupApkPath != null) ...[
+                    if (_downloadedApkPath != null) ...[
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -1214,11 +1246,11 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.folder_zip_outlined, size: 15, color: AppTheme.accentGreen),
+                            Icon(Icons.download_done_rounded, size: 15, color: AppTheme.accentGreen),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'Backup APK tersimpan di: $_backupApkPath',
+                                'File APK tersimpan di: $_downloadedApkPath',
                                 style: TextStyle(
                                   color: AppTheme.accentGreen,
                                   fontSize: 11,
@@ -1425,7 +1457,6 @@ class _SettingsSheetState extends State<SettingsSheet> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               constraints: const BoxConstraints(minHeight: 52),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
               decoration: BoxDecoration(
                 color: isSelected
                     ? (isEasterEgg
@@ -1440,55 +1471,64 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   width: isSelected ? 1.2 : 0.8,
                 ),
               ),
-              child: Row(
+              child: Stack(
                 children: [
-                  Icon(
-                    icon,
-                    size: 16,
-                    color: isSelected
-                        ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
-                        : AppTheme.textMuted,
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                    child: Row(
                       children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            color: isSelected
-                                ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
-                                : AppTheme.textPrimary,
-                            fontSize: 11,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                            height: 1.15,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                        Icon(
+                          icon,
+                          size: 16,
+                          color: isSelected
+                              ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
+                              : AppTheme.textMuted,
                         ),
-                        const SizedBox(height: 1),
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            color: AppTheme.textMuted,
-                            fontSize: 9.5,
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
+                                      : AppTheme.textPrimary,
+                                  fontSize: 11,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                  height: 1.15,
+                                ),
+                                maxLines: 2,
+                                softWrap: true,
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                subtitle,
+                                style: TextStyle(
+                                  color: AppTheme.textMuted,
+                                  fontSize: 9.5,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  if (isSelected) ...[
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.check_circle_rounded,
-                      size: 14,
-                      color: isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan,
+                  if (isSelected)
+                    Positioned(
+                      top: 5,
+                      right: 5,
+                      child: Icon(
+                        Icons.check_circle_rounded,
+                        size: 13,
+                        color: isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan,
+                      ),
                     ),
-                  ],
                 ],
               ),
             ),

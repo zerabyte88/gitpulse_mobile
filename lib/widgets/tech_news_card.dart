@@ -71,19 +71,16 @@ class TechNewsCard extends StatelessWidget {
                         child: Image.network(
                           news.coverImage!,
                           fit: BoxFit.cover,
-                          cacheWidth: 800,
+                          cacheWidth: 450,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
                             color: AppTheme.surfaceElevated,
                             child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppTheme.primaryCyan,
-                                ),
+                              child: Icon(
+                                Icons.image_outlined,
+                                size: 24,
+                                color: AppTheme.textMuted.withValues(alpha: 0.4),
                               ),
                             ),
                           );

@@ -38,6 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
   List<TechNews> _newsList = [];
   bool _isNewsLoading = true;
 
+  // Local Storage Cache
+  List<BookmarkedUser> _bookmarkedUsers = [];
+  List<String> _allRecents = [];
+
+  void _refreshLocalData() {
+    _bookmarkedUsers = widget.storageService.getBookmarkedUsers();
+    _allRecents = widget.storageService.getRecentSearches();
+  }
+
   List<Map<String, String>> _getCategories(AppLocalizations loc) => [
     {'id': 'trending', 'label': loc.categoryTrending},
     {'id': 'github', 'label': loc.categoryGithub},
@@ -50,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _refreshLocalData();
     _searchFocusNode.addListener(_onSearchFocusChanged);
     _searchController.addListener(_onSearchTextChanged);
     _loadNews();
@@ -121,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final stats = await widget.apiService.fetchUserStats(clean);
       await widget.storageService.addRecentSearch(clean);
+      _refreshLocalData();
 
       if (!mounted) return;
       setState(() {
@@ -135,15 +146,27 @@ class _HomeScreenState extends State<HomeScreen> {
             storageService: widget.storageService,
           ),
         ),
-      ).then((_) => setState(() {}));
+      ).then((_) {
+        _refreshLocalData();
+        setState(() {});
+      });
     } catch (e) {
       if (!mounted) return;
       final msg = e.toString().toLowerCase();
       final loc = AppLocalizations.of(context);
       String displayErr;
-      if (msg.contains('not found') || msg.contains('404')) {
+      if (e is GitHubApiException && e.isNotFound) {
         displayErr = loc.userNotFound;
-      } else if (msg.contains('rate limit') || msg.contains('403')) {
+      } else if (e is GitHubApiException && e.isRateLimit) {
+        displayErr = loc.rateLimitExceeded;
+      } else if (msg.contains('not found') || msg.contains('404')) {
+        displayErr = loc.userNotFound;
+      } else if (msg.contains('rate limit') ||
+          msg.contains('limit') ||
+          msg.contains('403') ||
+          msg.contains('429') ||
+          msg.contains('kuota') ||
+          msg.contains('habis')) {
         displayErr = loc.rateLimitExceeded;
       } else {
         displayErr = loc.networkError;
@@ -160,15 +183,18 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       storageService: widget.storageService,
       apiService: widget.apiService,
-      onSettingsChanged: () => setState(() {}),
+      onSettingsChanged: () {
+        _refreshLocalData();
+        setState(() {});
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final bookmarkedUsers = widget.storageService.getBookmarkedUsers();
-    final allRecents = widget.storageService.getRecentSearches();
+    final bookmarkedUsers = _bookmarkedUsers;
+    final allRecents = _allRecents;
 
     // Filter recents based on input query when user is typing
     final query = _searchController.text.trim().toLowerCase();
@@ -275,10 +301,12 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppTheme.primaryCyan,
           backgroundColor: AppTheme.surfaceElevated,
           onRefresh: () async {
+            _refreshLocalData();
             await Future.wait([
               _loadNews(refresh: true),
               widget.apiService.fetchRateLimit(),
             ]);
+            _refreshLocalData();
             setState(() {});
           },
           child: CustomScrollView(
@@ -499,6 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   TextButton(
                     onPressed: () async {
                       await widget.storageService.clearHistory();
+                      _refreshLocalData();
                       setState(() {});
                     },
                     style: TextButton.styleFrom(
@@ -576,61 +605,61 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             )
           else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredRecents.length,
-              separatorBuilder: (context, index) => Divider(height: 1, color: AppTheme.border),
-              itemBuilder: (context, index) {
-                final username = filteredRecents[index];
-                return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  contentPadding: const EdgeInsets.only(left: 14, right: 6),
-                  leading: Icon(
-                    Icons.history_rounded,
-                    size: 16,
-                    color: AppTheme.textMuted,
-                  ),
-                  title: Text(
-                    username,
-                    style: TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < filteredRecents.length; i++) ...[
+                  if (i > 0) Divider(height: 1, color: AppTheme.border),
+                  ListTile(
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    contentPadding: const EdgeInsets.only(left: 14, right: 6),
+                    leading: Icon(
+                      Icons.history_rounded,
+                      size: 16,
+                      color: AppTheme.textMuted,
                     ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.north_west_rounded, size: 14, color: AppTheme.textMuted),
-                        tooltip: username,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          _searchController.text = username;
-                          _searchController.selection = TextSelection.fromPosition(
-                            TextPosition(offset: username.length),
-                          );
-                        },
+                    title: Text(
+                      filteredRecents[i],
+                      style: TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
-                      IconButton(
-                        icon: Icon(Icons.close_rounded, size: 15, color: AppTheme.textMuted),
-                        tooltip: loc.close,
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () async {
-                          await widget.storageService.removeRecentSearch(username);
-                          setState(() {});
-                        },
-                      ),
-                    ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.north_west_rounded, size: 14, color: AppTheme.textMuted),
+                          tooltip: filteredRecents[i],
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () {
+                            _searchController.text = filteredRecents[i];
+                            _searchController.selection = TextSelection.fromPosition(
+                              TextPosition(offset: filteredRecents[i].length),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close_rounded, size: 15, color: AppTheme.textMuted),
+                          tooltip: loc.close,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () async {
+                            await widget.storageService.removeRecentSearch(filteredRecents[i]);
+                            _refreshLocalData();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      _searchController.text = filteredRecents[i];
+                      _searchUser(filteredRecents[i]);
+                    },
                   ),
-                  onTap: () {
-                    _searchController.text = username;
-                    _searchUser(username);
-                  },
-                );
-              },
+                ],
+              ],
             ),
         ],
       ),
@@ -840,6 +869,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         tooltip: loc.removeFavorite,
                         onPressed: () async {
                           await widget.storageService.removeBookmark(user.username);
+                          _refreshLocalData();
                           setState(() {});
                         },
                       ),

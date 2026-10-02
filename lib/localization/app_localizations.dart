@@ -264,12 +264,12 @@ class AppLocalizations {
   });
 
   String get rateLimitExceeded => _str({
-    AppLanguage.indonesian: 'Rate limit terlampaui. Tambahkan token GitHub di pengaturan.',
-    AppLanguage.english: 'Rate limit exceeded. Add a GitHub token in settings.',
-    AppLanguage.japanese: 'レート制限を超過しました。設定でGitHubトークンを追加してください。',
-    AppLanguage.chineseSimplified: '超出请求速率限制。请在设置中添加 GitHub Token。',
-    AppLanguage.chineseTraditional: '超出請求速率限制。請在設定中新增 GitHub Token。',
-    AppLanguage.korean: 'API 요청 한도를 초과했습니다. 설정에서 GitHub 토큰을 추가해 주세요.',
+    AppLanguage.indonesian: 'Batas kuota token / API Anda telah habis. Silakan tunggu waktu reset atau perbarui token di pengaturan.',
+    AppLanguage.english: 'Your token / API quota has been exhausted. Please wait for reset time or update your token in settings.',
+    AppLanguage.japanese: 'トークン/APIのリクエスト制限を超過しました。リセットを待つか設定でトークンを更新してください。',
+    AppLanguage.chineseSimplified: '您的 Token / API 请求配额已耗尽。请等待重置时间或在设置中更新 Token。',
+    AppLanguage.chineseTraditional: '您的 Token / API 請求配額已耗盡。請等待重置時間或在設定中更新 Token。',
+    AppLanguage.korean: '토큰 / API 요청 한도가 모두 소진되었습니다. 리셋 시간을 기다리거나 설정에서 토큰을 변경해 주세요.',
   });
 
   // Tech News
@@ -483,12 +483,12 @@ class AppLocalizations {
   });
 
   String get themeAmoledJapanese => _str({
-    AppLanguage.indonesian: 'Easter Egg AMOLED Sakura',
-    AppLanguage.english: 'Easter Egg AMOLED Sakura',
-    AppLanguage.japanese: 'イースターエッグ AMOLED Sakura',
-    AppLanguage.chineseSimplified: '彩蛋 AMOLED 樱花',
-    AppLanguage.chineseTraditional: '彩蛋 AMOLED 櫻花',
-    AppLanguage.korean: '이스터에그 AMOLED 사쿠라',
+    AppLanguage.indonesian: 'AMOLED Sakura',
+    AppLanguage.english: 'AMOLED Sakura',
+    AppLanguage.japanese: 'AMOLED Sakura',
+    AppLanguage.chineseSimplified: 'AMOLED 樱花',
+    AppLanguage.chineseTraditional: 'AMOLED 櫻花',
+    AppLanguage.korean: 'AMOLED 사쿠라',
   });
 
   String get themeAmoledJapaneseSubtitle => _str({
@@ -519,9 +519,9 @@ class AppLocalizations {
   });
 
   String get easterEggJapaneseToast => _str({
-    AppLanguage.indonesian: 'Easter Egg Terbuka: Mode Easter Egg AMOLED Sakura! ようこそ!',
-    AppLanguage.english: 'Easter Egg Unlocked: Easter Egg AMOLED Sakura Mode! Welcome!',
-    AppLanguage.japanese: 'イースターエッグ解除: AMOLED 和風モード！ようこそ！',
+    AppLanguage.indonesian: 'Easter Egg Terbuka: Mode AMOLED Sakura! ようこそ!',
+    AppLanguage.english: 'Easter Egg Unlocked: AMOLED Sakura Mode! Welcome!',
+    AppLanguage.japanese: 'イースターエッグ解除: AMOLED Sakuraモード！ようこそ！',
     AppLanguage.chineseSimplified: '彩蛋解锁: AMOLED 樱花和风！欢迎！',
     AppLanguage.chineseTraditional: '彩蛋解鎖: AMOLED 櫻花和風！歡迎！',
     AppLanguage.korean: '이스터에그 발견: AMOLED 사쿠라 테마 활성화! 환영합니다!',

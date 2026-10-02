@@ -181,9 +181,9 @@ class UpdateService {
     return deletedAny;
   }
 
-  /// Copies the downloaded update APK to standard Android public downloads directory
-  /// (/storage/emulated/0/Download) as a permanent fallback backup for manual installation.
-  static Future<String?> backupApkToDownloads({String? versionTag}) async {
+  /// Saves the downloaded update APK to standard Android public downloads directory
+  /// (/storage/emulated/0/Download/GitPulse) as the primary downloaded APK file for installation.
+  static Future<String?> saveApkToDownloads({String? versionTag}) async {
     if (!Platform.isAndroid) return null;
     try {
       final sourceCandidates = <String>[];
@@ -209,9 +209,9 @@ class UpdateService {
 
       final apkName = 'GitPulse-${versionTag ?? AppConfig.appVersion}.apk';
       final targetDirs = [
-        '/storage/emulated/0/Download',
-        '/storage/emulated/0/downloads',
-        '/sdcard/Download',
+        '/storage/emulated/0/Download/GitPulse',
+        '/storage/emulated/0/downloads/GitPulse',
+        '/sdcard/Download/GitPulse',
       ];
 
       for (final dirPath in targetDirs) {
@@ -235,7 +235,11 @@ class UpdateService {
     return null;
   }
 
-  /// Downloads the APK directly and saves a copy in /storage/emulated/0/Download
+  /// Backward-compatible alias for [saveApkToDownloads].
+  static Future<String?> backupApkToDownloads({String? versionTag}) =>
+      saveApkToDownloads(versionTag: versionTag);
+
+  /// Downloads the APK directly and saves a copy in /storage/emulated/0/Download/GitPulse
   static Future<String?> downloadApkToDownloads(
     String downloadUrl, {
     String? versionTag,
@@ -244,9 +248,9 @@ class UpdateService {
     try {
       final apkName = 'GitPulse-${versionTag ?? AppConfig.appVersion}.apk';
       final targetDirs = [
-        '/storage/emulated/0/Download',
-        '/storage/emulated/0/downloads',
-        '/sdcard/Download',
+        '/storage/emulated/0/Download/GitPulse',
+        '/storage/emulated/0/downloads/GitPulse',
+        '/sdcard/Download/GitPulse',
       ];
 
       final client = http.Client();
@@ -273,7 +277,8 @@ class UpdateService {
   }
 
   /// Automatically removes GitPulse update APKs from the Android public downloads
-  /// directory (/storage/emulated/0/Download) once they have been successfully installed.
+  /// directory (/storage/emulated/0/Download/GitPulse and /storage/emulated/0/Download)
+  /// once they have been successfully installed.
   ///
   /// STRICT SAFETY GUARD:
   /// - Only targets files whose filename strictly starts with "gitpulse-" or "gitpulse_"
@@ -292,8 +297,12 @@ class UpdateService {
       final targetDirs = <String>[];
       if (customPath != null) {
         targetDirs.add(customPath);
+        targetDirs.add('$customPath/GitPulse');
       } else {
         targetDirs.addAll([
+          '/storage/emulated/0/Download/GitPulse',
+          '/storage/emulated/0/downloads/GitPulse',
+          '/sdcard/Download/GitPulse',
           '/storage/emulated/0/Download',
           '/storage/emulated/0/downloads',
           '/sdcard/Download',
@@ -345,6 +354,16 @@ class UpdateService {
               await entry.delete();
               deletedAny = true;
             }
+          }
+
+          // If this is the dedicated GitPulse subfolder and now empty, delete it
+          if (dirPath.toLowerCase().endsWith('gitpulse')) {
+            try {
+              final remaining = await dir.list().toList();
+              if (remaining.isEmpty) {
+                await dir.delete();
+              }
+            } catch (_) {}
           }
         } catch (_) {}
       }

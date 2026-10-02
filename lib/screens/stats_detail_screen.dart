@@ -35,11 +35,41 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
   late bool _isBookmarked;
   RepoSortFilter _currentFilter = RepoSortFilter.popular;
   bool _showAllRepos = false;
+  late List<GitHubRepo> _sortedRepos;
 
   @override
   void initState() {
     super.initState();
     _isBookmarked = widget.storageService.isBookmarked(widget.stats.user.login);
+    _sortRepos();
+  }
+
+  void _sortRepos() {
+    final list = List<GitHubRepo>.from(widget.stats.repos);
+    switch (_currentFilter) {
+      case RepoSortFilter.popular:
+        list.sort((a, b) {
+          final starsCmp = b.stargazersCount.compareTo(a.stargazersCount);
+          if (starsCmp != 0) return starsCmp;
+          return b.forksCount.compareTo(a.forksCount);
+        });
+        break;
+      case RepoSortFilter.newest:
+        list.sort((a, b) {
+          final dateA = a.latestActivityDate ?? DateTime(1970);
+          final dateB = b.latestActivityDate ?? DateTime(1970);
+          return dateB.compareTo(dateA);
+        });
+        break;
+      case RepoSortFilter.oldest:
+        list.sort((a, b) {
+          final dateA = a.latestActivityDate ?? DateTime(1970);
+          final dateB = b.latestActivityDate ?? DateTime(1970);
+          return dateA.compareTo(dateB);
+        });
+        break;
+    }
+    _sortedRepos = list;
   }
 
   void _toggleBookmark() async {
@@ -102,34 +132,6 @@ GitHub: https://github.com/${u.login}
         behavior: SnackBarBehavior.floating,
       ),
     );
-  }
-
-  List<GitHubRepo> get _filteredAndSortedRepos {
-    final list = List<GitHubRepo>.from(widget.stats.repos);
-    switch (_currentFilter) {
-      case RepoSortFilter.popular:
-        list.sort((a, b) {
-          final starsCmp = b.stargazersCount.compareTo(a.stargazersCount);
-          if (starsCmp != 0) return starsCmp;
-          return b.forksCount.compareTo(a.forksCount);
-        });
-        break;
-      case RepoSortFilter.newest:
-        list.sort((a, b) {
-          final dateA = a.latestActivityDate ?? DateTime(1970);
-          final dateB = b.latestActivityDate ?? DateTime(1970);
-          return dateB.compareTo(dateA);
-        });
-        break;
-      case RepoSortFilter.oldest:
-        list.sort((a, b) {
-          final dateA = a.latestActivityDate ?? DateTime(1970);
-          final dateB = b.latestActivityDate ?? DateTime(1970);
-          return dateA.compareTo(dateB);
-        });
-        break;
-    }
-    return list;
   }
 
   String _getFilterLabel(RepoSortFilter filter, AppLocalizations loc) {
@@ -200,7 +202,7 @@ GitHub: https://github.com/${u.login}
     final cStats = widget.stats.contributionStats;
     final titleInfo = cStats.commitTitle;
     final currentYear = DateTime.now().year;
-    final repos = _filteredAndSortedRepos;
+    final repos = _sortedRepos;
     final displayedRepos = _showAllRepos ? repos : repos.take(10).toList();
 
     return Scaffold(
@@ -229,12 +231,15 @@ GitHub: https://github.com/${u.login}
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
             // User Header Card
             Container(
               padding: const EdgeInsets.all(16),
@@ -603,6 +608,7 @@ GitHub: https://github.com/${u.login}
                   onSelected: (filter) {
                     setState(() {
                       _currentFilter = filter;
+                      _sortRepos();
                     });
                   },
                   color: AppTheme.surfaceElevated,
@@ -669,54 +675,69 @@ GitHub: https://github.com/${u.login}
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-
-            if (repos.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                  child: Text(
-                    loc.noPublicRepos,
-                    style: TextStyle(color: AppTheme.textMuted),
-                  ),
-                ),
-              )
-            else ...[
-              ...displayedRepos.map((repo) => RepoTile(repo: repo)),
-              if (repos.length > 10) ...[
-                const SizedBox(height: 6),
-                Center(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        _showAllRepos = !_showAllRepos;
-                      });
-                    },
-                    icon: Icon(
-                      _showAllRepos
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                      size: 16,
-                      color: AppTheme.primaryCyan,
-                    ),
-                    label: Text(
-                      _showAllRepos
-                          ? loc.showFewerRepos
-                          : loc.showAllReposCount(repos.length),
-                      style: TextStyle(
-                        color: AppTheme.primaryCyan,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-            const SizedBox(height: 24),
           ],
         ),
       ),
-    );
+    ),
+      if (repos.isEmpty)
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                loc.noPublicRepos,
+                style: TextStyle(color: AppTheme.textMuted),
+              ),
+            ),
+          ),
+        )
+      else ...[
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => RepoTile(repo: displayedRepos[index]),
+              childCount: displayedRepos.length,
+            ),
+          ),
+        ),
+        if (repos.length > 10)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 6, bottom: 24),
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _showAllRepos = !_showAllRepos;
+                    });
+                  },
+                  icon: Icon(
+                    _showAllRepos
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 16,
+                    color: AppTheme.primaryCyan,
+                  ),
+                  label: Text(
+                    _showAllRepos
+                        ? loc.showFewerRepos
+                        : loc.showAllReposCount(repos.length),
+                    style: TextStyle(
+                      color: AppTheme.primaryCyan,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        else
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+      ],
+    ],
+  ),
+);
   }
 }

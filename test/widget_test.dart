@@ -517,15 +517,15 @@ void main() {
       expect(zhHantLoc.repositoriesTitle, '代碼倉庫');
       expect(koLoc.repositoriesTitle, '리포지토리');
 
-      // Theme options (Gelap, AMOLED, Terang, Easter Egg AMOLED Sakura)
+      // Theme options (Gelap, AMOLED, Terang, AMOLED Sakura)
       expect(idLoc.themeDark, 'Gelap');
       expect(idLoc.themeAmoled, 'AMOLED');
       expect(idLoc.themeLight, 'Terang');
-      expect(idLoc.themeAmoledJapanese, 'Easter Egg AMOLED Sakura');
+      expect(idLoc.themeAmoledJapanese, 'AMOLED Sakura');
       expect(enLoc.themeDark, 'Dark');
       expect(enLoc.themeAmoled, 'AMOLED');
       expect(enLoc.themeLight, 'Light');
-      expect(enLoc.themeAmoledJapanese, 'Easter Egg AMOLED Sakura');
+      expect(enLoc.themeAmoledJapanese, 'AMOLED Sakura');
 
       // Filter labels
       expect(idLoc.filterPopular, 'Terpopuler');
@@ -657,12 +657,12 @@ void main() {
       expect(find.text('150'), findsOneWidget);
     });
 
-    test('AppConfig provides accurate release and version telemetry for v1.0.3', () {
+    test('AppConfig provides accurate release and version telemetry for v1.0.4', () {
       expect(AppConfig.appName, 'GitPulse');
-      expect(AppConfig.appVersion, 'v1.0.3');
-      expect(AppConfig.buildNumber, '4');
-      expect(AppConfig.fullVersion, 'v1.0.3 (Build 4)');
-      expect(AppConfig.releaseTag, 'v1.0.3');
+      expect(AppConfig.appVersion, 'v1.0.4');
+      expect(AppConfig.buildNumber, '5');
+      expect(AppConfig.fullVersion, 'v1.0.4 (Build 5)');
+      expect(AppConfig.releaseTag, 'v1.0.4');
       expect(AppConfig.license, 'MIT License');
       expect(AppConfig.githubRepoUrl, contains('github.com'));
     });
@@ -768,6 +768,31 @@ void main() {
         expect(await userPhoto.exists(), true);
       } finally {
         await tempDir.delete(recursive: true);
+      }
+    });
+
+    test('UpdateService cleanInstalledBackupApk cleans GitPulse subfolder and removes empty directory', () async {
+      final tempDir = await Directory.systemTemp.createTemp('gitpulse_subfolder_test');
+      try {
+        final subDir = Directory('${tempDir.path}/GitPulse');
+        await subDir.create();
+
+        final installedSubApk = File('${subDir.path}/GitPulse-v1.0.3.apk');
+        await installedSubApk.writeAsString('mock apk 1.0.3');
+
+        final deleted = await UpdateService.cleanInstalledBackupApk(
+          currentVersion: '1.0.3',
+          customPath: tempDir.path,
+        );
+
+        expect(deleted, true);
+        expect(await installedSubApk.exists(), false);
+        // The empty GitPulse subfolder should also be deleted
+        expect(await subDir.exists(), false);
+      } finally {
+        if (await tempDir.exists()) {
+          await tempDir.delete(recursive: true);
+        }
       }
     });
   });

@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppConfig {
   static const String appName = 'GitPulse';
-  static const String appVersion = 'v1.0.3';
-  static const String buildNumber = '4';
-  static const String fullVersion = 'v1.0.3 (Build 4)';
-  static const String releaseTag = 'v1.0.3';
+  static const String appVersion = 'v1.0.4';
+  static const String buildNumber = '5';
+  static const String fullVersion = 'v1.0.4 (Build 5)';
+  static const String releaseTag = 'v1.0.4';
   static const String githubRepoUrl = 'https://github.com/zerabyte88/gitpulse_mobile';
   static const String developerUsername = 'zerabyte88';
   static const String developerGithubUrl = 'https://github.com/zerabyte88';
@@ -37,102 +37,102 @@ class AppTheme {
   // Dynamic Backgrounds & Surfaces
   static Color get background => switch (currentMode) {
         AppThemeMode.amoled => const Color(0xFF000000),
-        AppThemeMode.amoledJapanese => const Color(0xFF040207),
+        AppThemeMode.amoledJapanese => const Color(0xFF000000),
         AppThemeMode.light => const Color(0xFFF6F8FA),
-        AppThemeMode.dark => const Color(0xFF0D1117),
+        AppThemeMode.dark => const Color(0xFF0E131F),
       };
 
   static Color get surface => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF0A0A0A),
-        AppThemeMode.amoledJapanese => const Color(0xFF0D0B14),
+        AppThemeMode.amoled => const Color(0xFF0C0E12),
+        AppThemeMode.amoledJapanese => const Color(0xFF0E0B14),
         AppThemeMode.light => const Color(0xFFFFFFFF),
-        AppThemeMode.dark => const Color(0xFF161B22),
+        AppThemeMode.dark => const Color(0xFF151C2C),
       };
 
   static Color get surfaceElevated => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF141414),
-        AppThemeMode.amoledJapanese => const Color(0xFF171322),
+        AppThemeMode.amoled => const Color(0xFF161920),
+        AppThemeMode.amoledJapanese => const Color(0xFF191322),
         AppThemeMode.light => const Color(0xFFEEF2F6),
-        AppThemeMode.dark => const Color(0xFF21262D),
+        AppThemeMode.dark => const Color(0xFF1D263B),
       };
 
   static Color get border => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF242424),
-        AppThemeMode.amoledJapanese => const Color(0xFF302344),
+        AppThemeMode.amoled => const Color(0xFF222733),
+        AppThemeMode.amoledJapanese => const Color(0xFF2D1F3D),
         AppThemeMode.light => const Color(0xFFD0D7DE),
-        AppThemeMode.dark => const Color(0xFF30363D),
+        AppThemeMode.dark => const Color(0xFF2A364F),
       };
 
   static Color get borderSubtle => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF181818),
-        AppThemeMode.amoledJapanese => const Color(0xFF1E172C),
+        AppThemeMode.amoled => const Color(0xFF141720),
+        AppThemeMode.amoledJapanese => const Color(0xFF1F152B),
         AppThemeMode.light => const Color(0xFFE6E8EB),
-        AppThemeMode.dark => const Color(0xFF21262D),
+        AppThemeMode.dark => const Color(0xFF1F293D),
       };
 
   // Semantic Accents
   static Color get primaryCyan => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF38BDF8),
-        AppThemeMode.amoledJapanese => const Color(0xFFFF6B9D), // Neo Sakura Pink
-        AppThemeMode.light => const Color(0xFF0969DA), // GitHub Light Blue
-        AppThemeMode.dark => const Color(0xFF58A6FF), // GitHub Blue
+        AppThemeMode.amoled => const Color(0xFF00D2FF),
+        AppThemeMode.amoledJapanese => const Color(0xFFFF7597), // Sakura Rose
+        AppThemeMode.light => const Color(0xFF0969DA),
+        AppThemeMode.dark => const Color(0xFF38BDF8),
       };
 
   static Color get primaryViolet => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFA855F7),
-        AppThemeMode.amoledJapanese => const Color(0xFFB57EDC), // Kyoto Wisteria
+        AppThemeMode.amoled => const Color(0xFFB388FF),
+        AppThemeMode.amoledJapanese => const Color(0xFFC084FC),
         AppThemeMode.light => const Color(0xFF8250DF),
-        AppThemeMode.dark => const Color(0xFFBC8CFF),
+        AppThemeMode.dark => const Color(0xFFA78BFA),
       };
 
   static Color get accentGreen => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF22C55E),
-        AppThemeMode.amoledJapanese => const Color(0xFF48BB78), // Matcha Green
+        AppThemeMode.amoled => const Color(0xFF00E676),
+        AppThemeMode.amoledJapanese => const Color(0xFF4ADE80),
         AppThemeMode.light => const Color(0xFF1A7F37),
-        AppThemeMode.dark => const Color(0xFF3FB950),
+        AppThemeMode.dark => const Color(0xFF34D399),
       };
 
   static Color get accentAmber => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFFBBF24),
-        AppThemeMode.amoledJapanese => const Color(0xFFE2B714), // Kintsugi Gold
+        AppThemeMode.amoled => const Color(0xFFFFD54F),
+        AppThemeMode.amoledJapanese => const Color(0xFFFCD34D),
         AppThemeMode.light => const Color(0xFF9A6700),
-        AppThemeMode.dark => const Color(0xFFD29922),
+        AppThemeMode.dark => const Color(0xFFFBBF24),
       };
 
   static Color get accentRed => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFEF4444),
-        AppThemeMode.amoledJapanese => const Color(0xFFFF3366), // Torii Gate Crimson
+        AppThemeMode.amoled => const Color(0xFFFF5252),
+        AppThemeMode.amoledJapanese => const Color(0xFFFB7185),
         AppThemeMode.light => const Color(0xFFCF222E),
-        AppThemeMode.dark => const Color(0xFFF85149),
+        AppThemeMode.dark => const Color(0xFFF87171),
       };
 
   static Color get accentOrange => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFFB923C),
-        AppThemeMode.amoledJapanese => const Color(0xFFFF8552),
+        AppThemeMode.amoled => const Color(0xFFFF9100),
+        AppThemeMode.amoledJapanese => const Color(0xFFFB923C),
         AppThemeMode.light => const Color(0xFFBC4C00),
-        AppThemeMode.dark => const Color(0xFFF0883E),
+        AppThemeMode.dark => const Color(0xFFFB923C),
       };
 
   // Typography Monochromatic Hierarchy
   static Color get textPrimary => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFFFFFFF),
-        AppThemeMode.amoledJapanese => const Color(0xFFFFF0F5), // Lavender snow
+        AppThemeMode.amoled => const Color(0xFFF8FAFC),
+        AppThemeMode.amoledJapanese => const Color(0xFFFFF1F5),
         AppThemeMode.light => const Color(0xFF1F2328),
-        AppThemeMode.dark => const Color(0xFFF0F6FC),
+        AppThemeMode.dark => const Color(0xFFF1F5F9),
       };
 
   static Color get textSecondary => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFFA1A1AA),
-        AppThemeMode.amoledJapanese => const Color(0xFFC4B5D4),
+        AppThemeMode.amoled => const Color(0xFF94A3B8),
+        AppThemeMode.amoledJapanese => const Color(0xFFD1BEDA),
         AppThemeMode.light => const Color(0xFF656D76),
-        AppThemeMode.dark => const Color(0xFF8B949E),
+        AppThemeMode.dark => const Color(0xFF94A3B8),
       };
 
   static Color get textMuted => switch (currentMode) {
-        AppThemeMode.amoled => const Color(0xFF71717A),
-        AppThemeMode.amoledJapanese => const Color(0xFF8A779E),
+        AppThemeMode.amoled => const Color(0xFF64748B),
+        AppThemeMode.amoledJapanese => const Color(0xFF8D7B9A),
         AppThemeMode.light => const Color(0xFF8C959F),
-        AppThemeMode.dark => const Color(0xFF6E7681),
+        AppThemeMode.dark => const Color(0xFF64748B),
       };
 
   static bool get isLight => currentMode == AppThemeMode.light;
@@ -148,51 +148,51 @@ class AppTheme {
 
     final bg = switch (mode) {
       AppThemeMode.amoled => const Color(0xFF000000),
-      AppThemeMode.amoledJapanese => const Color(0xFF040207),
+      AppThemeMode.amoledJapanese => const Color(0xFF000000),
       AppThemeMode.light => const Color(0xFFF6F8FA),
-      AppThemeMode.dark => const Color(0xFF0D1117),
+      AppThemeMode.dark => const Color(0xFF0E131F),
     };
 
     final surf = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFF0A0A0A),
-      AppThemeMode.amoledJapanese => const Color(0xFF0D0B14),
+      AppThemeMode.amoled => const Color(0xFF0C0E12),
+      AppThemeMode.amoledJapanese => const Color(0xFF0E0B14),
       AppThemeMode.light => const Color(0xFFFFFFFF),
-      AppThemeMode.dark => const Color(0xFF161B22),
+      AppThemeMode.dark => const Color(0xFF151C2C),
     };
 
     final brd = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFF242424),
-      AppThemeMode.amoledJapanese => const Color(0xFF302344),
+      AppThemeMode.amoled => const Color(0xFF222733),
+      AppThemeMode.amoledJapanese => const Color(0xFF2D1F3D),
       AppThemeMode.light => const Color(0xFFD0D7DE),
-      AppThemeMode.dark => const Color(0xFF30363D),
+      AppThemeMode.dark => const Color(0xFF2A364F),
     };
 
     final prim = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFF38BDF8),
-      AppThemeMode.amoledJapanese => const Color(0xFFFF6B9D),
+      AppThemeMode.amoled => const Color(0xFF00D2FF),
+      AppThemeMode.amoledJapanese => const Color(0xFFFF7597),
       AppThemeMode.light => const Color(0xFF0969DA),
-      AppThemeMode.dark => const Color(0xFF58A6FF),
+      AppThemeMode.dark => const Color(0xFF38BDF8),
     };
 
     final sec = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFFA855F7),
-      AppThemeMode.amoledJapanese => const Color(0xFFB57EDC),
+      AppThemeMode.amoled => const Color(0xFFB388FF),
+      AppThemeMode.amoledJapanese => const Color(0xFFC084FC),
       AppThemeMode.light => const Color(0xFF8250DF),
-      AppThemeMode.dark => const Color(0xFFBC8CFF),
+      AppThemeMode.dark => const Color(0xFFA78BFA),
     };
 
     final txtPrim = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFFFFFFFF),
-      AppThemeMode.amoledJapanese => const Color(0xFFFFF0F5),
+      AppThemeMode.amoled => const Color(0xFFF8FAFC),
+      AppThemeMode.amoledJapanese => const Color(0xFFFFF1F5),
       AppThemeMode.light => const Color(0xFF1F2328),
-      AppThemeMode.dark => const Color(0xFFF0F6FC),
+      AppThemeMode.dark => const Color(0xFFF1F5F9),
     };
 
     final txtMuted = switch (mode) {
-      AppThemeMode.amoled => const Color(0xFF71717A),
-      AppThemeMode.amoledJapanese => const Color(0xFF8A779E),
+      AppThemeMode.amoled => const Color(0xFF64748B),
+      AppThemeMode.amoledJapanese => const Color(0xFF8D7B9A),
       AppThemeMode.light => const Color(0xFF8C959F),
-      AppThemeMode.dark => const Color(0xFF6E7681),
+      AppThemeMode.dark => const Color(0xFF64748B),
     };
 
     final interTheme = GoogleFonts.interTextTheme(baseTextTheme).apply(

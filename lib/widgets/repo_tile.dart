@@ -56,9 +56,10 @@ class RepoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final langColor = _getLanguageColor(repo.language);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
+    return RepaintBoundary(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -236,6 +237,7 @@ class RepoTile extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

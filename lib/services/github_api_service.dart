@@ -10,7 +10,16 @@ import '../models/user_stats.dart';
 
 class GitHubApiException implements Exception {
   final String message;
-  GitHubApiException(this.message);
+  final int? statusCode;
+  final bool isRateLimit;
+  final bool isNotFound;
+
+  GitHubApiException(
+    this.message, {
+    this.statusCode,
+    this.isRateLimit = false,
+    this.isNotFound = false,
+  });
 
   @override
   String toString() => message;
@@ -139,16 +148,33 @@ class GitHubApiService {
       _updateRateLimitFromHeaders(eventsRes.headers);
 
       if (userRes.statusCode == 404) {
-        throw GitHubApiException('Pengguna "$cleanUsername" tidak ditemukan di GitHub.');
-      } else if (userRes.statusCode == 403) {
+        throw GitHubApiException(
+          'Pengguna "$cleanUsername" tidak ditemukan di GitHub.',
+          statusCode: 404,
+          isNotFound: true,
+        );
+      } else if (userRes.statusCode == 403 ||
+          userRes.statusCode == 429 ||
+          reposRes.statusCode == 403 ||
+          reposRes.statusCode == 429 ||
+          eventsRes.statusCode == 403 ||
+          eventsRes.statusCode == 429 ||
+          (_lastRateLimit != null && _lastRateLimit!.remaining == 0)) {
         final resetMsg = _lastRateLimit != null
             ? ' (Reset dalam ${_lastRateLimit!.resetCountdown})'
             : '';
         throw GitHubApiException(
-            'Limit GitHub API tercapai$resetMsg. Masukkan GitHub Token di pengaturan untuk 5.000 req/jam.');
+          'Batas kuota token / API Anda telah habis$resetMsg. Masukkan atau ganti token di pengaturan.',
+          statusCode: (userRes.statusCode == 403 || userRes.statusCode == 429)
+              ? userRes.statusCode
+              : 403,
+          isRateLimit: true,
+        );
       } else if (userRes.statusCode != 200) {
         throw GitHubApiException(
-            'Gagal memuat profil (${userRes.statusCode}): ${userRes.reasonPhrase}');
+          'Gagal memuat profil (${userRes.statusCode}): ${userRes.reasonPhrase}',
+          statusCode: userRes.statusCode,
+        );
       }
 
       final userData = jsonDecode(userRes.body) as Map<String, dynamic>;
