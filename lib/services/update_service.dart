@@ -125,6 +125,8 @@ class UpdateService {
       return OtaUpdate().execute(
         downloadUrl,
         destinationFilename: 'gitpulse-latest.apk',
+        androidProviderAuthority:
+            'com.gitpulse.gitpulse_mobile.ota_update_provider',
       );
     } catch (e) {
       return Stream.error(e);

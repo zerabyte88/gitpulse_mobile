@@ -141,7 +141,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
             UpdateService.cleanDownloadedApk();
           } else {
             _isDownloadingUpdate = false;
-            _updateError = event.status.name;
+            _updateError = loc.updateFailed;
             UpdateService.cleanDownloadedApk();
           }
         });
@@ -150,7 +150,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
         if (!mounted) return;
         setState(() {
           _isDownloadingUpdate = false;
-          _updateError = err.toString();
+          _updateError = loc.updateFailed;
         });
         UpdateService.cleanDownloadedApk();
       },
