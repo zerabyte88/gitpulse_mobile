@@ -16,9 +16,15 @@ import 'package:gitpulse_mobile/services/tech_news_service.dart';
 import 'package:gitpulse_mobile/services/update_service.dart';
 import 'package:gitpulse_mobile/theme/app_theme.dart';
 import 'package:gitpulse_mobile/widgets/animated_tier_title.dart';
+import 'package:gitpulse_mobile/widgets/language_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUpAll(() {
+    GoogleFonts.config.allowRuntimeFetching = false;
+  });
+
   group('GitPulse Model Tests', () {
     test('GitHubUser fromJson parses correctly', () {
       final json = {
@@ -657,12 +663,12 @@ void main() {
       expect(find.text('150'), findsOneWidget);
     });
 
-    test('AppConfig provides accurate release and version telemetry for v1.0.4', () {
+    test('AppConfig provides accurate release and version telemetry for v1.0.5', () {
       expect(AppConfig.appName, 'GitPulse');
-      expect(AppConfig.appVersion, 'v1.0.4');
-      expect(AppConfig.buildNumber, '5');
-      expect(AppConfig.fullVersion, 'v1.0.4 (Build 5)');
-      expect(AppConfig.releaseTag, 'v1.0.4');
+      expect(AppConfig.appVersion, 'v1.0.5');
+      expect(AppConfig.buildNumber, '6');
+      expect(AppConfig.fullVersion, 'v1.0.5 (Build 6)');
+      expect(AppConfig.releaseTag, 'v1.0.5');
       expect(AppConfig.license, 'MIT License');
       expect(AppConfig.githubRepoUrl, contains('github.com'));
     });
@@ -795,5 +801,67 @@ void main() {
         }
       }
     });
+
+    testWidgets('LanguageChart renders percentage without KB bytes and aligns in 2-column layout', (tester) async {
+      final languageCounts = {
+        'Dart': 7000,
+        'JavaScript': 2000,
+        'HTML': 1000,
+      };
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: LanguageChart(languageCounts: languageCounts),
+          ),
+        ),
+      );
+
+      // Verify percentages are rendered
+      expect(find.textContaining('70.0%'), findsWidgets);
+      expect(find.textContaining('20.0%'), findsWidgets);
+      expect(find.textContaining('10.0%'), findsWidgets);
+
+      // Verify that KB or MB bytes text is NOT present
+      expect(find.textContaining('KB'), findsNothing);
+      expect(find.textContaining('MB'), findsNothing);
+      expect(find.textContaining('·'), findsNothing);
+    });
+
+    test('AppTheme generates distinct, harmonious palettes for dark, amoled, and sakura modes', () {
+      final darkTheme = AppTheme.getTheme(AppThemeMode.dark);
+      final amoledTheme = AppTheme.getTheme(AppThemeMode.amoled);
+      final sakuraTheme = AppTheme.getTheme(AppThemeMode.amoledJapanese);
+      final lightTheme = AppTheme.getTheme(AppThemeMode.light);
+
+      // Verify scaffolds backgrounds
+      expect(darkTheme.scaffoldBackgroundColor, const Color(0xFF0D1117));
+      expect(amoledTheme.scaffoldBackgroundColor, const Color(0xFF000000));
+      expect(sakuraTheme.scaffoldBackgroundColor, const Color(0xFF000000));
+      expect(lightTheme.scaffoldBackgroundColor, const Color(0xFFF6F8FA));
+
+      // Verify distinct primary accents
+      expect(darkTheme.primaryColor, const Color(0xFF58A6FF));
+      expect(amoledTheme.primaryColor, const Color(0xFF00E5FF));
+      expect(sakuraTheme.primaryColor, const Color(0xFFFF5C8A));
+      expect(lightTheme.primaryColor, const Color(0xFF0969DA));
+
+      // Verify card surfaces
+      expect(darkTheme.cardTheme.color, const Color(0xFF161B22));
+      expect(amoledTheme.cardTheme.color, const Color(0xFF101012));
+      expect(sakuraTheme.cardTheme.color, const Color(0xFF150C18));
+    });
+
+    test('AppLocalizations renders beautiful copy profile and favorite toast messages', () {
+      final idLoc = AppLocalizations(AppLanguage.indonesian);
+      final enLoc = AppLocalizations(AppLanguage.english);
+
+      expect(idLoc.summaryCopiedToast, contains('Profil berhasil disalin'));
+      expect(enLoc.summaryCopiedToast, contains('Profile copied to clipboard'));
+
+      expect(idLoc.profileSavedToFavorites('zerabyte88'), contains('Profil @zerabyte88 ditambahkan ke favorit!'));
+      expect(enLoc.profileSavedToFavorites('zerabyte88'), contains('Profile @zerabyte88 added to favorites!'));
+    });
   });
 }
+

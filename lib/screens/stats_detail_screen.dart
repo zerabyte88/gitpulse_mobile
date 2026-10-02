@@ -72,9 +72,58 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
     _sortedRepos = list;
   }
 
+  void _showThemedSnackBar({
+    required IconData icon,
+    required Color iconColor,
+    required String message,
+  }) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        elevation: 6,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        backgroundColor: AppTheme.surfaceElevated,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: iconColor.withValues(alpha: 0.38),
+            width: 1.1,
+          ),
+        ),
+        duration: const Duration(milliseconds: 2200),
+        content: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.14),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: iconColor, size: 16),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _toggleBookmark() async {
     final loc = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     final username = widget.stats.user.login;
     await widget.storageService.toggleBookmark(
       username,
@@ -85,17 +134,12 @@ class _StatsDetailScreenState extends State<StatsDetailScreen> {
       _isBookmarked = !_isBookmarked;
     });
 
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          _isBookmarked
-              ? loc.profileSavedToFavorites(username)
-              : loc.profileRemovedFromFavorites,
-        ),
-        backgroundColor: AppTheme.surfaceElevated,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
+    _showThemedSnackBar(
+      icon: _isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+      iconColor: _isBookmarked ? AppTheme.accentAmber : AppTheme.textMuted,
+      message: _isBookmarked
+          ? loc.profileSavedToFavorites(username)
+          : loc.profileRemovedFromFavorites,
     );
   }
 
@@ -125,12 +169,10 @@ GitHub: https://github.com/${u.login}
 ''';
 
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(loc.summaryCopiedToast),
-        backgroundColor: AppTheme.accentGreen,
-        behavior: SnackBarBehavior.floating,
-      ),
+    _showThemedSnackBar(
+      icon: Icons.check_circle_rounded,
+      iconColor: AppTheme.primaryCyan,
+      message: loc.summaryCopiedToast,
     );
   }
 
@@ -233,6 +275,8 @@ GitHub: https://github.com/${u.login}
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
+        // ignore: deprecated_member_use
+        cacheExtent: 600.0,
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),

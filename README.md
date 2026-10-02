@@ -12,13 +12,13 @@
 
 ### Enterprise-Grade Developer Telemetry & Productivity Analytics
 
-[![Release](https://img.shields.io/badge/Release-v1.0.4-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
-[![Build](https://img.shields.io/badge/Build-5-brightgreen?style=flat-square)](pubspec.yaml)
+[![Release](https://img.shields.io/badge/Release-v1.0.5-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
+[![Build](https://img.shields.io/badge/Build-6-brightgreen?style=flat-square)](pubspec.yaml)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 [![CI/CD Status](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white)](.github/workflows/main.yml)
-[![Tests](https://img.shields.io/badge/Tests-Passing%20(24%2F24)-success?style=flat-square)](test/widget_test.dart)
+[![Tests](https://img.shields.io/badge/Tests-Passing%20(27%2F27)-success?style=flat-square)](test/widget_test.dart)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Layered-orange?style=flat-square)](#system-architecture--data-flow)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](LICENSE)
 
@@ -90,10 +90,10 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>OLED, Dark Slate, Light & Sakura Mode</i>
       </td>
       <td>
-        - <b>Dark (Gelap):</b> Deep Midnight Navy/Slate (<code>#0E131F</code>) with Slate surfaces (<code>#171F30</code>) and Electric Sky Cyan (<code>#38BDF8</code>) & Iris Violet (<code>#A78BFA</code>) accents.<br/>
+        - <b>Dark:</b> Deep Midnight Navy/Slate (<code>#0E131F</code>) with Slate surfaces (<code>#171F30</code>) and Electric Sky Cyan (<code>#38BDF8</code>) & Iris Violet (<code>#A78BFA</code>) accents.<br/>
         - <b>AMOLED:</b> True OLED Pure Black (<code>#000000</code>) with obsidian onyx cards (<code>#0C0E12</code>) and vivid Ice Cyan (<code>#00D2FF</code>) accents.<br/>
         - <b>AMOLED Sakura:</b> Pure Black (<code>#000000</code>) with wisteria plum surfaces (<code>#0E0B14</code>), Sakura Blossom Rose (<code>#FF7597</code>), and spring bamboo jade (<code>#4ADE80</code>). Unlocked via 10-tap secret interaction.<br/>
-        - <b>Light (Terang):</b> Crisp, high-contrast light palette engineered for bright outdoor environments.
+        - <b>Light:</b> Crisp, high-contrast light palette engineered for bright outdoor environments.
       </td>
     </tr>
     <tr>
@@ -102,7 +102,7 @@ The standard GitHub contribution graph ("green squares") displays daily activity
         <i>Full Language & Theme Name Geometry</i>
       </td>
       <td>
-        Redesigned language and theme option layouts in settings using a non-squeezing <code>Stack</code> architecture with <code>maxLines: 2</code> and <code>softWrap: true</code>. Language names (such as <i>Bahasa Indonesia</i>) always display 100% in full and are never truncated with ellipsis (<code>...</code>) when selected. All action buttons in settings are center-aligned.
+        Redesigned language and theme option layouts in settings using a non-squeezing <code>Stack</code> architecture with <code>maxLines: 2</code> and <code>softWrap: true</code>. Language names (such as <i>Bahasa Indonesia</i>) always display 100% in full and are never truncated with ellipsis (<code>...</code>) when selected. All action buttons, theme buttons, and language options in settings feature center-aligned typography.
       </td>
     </tr>
     <tr>
@@ -233,7 +233,7 @@ GitPulse Mobile follows **Clean Layered Architecture** principles to separate co
 │   │  • Deterministic Persona Classifier (Star Magnet, Midnight Owl, Polyglot, etc.)│   │
 │   ├────────────────────────────────────────────────────────────────────────────────┤   │
 │   │                              UpdateService & OTA Engine                        │   │
-│   │  • Semantic Version Comparator (e.g., v1.0.4 > v1.0.3)                         │   │
+│   │  • Semantic Version Comparator (e.g., v1.0.5 > v1.0.4)                         │   │
 │   │  • PackageInstaller Stream & Primary APK in /Download/GitPulse                 │   │
 │   │  • Safe Auto-Cleanup Routine for Installed APKs & Empty Directories            │   │
 │   ├────────────────────────────────────────────────────────────────────────────────┤   │
@@ -283,7 +283,7 @@ GitPulse Mobile features a centralized `AppThemeService` paired with dynamic col
 3. Rapidly tap the **AMOLED** option **10 times**.
 4. On the 10th tap:
    - Haptic vibration feedback triggers.
-   - A celebratory toast appears: *"Mode AMOLED Sakura aktif! ✨"*.
+   - A celebratory toast appears: *"AMOLED Sakura Mode Activated! ✨"*.
    - The theme immediately switches and is permanently stored in device preferences.
 
 ---
@@ -299,7 +299,7 @@ GitPulse Mobile features a centralized `AppThemeService` paired with dynamic col
                     │
                     ▼
        2. Semantic Version Comparator
-         (Compares Tag e.g. v1.0.4 vs Installed v1.0.3)
+         (Compares Tag e.g. v1.0.5 vs Installed v1.0.4)
                     │
        ┌────────────┴────────────┐
        ▼                         ▼
@@ -307,7 +307,7 @@ Already Up-to-Date       New Version Available!
  "Already up to date"            │
                                  ▼
                          3. Extract APK Asset URL
-                         (e.g., GitPulse-v1.0.4.apk)
+                         (e.g., GitPulse-v1.0.5.apk)
                                  │
                                  ▼
                          4. Background Download Stream
@@ -327,7 +327,7 @@ Already Up-to-Date       New Version Available!
 ```
 
 - **In-Place Upgrade**: Directly upgrades the app without requiring an uninstall, keeping tokens, bookmarks, and preferences completely intact.
-- **Dedicated `/Download/GitPulse` Folder**: The primary downloaded APK file is automatically saved into `/storage/emulated/0/Download/GitPulse/GitPulse-v1.0.4.apk`.
+- **Dedicated `/Download/GitPulse` Folder**: The primary downloaded APK file is automatically saved into `/storage/emulated/0/Download/GitPulse/GitPulse-v1.0.5.apk`.
 - **Post-Install Storage Auto-Cleanup**: Once the app launches on the updated version, installed APK packages are automatically purged and empty folders are removed, with zero risk to user documents or personal media.
 - **Browser Fallback**: If system installer permissions are restricted by OEM device policies, a dedicated button opens the release asset directly in the system browser.
 
@@ -433,7 +433,7 @@ gitpulse_mobile/
 │   │   ├── tech_news_service.dart   # Curated tech news & GitHub trending fetcher
 │   │   └── update_service.dart      # Semantic version check, OTA download & auto-cleanup
 │   ├── theme/                       # Design system tokens & application metadata
-│   │   └── app_theme.dart           # 4-theme color definitions, typography & AppConfig (v1.0.4)
+│   │   └── app_theme.dart           # 4-theme color definitions, typography & AppConfig (v1.0.5)
 │   └── widgets/                     # Modular reusable UI components
 │       ├── activity_chart.dart      # 24-hour activity bar chart (fl_chart)
 │       ├── animated_tier_title.dart # Level-tailored animated status badge (Tiers 1-6)
@@ -443,9 +443,9 @@ gitpulse_mobile/
 │       ├── stat_card.dart           # Summary metric card
 │       └── tech_news_card.dart      # Engineering digest & trending card widget
 ├── test/
-│   └── widget_test.dart             # Complete unit, model, and OTA update test suite (24 tests)
+│   └── widget_test.dart             # Complete unit, model, and OTA update test suite (27 tests)
 ├── web/                             # Web/PWA deployment entrypoint
-└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.4+5)
+└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.5+6)
 ```
 
 ---

@@ -118,18 +118,8 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
             Shadow(
               color: const Color(0xFFFF9100)
                   .withValues(alpha: 0.80 + 0.20 * flameIntensity),
-              blurRadius: 3.5 + 2.5 * flameIntensity,
+              blurRadius: 4.0,
               offset: const Offset(0, -1),
-            ),
-            Shadow(
-              color: const Color(0xFFFF3D00)
-                  .withValues(alpha: 0.60 + 0.25 * flameIntensity),
-              blurRadius: 7.0 + 4.0 * flameIntensity,
-              offset: const Offset(0, -2),
-            ),
-            Shadow(
-              color: const Color(0xFFFF1744).withValues(alpha: 0.35),
-              blurRadius: 12.0,
             ),
           ],
         ),
@@ -173,7 +163,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           BoxShadow(
             color: const Color(0xFFFF3D00)
                 .withValues(alpha: 0.25 + 0.15 * flameIntensity),
-            blurRadius: 8 + 6 * flameIntensity,
+            blurRadius: 8.0,
             spreadRadius: 0,
           ),
         ],
@@ -230,12 +220,8 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           shadows: [
             Shadow(
               color: const Color(0xFF00D2FF).withValues(alpha: 0.75 + crackle.abs()),
-              blurRadius: 5 + 4 * pulse,
+              blurRadius: 5.0,
               offset: const Offset(0, -0.5),
-            ),
-            Shadow(
-              color: const Color(0xFF7000FF).withValues(alpha: 0.55 + 0.2 * pulse),
-              blurRadius: 10 + 6 * pulse,
             ),
           ],
         ),
@@ -266,7 +252,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF0072FF).withValues(alpha: 0.30 + 0.25 * pulse),
-            blurRadius: 8 + 6 * pulse,
+            blurRadius: 8.0,
             spreadRadius: 0,
           ),
         ],
@@ -324,11 +310,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           shadows: [
             Shadow(
               color: const Color(0xFF10B981).withValues(alpha: 0.55 + 0.35 * pulse),
-              blurRadius: 4 + 5 * pulse,
-            ),
-            Shadow(
-              color: const Color(0xFF00FF87).withValues(alpha: 0.30 + 0.20 * pulse),
-              blurRadius: 9 + 4 * pulse,
+              blurRadius: 5.0,
             ),
           ],
         ),
@@ -352,7 +334,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF059669).withValues(alpha: 0.20 + 0.20 * pulse),
-            blurRadius: 6 + 5 * pulse,
+            blurRadius: 6.0,
           ),
         ],
       ),
@@ -405,7 +387,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           shadows: [
             Shadow(
               color: const Color(0xFFF59E0B).withValues(alpha: 0.50 + 0.30 * pulse),
-              blurRadius: 4 + 4 * pulse,
+              blurRadius: 4.0,
             ),
           ],
         ),
@@ -429,7 +411,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFD97706).withValues(alpha: 0.18 + 0.16 * pulse),
-            blurRadius: 6 + 4 * pulse,
+            blurRadius: 6.0,
           ),
         ],
       ),
@@ -482,7 +464,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
           shadows: [
             Shadow(
               color: const Color(0xFFC4B5FD).withValues(alpha: 0.30 + 0.20 * pulse),
-              blurRadius: 3 + 3 * pulse,
+              blurRadius: 4.0,
             ),
           ],
         ),
@@ -506,7 +488,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         boxShadow: [
           BoxShadow(
             color: const Color(0xFFC4B5FD).withValues(alpha: 0.10 + 0.10 * pulse),
-            blurRadius: 5 + 3 * pulse,
+            blurRadius: 5.0,
           ),
         ],
       ),
@@ -546,7 +528,7 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
         shadows: [
           Shadow(
             color: const Color(0xFF22C55E).withValues(alpha: 0.25 + 0.25 * breath),
-            blurRadius: 3 + 3 * breath,
+            blurRadius: 4.0,
           ),
         ],
       ),

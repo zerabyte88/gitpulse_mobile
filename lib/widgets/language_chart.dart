@@ -19,15 +19,6 @@ class LanguageChart extends StatelessWidget {
     Color(0xFF8B949E), // Muted Slate
   ];
 
-  static String _formatBytes(int bytes) {
-    if (bytes >= 1024 * 1024) {
-      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-    } else if (bytes >= 1024) {
-      return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    }
-    return '$bytes B';
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -115,109 +106,110 @@ class LanguageChart extends StatelessWidget {
       });
     }
 
-    final isDetailedBytes = totalCount >= 100;
-
     return RepaintBoundary(
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.border, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.code_rounded,
-                size: 16,
-                color: AppTheme.primaryCyan,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  loc.languageDistribution,
-                  style: TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w600,
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.border, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.code_rounded,
+                  size: 16,
+                  color: AppTheme.primaryCyan,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    loc.languageDistribution,
+                    style: TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            SizedBox(
+              height: 160,
+              child: PieChart(
+                PieChartData(
+                  sectionsSpace: 2,
+                  centerSpaceRadius: 42,
+                  sections: sections,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          SizedBox(
-            height: 160,
-            child: PieChart(
-              PieChartData(
-                sectionsSpace: 2,
-                centerSpaceRadius: 42,
-                sections: sections,
-              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            children: legendItems.map((item) {
-              final color = item['color'] as Color;
-              final name = item['name'] as String;
-              final percent = item['percent'] as double;
-              final bytes = item['bytes'] as int;
+            const SizedBox(height: 16),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = (constraints.maxWidth - 12) / 2;
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: legendItems.map((item) {
+                    final color = item['color'] as Color;
+                    final name = item['name'] as String;
+                    final percent = item['percent'] as double;
 
-              final subtitle = isDetailedBytes
-                  ? '(${percent.toStringAsFixed(1)}% · ${_formatBytes(bytes)})'
-                  : '(${percent.toStringAsFixed(1)}%)';
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text.rich(
-                      TextSpan(
+                    return SizedBox(
+                      width: itemWidth,
+                      child: Row(
                         children: [
-                          TextSpan(
-                            text: '$name ',
-                            style: TextStyle(
-                              color: AppTheme.textPrimary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
                             ),
                           ),
-                          TextSpan(
-                            text: subtitle,
-                            style: TextStyle(
-                              color: AppTheme.textMuted,
-                              fontSize: 11,
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '$name ',
+                                    style: TextStyle(
+                                      color: AppTheme.textPrimary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '(${percent.toStringAsFixed(1)}%)',
+                                    style: TextStyle(
+                                      color: AppTheme.textMuted,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
-        ],
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

@@ -311,6 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            // ignore: deprecated_member_use
+            cacheExtent: 600.0,
             slivers: [
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

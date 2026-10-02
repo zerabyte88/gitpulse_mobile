@@ -519,12 +519,12 @@ class AppLocalizations {
   });
 
   String get easterEggJapaneseToast => _str({
-    AppLanguage.indonesian: 'Easter Egg Terbuka: Mode AMOLED Sakura! ようこそ!',
-    AppLanguage.english: 'Easter Egg Unlocked: AMOLED Sakura Mode! Welcome!',
-    AppLanguage.japanese: 'イースターエッグ解除: AMOLED Sakuraモード！ようこそ！',
-    AppLanguage.chineseSimplified: '彩蛋解锁: AMOLED 樱花和风！欢迎！',
-    AppLanguage.chineseTraditional: '彩蛋解鎖: AMOLED 櫻花和風！歡迎！',
-    AppLanguage.korean: '이스터에그 발견: AMOLED 사쿠라 테마 활성화! 환영합니다!',
+    AppLanguage.indonesian: 'Mode AMOLED Sakura aktif! ✨ ようこそ!',
+    AppLanguage.english: 'AMOLED Sakura Mode Activated! ✨ Welcome!',
+    AppLanguage.japanese: 'AMOLED Sakuraモードが有効になりました！✨ ようこそ！',
+    AppLanguage.chineseSimplified: 'AMOLED 樱花和风模式已激活！✨ 欢迎！',
+    AppLanguage.chineseTraditional: 'AMOLED 櫻花和風模式已啟動！✨ 歡迎！',
+    AppLanguage.korean: 'AMOLED 사쿠라 테마가 활성화되었습니다! ✨ 환영합니다!',
   });
 
   // App Updates
@@ -1282,21 +1282,21 @@ class AppLocalizations {
   });
 
   String get profileLinkCopied => _str({
-    AppLanguage.indonesian: 'Link profil GitHub disalin ke clipboard!',
-    AppLanguage.english: 'GitHub profile link copied to clipboard!',
-    AppLanguage.japanese: 'プロフィールリンクをコピーしました！',
-    AppLanguage.chineseSimplified: 'GitHub 主页链接已复制到剪贴板！',
-    AppLanguage.chineseTraditional: 'GitHub 主頁連結已複製至剪貼簿！',
-    AppLanguage.korean: 'GitHub 프로필 링크가 클립보드에 복사되었습니다!',
+    AppLanguage.indonesian: 'Profil berhasil disalin ke clipboard! 📋✨',
+    AppLanguage.english: 'Profile copied to clipboard! 📋✨',
+    AppLanguage.japanese: 'プロフィールをクリップボードにコピーしました！ 📋✨',
+    AppLanguage.chineseSimplified: '主页信息已复制到剪贴板！ 📋✨',
+    AppLanguage.chineseTraditional: '主頁資訊已複製至剪貼簿！ 📋✨',
+    AppLanguage.korean: '프로필이 클립보드에 복사되었습니다! 📋✨',
   });
 
   String profileSavedToFavorites(String username) => _str({
-    AppLanguage.indonesian: 'Profil $username disimpan ke favorit!',
-    AppLanguage.english: 'Profile $username saved to favorites!',
-    AppLanguage.japanese: '$username のプロフィールをお気に入りに保存しました！',
-    AppLanguage.chineseSimplified: '用户 $username 已保存至收藏！',
-    AppLanguage.chineseTraditional: '使用者 $username 已儲存至收藏！',
-    AppLanguage.korean: '$username 프로필이 즐겨찾기에 저장되었습니다!',
+    AppLanguage.indonesian: 'Profil @$username ditambahkan ke favorit! ⭐',
+    AppLanguage.english: 'Profile @$username added to favorites! ⭐',
+    AppLanguage.japanese: '@$username をお気に入りに追加しました！ ⭐',
+    AppLanguage.chineseSimplified: '已将 @$username 添加至收藏！ ⭐',
+    AppLanguage.chineseTraditional: '已將 @$username 新增至收藏！ ⭐',
+    AppLanguage.korean: '@$username 즐겨찾기에 추가되었습니다! ⭐',
   });
 
   String get profileRemovedFromFavorites => _str({
@@ -1309,12 +1309,12 @@ class AppLocalizations {
   });
 
   String get summaryCopiedToast => _str({
-    AppLanguage.indonesian: 'Ringkasan statistik berhasil disalin ke clipboard!',
-    AppLanguage.english: 'Stats summary copied to clipboard!',
-    AppLanguage.japanese: '統計サマリーをクリップボードにコピーしました！',
-    AppLanguage.chineseSimplified: '统计摘要已复制到剪贴板！',
-    AppLanguage.chineseTraditional: '統計摘要已複製至剪貼簿！',
-    AppLanguage.korean: '통계 요약이 클립보드에 복사되었습니다!',
+    AppLanguage.indonesian: 'Profil berhasil disalin ke clipboard! 📋✨',
+    AppLanguage.english: 'Profile copied to clipboard! 📋✨',
+    AppLanguage.japanese: 'プロフィールをクリップボードにコピーしました！ 📋✨',
+    AppLanguage.chineseSimplified: '主页信息已复制到剪贴板！ 📋✨',
+    AppLanguage.chineseTraditional: '主頁資訊已複製至剪貼簿！ 📋✨',
+    AppLanguage.korean: '프로필이 클립보드에 복사되었습니다! 📋✨',
   });
 
   String get activeNowBadge => _str({
