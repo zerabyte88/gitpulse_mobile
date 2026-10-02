@@ -22,11 +22,14 @@ class GitHubApiService {
   final http.Client _client;
   String? personalAccessToken;
   GitHubRateLimit? _lastRateLimit;
+  final Map<String, UserStats> _statsCache = {};
 
   GitHubApiService({http.Client? client, this.personalAccessToken})
       : _client = client ?? http.Client();
 
   GitHubRateLimit? get lastRateLimit => _lastRateLimit;
+
+  void clearCache() => _statsCache.clear();
 
   Map<String, String> get _headers {
     final headers = <String, String>{
@@ -99,20 +102,41 @@ class GitHubApiService {
     return null;
   }
 
-  Future<UserStats> fetchUserStats(String username) async {
+  Future<UserStats> fetchUserStats(String username, {bool forceRefresh = false}) async {
     final cleanUsername = username.trim();
     if (cleanUsername.isEmpty) {
       throw GitHubApiException('Username GitHub tidak boleh kosong.');
+    }
+
+    final cacheKey = cleanUsername.toLowerCase();
+    if (!forceRefresh && _statsCache.containsKey(cacheKey)) {
+      return _statsCache[cacheKey]!;
     }
 
     try {
       // Kick off contributions fetch in background early
       final contribFuture = _fetchContributions(cleanUsername);
 
-      // 1. Fetch User Profile
+      // Fetch User Profile, Repositories, and Public Events concurrently for maximum responsiveness
       final userUri = Uri.parse('$_baseUrl/users/$cleanUsername');
-      final userRes = await _client.get(userUri, headers: _headers).timeout(_timeoutDuration);
+      final reposUri = Uri.parse(
+          '$_baseUrl/users/$cleanUsername/repos?per_page=100&sort=updated');
+      final eventsUri =
+          Uri.parse('$_baseUrl/users/$cleanUsername/events/public?per_page=100');
+
+      final responses = await Future.wait([
+        _client.get(userUri, headers: _headers).timeout(_timeoutDuration),
+        _client.get(reposUri, headers: _headers).timeout(_timeoutDuration),
+        _client.get(eventsUri, headers: _headers).timeout(_timeoutDuration),
+      ]);
+
+      final userRes = responses[0];
+      final reposRes = responses[1];
+      final eventsRes = responses[2];
+
       _updateRateLimitFromHeaders(userRes.headers);
+      _updateRateLimitFromHeaders(reposRes.headers);
+      _updateRateLimitFromHeaders(eventsRes.headers);
 
       if (userRes.statusCode == 404) {
         throw GitHubApiException('Pengguna "$cleanUsername" tidak ditemukan di GitHub.');
@@ -130,13 +154,8 @@ class GitHubApiService {
       final userData = jsonDecode(userRes.body) as Map<String, dynamic>;
       final user = GitHubUser.fromJson(userData);
 
-      // 2. Fetch Repositories (up to 100 recent)
-      final reposUri = Uri.parse(
-          '$_baseUrl/users/$cleanUsername/repos?per_page=100&sort=updated');
-      final reposRes = await _client.get(reposUri, headers: _headers).timeout(_timeoutDuration);
-      _updateRateLimitFromHeaders(reposRes.headers);
+      // Process Repositories
       final List<GitHubRepo> repos = [];
-
       if (reposRes.statusCode == 200) {
         final List<dynamic> reposData = jsonDecode(reposRes.body) as List<dynamic>;
         for (final item in reposData) {
@@ -149,13 +168,8 @@ class GitHubApiService {
       // Sort repos by stars descending
       repos.sort((a, b) => b.stargazersCount.compareTo(a.stargazersCount));
 
-      // 3. Fetch Public Events for activity analysis
-      final eventsUri =
-          Uri.parse('$_baseUrl/users/$cleanUsername/events/public?per_page=100');
-      final eventsRes = await _client.get(eventsUri, headers: _headers).timeout(_timeoutDuration);
-      _updateRateLimitFromHeaders(eventsRes.headers);
+      // Process Public Events for activity analysis
       final List<Map<String, dynamic>> events = [];
-
       if (eventsRes.statusCode == 200) {
         final List<dynamic> eventsData = jsonDecode(eventsRes.body) as List<dynamic>;
         for (final item in eventsData) {
@@ -205,13 +219,15 @@ class GitHubApiService {
       final fetchedContributions = await contribFuture;
       final contributionStats = fetchedContributions ?? ContributionStats.fromEvents(events);
 
-      return UserStats.calculate(
+      final calculated = UserStats.calculate(
         user: user,
         repos: repos,
         publicEvents: events,
         contributionStats: contributionStats,
         aggregatedLanguages: aggregatedLanguages,
       );
+      _statsCache[cacheKey] = calculated;
+      return calculated;
     } on SocketException catch (e) {
       if (e.osError?.errorCode == 13 || e.message.toLowerCase().contains('permission')) {
         throw GitHubApiException('Izin akses internet belum diaktifkan pada sistem aplikasi.');

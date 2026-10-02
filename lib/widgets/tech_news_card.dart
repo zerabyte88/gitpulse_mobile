@@ -15,12 +15,13 @@ class TechNewsCard extends StatelessWidget {
   Future<void> _openArticle(BuildContext context) async {
     final uri = Uri.tryParse(news.url);
     if (uri != null) {
+      final loc = AppLocalizations.of(context);
       try {
         final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
         if (!launched && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Tidak dapat membuka link: ${news.url}'),
+              content: Text(loc.cannotOpenLink(news.url)),
               backgroundColor: AppTheme.accentRed,
               behavior: SnackBarBehavior.floating,
             ),
@@ -30,7 +31,7 @@ class TechNewsCard extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Gagal membuka link: $e'),
+              content: Text(loc.failedToOpenLink(e.toString())),
               backgroundColor: AppTheme.accentRed,
               behavior: SnackBarBehavior.floating,
             ),
@@ -44,31 +45,33 @@ class TechNewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasCover = news.coverImage != null && news.coverImage!.isNotEmpty;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.border, width: 1),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _openArticle(context),
-          splashColor: AppTheme.primaryCyan.withValues(alpha: 0.08),
-          highlightColor: AppTheme.primaryCyan.withValues(alpha: 0.04),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (hasCover)
-                Stack(
-                  children: [
-                    SizedBox(
-                      height: 130,
-                      width: double.infinity,
-                      child: Image.network(
-                        news.coverImage!,
-                        fit: BoxFit.cover,
+    return RepaintBoundary(
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppTheme.border, width: 1),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _openArticle(context),
+            splashColor: AppTheme.primaryCyan.withValues(alpha: 0.08),
+            highlightColor: AppTheme.primaryCyan.withValues(alpha: 0.04),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (hasCover)
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: 130,
+                        width: double.infinity,
+                        child: Image.network(
+                          news.coverImage!,
+                          fit: BoxFit.cover,
+                          cacheWidth: 800,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return Container(
@@ -86,7 +89,7 @@ class TechNewsCard extends StatelessWidget {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) =>
-                            _buildCoverPlaceholder(),
+                            const SizedBox.shrink(),
                       ),
                     ),
                     Positioned(
@@ -108,9 +111,7 @@ class TechNewsCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
-              else
-                _buildCoverPlaceholder(),
+                ),
               Padding(
                 padding: const EdgeInsets.all(14),
                 child: Column(
@@ -185,6 +186,8 @@ class TechNewsCard extends StatelessWidget {
                               news.authorAvatar!,
                               width: 18,
                               height: 18,
+                              cacheWidth: 60,
+                              cacheHeight: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Icon(
                                 Icons.person_outline_rounded,
@@ -256,35 +259,9 @@ class TechNewsCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 
-  Widget _buildCoverPlaceholder() {
-    return Container(
-      height: 70,
-      width: double.infinity,
-      color: AppTheme.surfaceElevated,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.article_outlined,
-              size: 16,
-              color: AppTheme.textSecondary,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Engineering Feed',
-              style: TextStyle(
-                color: AppTheme.textSecondary.withValues(alpha: 0.8),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 }

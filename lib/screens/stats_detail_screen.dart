@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../localization/app_localizations.dart';
-import '../models/contribution_stats.dart';
 import '../models/github_repo.dart';
 import '../models/user_stats.dart';
 import '../services/storage_service.dart';
@@ -190,201 +189,9 @@ GitHub: https://github.com/${u.login}
     );
   }
 
-  ({Color primary, Color secondary, IconData icon}) _getCommitHabitStyle(int tier) {
-    switch (tier) {
-      case 1:
-        return (
-          primary: AppTheme.accentOrange,
-          secondary: AppTheme.accentAmber,
-          icon: Icons.local_fire_department_rounded,
-        );
-      case 2:
-        return (
-          primary: AppTheme.primaryCyan,
-          secondary: const Color(0xFF388BFD),
-          icon: Icons.bolt_rounded,
-        );
-      case 3:
-        return (
-          primary: AppTheme.accentGreen,
-          secondary: const Color(0xFF2EA043),
-          icon: Icons.trending_up_rounded,
-        );
-      case 4:
-        return (
-          primary: AppTheme.accentAmber,
-          secondary: const Color(0xFFB45309),
-          icon: Icons.coffee_rounded,
-        );
-      case 5:
-        return (
-          primary: AppTheme.textSecondary,
-          secondary: AppTheme.textMuted,
-          icon: Icons.bedtime_rounded,
-        );
-      default:
-        return (
-          primary: const Color(0xFF56D364),
-          secondary: AppTheme.textMuted,
-          icon: Icons.eco_rounded,
-        );
-    }
-  }
 
-  Widget _buildCommitHabitBanner(ContributionStats cStats, AppLocalizations loc) {
-    final titleInfo = cStats.commitTitle;
-    final habitStyle = _getCommitHabitStyle(titleInfo.tier);
 
-    final isTier1 = titleInfo.tier == 1;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: isTier1 ? const Color(0xFF150D0A) : AppTheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isTier1
-              ? const Color(0xFFFF5722).withValues(alpha: 0.42)
-              : habitStyle.primary.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Icon(
-                      habitStyle.icon,
-                      size: 17,
-                      color: habitStyle.primary,
-                    ),
-                    const SizedBox(width: 7),
-                    Expanded(
-                      child: Text(
-                        loc.getCommitTierCleanTitle(titleInfo.tier),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: habitStyle.primary,
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                decoration: BoxDecoration(
-                  color: habitStyle.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: habitStyle.primary.withValues(alpha: 0.3),
-                    width: 0.8,
-                  ),
-                ),
-                child: Text(
-                  loc.getCommitTierLevelName(titleInfo.tier),
-                  style: TextStyle(
-                    color: habitStyle.primary,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-            decoration: BoxDecoration(
-              color: AppTheme.surfaceElevated,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.border, width: 0.8),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.whatshot_rounded,
-                        size: 13,
-                        color: habitStyle.primary,
-                      ),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          'Current: ${cStats.currentStreak} ${loc.daysUnit}',
-                          style: TextStyle(
-                            color: habitStyle.primary,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.emoji_events_rounded,
-                        size: 13,
-                        color: AppTheme.accentAmber,
-                      ),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          'Max: ${cStats.longestStreak} ${loc.daysUnit}',
-                          style: TextStyle(
-                            color: AppTheme.accentAmber,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                  decoration: BoxDecoration(
-                    color: habitStyle.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    titleInfo.badgeText,
-                    style: TextStyle(
-                      color: habitStyle.primary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +199,6 @@ GitHub: https://github.com/${u.login}
     final user = widget.stats.user;
     final cStats = widget.stats.contributionStats;
     final titleInfo = cStats.commitTitle;
-    final habitStyle = _getCommitHabitStyle(titleInfo.tier);
     final currentYear = DateTime.now().year;
     final repos = _filteredAndSortedRepos;
     final displayedRepos = _showAllRepos ? repos : repos.take(10).toList();
@@ -455,7 +261,11 @@ GitHub: https://github.com/${u.login}
                           radius: 30,
                           backgroundColor: AppTheme.surfaceElevated,
                           backgroundImage: user.avatarUrl.isNotEmpty
-                              ? NetworkImage(user.avatarUrl)
+                              ? ResizeImage(
+                                  NetworkImage(user.avatarUrl),
+                                  width: 160,
+                                  height: 160,
+                                )
                               : null,
                           child: user.avatarUrl.isEmpty
                               ? Text(
@@ -463,7 +273,7 @@ GitHub: https://github.com/${u.login}
                                       ? user.login[0].toUpperCase()
                                       : '?',
                                   style: TextStyle(
-                                    color: habitStyle.primary,
+                                    color: AppTheme.primaryCyan,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -585,11 +395,7 @@ GitHub: https://github.com/${u.login}
                 ],
               ),
             ),
-            const SizedBox(height: 14),
-
-            // Commit Habit Title Banner
-            _buildCommitHabitBanner(cStats, loc),
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
 
             // Section: GitHub Contributions & Streak Statistics
             Row(

@@ -127,6 +127,33 @@ class AppLocalizations {
     AppLanguage.korean: '개발자 텔레메트리 및 생산성 분석',
   });
 
+  String get architectureLabel => _str({
+    AppLanguage.indonesian: 'Arsitektur',
+    AppLanguage.english: 'Architecture',
+    AppLanguage.japanese: 'アーキテクチャ',
+    AppLanguage.chineseSimplified: '架构设计',
+    AppLanguage.chineseTraditional: '架構設計',
+    AppLanguage.korean: '아키텍처',
+  });
+
+  String get architectureValue => _str({
+    AppLanguage.indonesian: 'Clean Layered (Flutter 3)',
+    AppLanguage.english: 'Clean Layered (Flutter 3)',
+    AppLanguage.japanese: 'クリーン階層 (Flutter 3)',
+    AppLanguage.chineseSimplified: '分层架构 (Flutter 3)',
+    AppLanguage.chineseTraditional: '分層架構 (Flutter 3)',
+    AppLanguage.korean: '클린 레이어드 (Flutter 3)',
+  });
+
+  String get licenseLabel => _str({
+    AppLanguage.indonesian: 'Lisensi',
+    AppLanguage.english: 'License',
+    AppLanguage.japanese: 'ライセンス',
+    AppLanguage.chineseSimplified: '开源协议',
+    AppLanguage.chineseTraditional: '開源協議',
+    AppLanguage.korean: '라이선스',
+  });
+
   String get viewOnGitHub => _str({
     AppLanguage.indonesian: 'Lihat Repositori di GitHub',
     AppLanguage.english: 'View Repository on GitHub',
@@ -134,6 +161,24 @@ class AppLocalizations {
     AppLanguage.chineseSimplified: '在 GitHub 查看代码仓库',
     AppLanguage.chineseTraditional: '在 GitHub 查看代碼倉庫',
     AppLanguage.korean: 'GitHub에서 저장소 보기',
+  });
+
+  String cannotOpenLink(String url) => _str({
+    AppLanguage.indonesian: 'Tidak dapat membuka link: $url',
+    AppLanguage.english: 'Cannot open link: $url',
+    AppLanguage.japanese: 'リンクを開けませんでした: $url',
+    AppLanguage.chineseSimplified: '无法打开链接: $url',
+    AppLanguage.chineseTraditional: '無法開啟連結: $url',
+    AppLanguage.korean: '링크를 열 수 없습니다: $url',
+  });
+
+  String failedToOpenLink(String error) => _str({
+    AppLanguage.indonesian: 'Gagal membuka link: $error',
+    AppLanguage.english: 'Failed to open link: $error',
+    AppLanguage.japanese: 'リンクのオープンに失敗しました: $error',
+    AppLanguage.chineseSimplified: '打开链接失败: $error',
+    AppLanguage.chineseTraditional: '開啟連結失敗: $error',
+    AppLanguage.korean: '링크 열기 실패: $error',
   });
 
   // Search & Home
@@ -402,48 +447,84 @@ class AppLocalizations {
   });
 
   String get themeDark => _str({
-    AppLanguage.indonesian: 'Gelap Biasa',
-    AppLanguage.english: 'Dark Slate',
+    AppLanguage.indonesian: 'Gelap',
+    AppLanguage.english: 'Dark',
     AppLanguage.japanese: 'ダーク',
-    AppLanguage.chineseSimplified: '经典暗色',
-    AppLanguage.chineseTraditional: '經典暗色',
+    AppLanguage.chineseSimplified: '暗色',
+    AppLanguage.chineseTraditional: '暗色',
     AppLanguage.korean: '다크',
   });
 
+  String get themeDarkSubtitle => _str({
+    AppLanguage.indonesian: 'GitHub Slate',
+    AppLanguage.english: 'GitHub Slate',
+    AppLanguage.japanese: 'GitHub Slate 風',
+    AppLanguage.chineseSimplified: 'GitHub Slate 风格',
+    AppLanguage.chineseTraditional: 'GitHub Slate 風格',
+    AppLanguage.korean: 'GitHub Slate 스타일',
+  });
+
   String get themeAmoled => _str({
-    AppLanguage.indonesian: 'Gelap AMOLED',
-    AppLanguage.english: 'AMOLED Black',
-    AppLanguage.japanese: 'AMOLED ブラック',
-    AppLanguage.chineseSimplified: 'AMOLED 纯黑',
-    AppLanguage.chineseTraditional: 'AMOLED 純黑',
-    AppLanguage.korean: 'AMOLED 블랙',
+    AppLanguage.indonesian: 'AMOLED',
+    AppLanguage.english: 'AMOLED',
+    AppLanguage.japanese: 'AMOLED',
+    AppLanguage.chineseSimplified: 'AMOLED',
+    AppLanguage.chineseTraditional: 'AMOLED',
+    AppLanguage.korean: 'AMOLED',
+  });
+
+  String get themeAmoledSubtitle => _str({
+    AppLanguage.indonesian: 'OLED Pure Black',
+    AppLanguage.english: 'OLED Pure Black',
+    AppLanguage.japanese: 'OLED 完全な黒',
+    AppLanguage.chineseSimplified: 'OLED 纯黑底色',
+    AppLanguage.chineseTraditional: 'OLED 純黑底色',
+    AppLanguage.korean: 'OLED 퓨어 블랙',
   });
 
   String get themeAmoledJapanese => _str({
-    AppLanguage.indonesian: '🌸 Gelap AMOLED Jejepangan',
-    AppLanguage.english: '🌸 AMOLED Neo-Tokyo',
-    AppLanguage.japanese: '🌸 AMOLED 和風 (ネオ東京)',
-    AppLanguage.chineseSimplified: '🌸 AMOLED 日式和风',
-    AppLanguage.chineseTraditional: '🌸 AMOLED 日式和風',
-    AppLanguage.korean: '🌸 AMOLED 네오도쿄 와풍',
+    AppLanguage.indonesian: 'Easter Egg AMOLED Sakura',
+    AppLanguage.english: 'Easter Egg AMOLED Sakura',
+    AppLanguage.japanese: 'イースターエッグ AMOLED Sakura',
+    AppLanguage.chineseSimplified: '彩蛋 AMOLED 樱花',
+    AppLanguage.chineseTraditional: '彩蛋 AMOLED 櫻花',
+    AppLanguage.korean: '이스터에그 AMOLED 사쿠라',
+  });
+
+  String get themeAmoledJapaneseSubtitle => _str({
+    AppLanguage.indonesian: 'Neo-Tokyo Sakura',
+    AppLanguage.english: 'Neo-Tokyo Sakura',
+    AppLanguage.japanese: 'ネオ東京・桜',
+    AppLanguage.chineseSimplified: '新东京・樱花',
+    AppLanguage.chineseTraditional: '新東京・櫻花',
+    AppLanguage.korean: '네오도쿄 사쿠라',
   });
 
   String get themeLight => _str({
     AppLanguage.indonesian: 'Terang',
-    AppLanguage.english: 'Light Mode',
+    AppLanguage.english: 'Light',
     AppLanguage.japanese: 'ライト',
-    AppLanguage.chineseSimplified: '明亮模式',
-    AppLanguage.chineseTraditional: '明亮模式',
+    AppLanguage.chineseSimplified: '明亮',
+    AppLanguage.chineseTraditional: '明亮',
     AppLanguage.korean: '라이트',
   });
 
+  String get themeLightSubtitle => _str({
+    AppLanguage.indonesian: 'Clean Light',
+    AppLanguage.english: 'Clean Light',
+    AppLanguage.japanese: 'クリーンライト',
+    AppLanguage.chineseSimplified: '清新明亮',
+    AppLanguage.chineseTraditional: '清新明亮',
+    AppLanguage.korean: '클린 라이트',
+  });
+
   String get easterEggJapaneseToast => _str({
-    AppLanguage.indonesian: '🌸 Easter Egg Terbuka: Mode Gelap AMOLED Jejepangan! ようこそ!',
-    AppLanguage.english: '🌸 Easter Egg Unlocked: AMOLED Neo-Tokyo Mode! Welcome!',
-    AppLanguage.japanese: '🌸 イースターエッグ解除: AMOLED 和風モード！ようこそ！',
-    AppLanguage.chineseSimplified: '🌸 彩蛋解锁: AMOLED 日式和风主题！欢迎！',
-    AppLanguage.chineseTraditional: '🌸 彩蛋解鎖: AMOLED 日式和風主題！歡迎！',
-    AppLanguage.korean: '🌸 이스터에그 발견: AMOLED 네오도쿄 테마 활성화! 환영합니다!',
+    AppLanguage.indonesian: 'Easter Egg Terbuka: Mode Easter Egg AMOLED Sakura! ようこそ!',
+    AppLanguage.english: 'Easter Egg Unlocked: Easter Egg AMOLED Sakura Mode! Welcome!',
+    AppLanguage.japanese: 'イースターエッグ解除: AMOLED 和風モード！ようこそ！',
+    AppLanguage.chineseSimplified: '彩蛋解锁: AMOLED 樱花和风！欢迎！',
+    AppLanguage.chineseTraditional: '彩蛋解鎖: AMOLED 櫻花和風！歡迎！',
+    AppLanguage.korean: '이스터에그 발견: AMOLED 사쿠라 테마 활성화! 환영합니다!',
   });
 
   // App Updates
@@ -628,6 +709,54 @@ class AppLocalizations {
     AppLanguage.chineseTraditional: '正在重設...',
     AppLanguage.korean: '재설정 중...',
   });
+
+  String formatCountdown(Duration diff) {
+    if (diff.isNegative || diff.inSeconds <= 0) {
+      return resetting;
+    }
+    final hours = diff.inHours;
+    final minutes = diff.inMinutes % 60;
+    final seconds = diff.inSeconds % 60;
+    if (hours > 0) {
+      final h = _str({
+        AppLanguage.indonesian: 'jam',
+        AppLanguage.english: 'h',
+        AppLanguage.japanese: '時間',
+        AppLanguage.chineseSimplified: '小时',
+        AppLanguage.chineseTraditional: '小時',
+        AppLanguage.korean: '시간',
+      });
+      final m = _str({
+        AppLanguage.indonesian: 'mnt',
+        AppLanguage.english: 'm',
+        AppLanguage.japanese: '分',
+        AppLanguage.chineseSimplified: '分',
+        AppLanguage.chineseTraditional: '分',
+        AppLanguage.korean: '분',
+      });
+      return '$hours $h $minutes $m';
+    }
+    if (minutes > 0) {
+      final m = _str({
+        AppLanguage.indonesian: 'menit',
+        AppLanguage.english: 'min',
+        AppLanguage.japanese: '分',
+        AppLanguage.chineseSimplified: '分钟',
+        AppLanguage.chineseTraditional: '分鐘',
+        AppLanguage.korean: '분',
+      });
+      return '$minutes $m';
+    }
+    final s = _str({
+      AppLanguage.indonesian: 'detik',
+      AppLanguage.english: 'sec',
+      AppLanguage.japanese: '秒',
+      AppLanguage.chineseSimplified: '秒',
+      AppLanguage.chineseTraditional: '秒',
+      AppLanguage.korean: '초',
+    });
+    return '$seconds $s';
+  }
 
   // Token Section
   String get githubTokenTitle => 'GitHub Personal Token';
@@ -853,6 +982,42 @@ class AppLocalizations {
     AppLanguage.chineseSimplified: '正在关注',
     AppLanguage.chineseTraditional: '追蹤中',
     AppLanguage.korean: '팔로잉',
+  });
+
+  String get activityRhythmTitle => _str({
+    AppLanguage.indonesian: 'Ritme Jam Produktif',
+    AppLanguage.english: 'Productive Hours Rhythm',
+    AppLanguage.japanese: '生産的時間のリズム',
+    AppLanguage.chineseSimplified: '生产力时段规律',
+    AppLanguage.chineseTraditional: '生產力時段規律',
+    AppLanguage.korean: '생산적인 시간대 리듬',
+  });
+
+  String get activityRhythmSubtitle => _str({
+    AppLanguage.indonesian: 'Distribusi aktivitas commit & event menurut jam lokal perangkat',
+    AppLanguage.english: 'Commit & event activity distribution by local device time',
+    AppLanguage.japanese: '端末のローカル時間によるコミット＆イベント活動分布',
+    AppLanguage.chineseSimplified: '按设备本地时间分布的提交与事件活动',
+    AppLanguage.chineseTraditional: '按裝置本地時間分佈的提交與事件活動',
+    AppLanguage.korean: '기기 로컬 시간 기준 커밋 및 이벤트 활동 분포',
+  });
+
+  String get peakLabel => _str({
+    AppLanguage.indonesian: 'Peak',
+    AppLanguage.english: 'Peak',
+    AppLanguage.japanese: 'ピーク',
+    AppLanguage.chineseSimplified: '峰值',
+    AppLanguage.chineseTraditional: '峰值',
+    AppLanguage.korean: '피크',
+  });
+
+  String get eventsUnit => _str({
+    AppLanguage.indonesian: 'event',
+    AppLanguage.english: 'events',
+    AppLanguage.japanese: 'イベント',
+    AppLanguage.chineseSimplified: '事件',
+    AppLanguage.chineseTraditional: '事件',
+    AppLanguage.korean: '이벤트',
   });
 
   String get commitHabitTitle => _str({

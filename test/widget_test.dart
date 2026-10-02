@@ -12,6 +12,7 @@ import 'package:gitpulse_mobile/models/tech_news.dart';
 import 'package:gitpulse_mobile/models/user_stats.dart';
 import 'package:gitpulse_mobile/screens/stats_detail_screen.dart';
 import 'package:gitpulse_mobile/services/storage_service.dart';
+import 'package:gitpulse_mobile/services/tech_news_service.dart';
 import 'package:gitpulse_mobile/services/update_service.dart';
 import 'package:gitpulse_mobile/theme/app_theme.dart';
 import 'package:gitpulse_mobile/widgets/animated_tier_title.dart';
@@ -516,6 +517,16 @@ void main() {
       expect(zhHantLoc.repositoriesTitle, '代碼倉庫');
       expect(koLoc.repositoriesTitle, '리포지토리');
 
+      // Theme options (Gelap, AMOLED, Terang, Easter Egg AMOLED Sakura)
+      expect(idLoc.themeDark, 'Gelap');
+      expect(idLoc.themeAmoled, 'AMOLED');
+      expect(idLoc.themeLight, 'Terang');
+      expect(idLoc.themeAmoledJapanese, 'Easter Egg AMOLED Sakura');
+      expect(enLoc.themeDark, 'Dark');
+      expect(enLoc.themeAmoled, 'AMOLED');
+      expect(enLoc.themeLight, 'Light');
+      expect(enLoc.themeAmoledJapanese, 'Easter Egg AMOLED Sakura');
+
       // Filter labels
       expect(idLoc.filterPopular, 'Terpopuler');
       expect(enLoc.filterPopular, 'Most Popular');
@@ -539,6 +550,20 @@ void main() {
       expect(zhHansLoc.formatRelativeTime(tenMinutesAgo), contains('分钟前'));
       expect(zhHantLoc.formatRelativeTime(tenMinutesAgo), contains('分鐘前'));
       expect(koLoc.formatRelativeTime(tenMinutesAgo), contains('분 전'));
+
+      // Rate limit countdown without leakage
+      final fortyMinutes = const Duration(minutes: 40);
+      expect(idLoc.formatCountdown(fortyMinutes), '40 menit');
+      expect(enLoc.formatCountdown(fortyMinutes), '40 min');
+      expect(jaLoc.formatCountdown(fortyMinutes), '40 分');
+      expect(zhHansLoc.formatCountdown(fortyMinutes), '40 分钟');
+      expect(zhHantLoc.formatCountdown(fortyMinutes), '40 分鐘');
+      expect(koLoc.formatCountdown(fortyMinutes), '40 분');
+
+      // Activity rhythm chart labels
+      expect(idLoc.activityRhythmTitle, 'Ritme Jam Produktif');
+      expect(enLoc.activityRhythmTitle, 'Productive Hours Rhythm');
+      expect(jaLoc.activityRhythmTitle, '生産的時間のリズム');
     });
 
     test('StorageService persists and retrieves language preference correctly', () async {
@@ -632,12 +657,12 @@ void main() {
       expect(find.text('150'), findsOneWidget);
     });
 
-    test('AppConfig provides accurate release and version telemetry for v1.0.1', () {
+    test('AppConfig provides accurate release and version telemetry for v1.0.2', () {
       expect(AppConfig.appName, 'GitPulse');
-      expect(AppConfig.appVersion, 'v1.0.1');
-      expect(AppConfig.buildNumber, '2');
-      expect(AppConfig.fullVersion, 'v1.0.1 (Build 2)');
-      expect(AppConfig.releaseTag, 'v1.0.1');
+      expect(AppConfig.appVersion, 'v1.0.2');
+      expect(AppConfig.buildNumber, '3');
+      expect(AppConfig.fullVersion, 'v1.0.2 (Build 3)');
+      expect(AppConfig.releaseTag, 'v1.0.2');
       expect(AppConfig.license, 'MIT License');
       expect(AppConfig.githubRepoUrl, contains('github.com'));
     });
@@ -652,6 +677,11 @@ void main() {
       expect(enLoc.appVersionLabel, 'App Version');
       expect(idLoc.buildNumberLabel, 'Build');
       expect(enLoc.buildNumberLabel, 'Build');
+      expect(idLoc.architectureLabel, 'Arsitektur');
+      expect(enLoc.architectureLabel, 'Architecture');
+      expect(idLoc.architectureValue, 'Clean Layered (Flutter 3)');
+      expect(idLoc.licenseLabel, 'Lisensi');
+      expect(enLoc.licenseLabel, 'License');
       expect(idLoc.viewOnGitHub, 'Lihat Repositori di GitHub');
       expect(enLoc.viewOnGitHub, 'View Repository on GitHub');
     });
@@ -682,6 +712,22 @@ void main() {
       } finally {
         await tempDir.delete(recursive: true);
       }
+    });
+
+    test('TechNewsService caches results in-memory to prevent duplicate network calls', () async {
+      final service = TechNewsService();
+      // First fetch gets fallback or trending news
+      final firstFetch = await service.fetchNews(tag: 'ai');
+      expect(firstFetch.isNotEmpty, true);
+
+      // Second fetch should return identical cached list instance without network call
+      final secondFetch = await service.fetchNews(tag: 'ai');
+      expect(identical(firstFetch, secondFetch), true);
+
+      // clearCache should reset the cache
+      service.clearCache();
+      final thirdFetch = await service.fetchNews(tag: 'ai');
+      expect(thirdFetch.isNotEmpty, true);
     });
   });
 }

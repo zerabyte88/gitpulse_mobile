@@ -12,8 +12,8 @@
 
 ### Enterprise-Grade Developer Telemetry & Productivity Analytics
 
-[![Release](https://img.shields.io/badge/Release-v1.0.1-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
-[![Build](https://img.shields.io/badge/Build-2-brightgreen?style=flat-square)](pubspec.yaml)
+[![Release](https://img.shields.io/badge/Release-v1.0.2-blue?style=flat-square)](https://github.com/zerabyte88/gitpulse_mobile/releases)
+[![Build](https://img.shields.io/badge/Build-3-brightgreen?style=flat-square)](pubspec.yaml)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.24.0-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%3E%3D3.5.0-0175C2?style=flat-square&logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-10B981?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
@@ -444,7 +444,7 @@ gitpulse_mobile/
 ├── test/
 │   └── widget_test.dart             # Complete unit, model, and OTA update test suite (20 tests)
 ├── web/                             # Web/PWA deployment entrypoint
-└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.1+2)
+└── pubspec.yaml                     # Dependency manifest & version metadata (v1.0.2+3)
 ```
 
 ---

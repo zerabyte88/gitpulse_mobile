@@ -5,13 +5,22 @@ import '../models/tech_news.dart';
 class TechNewsService {
   final http.Client _client;
   String? personalAccessToken;
+  final Map<String, List<TechNews>> _cache = {};
 
   TechNewsService({http.Client? client, this.personalAccessToken})
       : _client = client ?? http.Client();
 
-  Future<List<TechNews>> fetchNews({String tag = 'trending'}) async {
+  void clearCache() => _cache.clear();
+
+  Future<List<TechNews>> fetchNews({String tag = 'trending', bool forceRefresh = false}) async {
+    if (!forceRefresh && _cache.containsKey(tag) && _cache[tag]!.isNotEmpty) {
+      return _cache[tag]!;
+    }
+
     if (tag == 'trending') {
-      return fetchTrendingRepos();
+      final repos = await fetchTrendingRepos();
+      _cache['trending'] = repos;
+      return repos;
     }
 
     try {
@@ -29,16 +38,20 @@ class TechNewsService {
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         if (data.isNotEmpty) {
-          return data
+          final news = data
               .map((json) => TechNews.fromJson(json as Map<String, dynamic>))
               .toList();
+          _cache[tag] = news;
+          return news;
         }
       }
     } catch (_) {
       // Fallback to curated news if network fails or offline
     }
 
-    return _getFallbackNews(tag);
+    final fallback = _getFallbackNews(tag);
+    _cache[tag] = fallback;
+    return fallback;
   }
 
   /// Fetches top trending active repositories from GitHub Search API

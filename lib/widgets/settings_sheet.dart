@@ -465,7 +465,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         // 1. Gelap Biasa
                         _buildThemeOptionTile(
                           title: loc.themeDark,
-                          subtitle: 'GitHub Slate',
+                          subtitle: loc.themeDarkSubtitle,
                           icon: Icons.dark_mode_outlined,
                           isSelected: currentTheme == AppThemeMode.dark,
                           onTap: () async {
@@ -481,7 +481,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         // 2. Gelap AMOLED (With Easter Egg tap listener)
                         _buildThemeOptionTile(
                           title: loc.themeAmoled,
-                          subtitle: 'OLED Pure Black',
+                          subtitle: loc.themeAmoledSubtitle,
                           icon: Icons.brightness_2_rounded,
                           isSelected: currentTheme == AppThemeMode.amoled,
                           onTap: () => _onAmoledTapped(loc),
@@ -490,7 +490,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         // 3. Terang
                         _buildThemeOptionTile(
                           title: loc.themeLight,
-                          subtitle: 'Clean Developer',
+                          subtitle: loc.themeLightSubtitle,
                           icon: Icons.light_mode_outlined,
                           isSelected: currentTheme == AppThemeMode.light,
                           onTap: () async {
@@ -503,11 +503,11 @@ class _SettingsSheetState extends State<SettingsSheet> {
                           },
                         ),
 
-                        // 4. Gelap AMOLED Jejepangan (Shown if unlocked or currently active)
+                        // 4. Gelap AMOLED Sakura (Shown if unlocked or currently active)
                         if (isJapaneseUnlocked || currentTheme == AppThemeMode.amoledJapanese)
                           _buildThemeOptionTile(
                             title: loc.themeAmoledJapanese,
-                            subtitle: 'Neo-Tokyo Sakura',
+                            subtitle: loc.themeAmoledJapaneseSubtitle,
                             icon: Icons.auto_awesome_rounded,
                             isSelected: currentTheme == AppThemeMode.amoledJapanese,
                             isEasterEgg: true,
@@ -782,7 +782,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     ...[
                     const SizedBox(height: 4),
                     Text(
-                      '${loc.resetIn}: ${rateLimit.resetCountdown}',
+                      '${loc.resetIn}: ${loc.formatCountdown(rateLimit.resetTime.difference(DateTime.now()))}',
                       style: TextStyle(
                         color: AppTheme.textMuted,
                         fontSize: 11,
@@ -1248,9 +1248,9 @@ class _SettingsSheetState extends State<SettingsSheet> {
                     const SizedBox(height: 6),
                     _buildAboutInfoRow(loc.buildNumberLabel, '${AppConfig.buildNumber} (Release APK)'),
                     const SizedBox(height: 6),
-                    _buildAboutInfoRow('Architecture', 'Clean Layered (Flutter 3)'),
+                    _buildAboutInfoRow(loc.architectureLabel, loc.architectureValue),
                     const SizedBox(height: 6),
-                    _buildAboutInfoRow('License', AppConfig.license),
+                    _buildAboutInfoRow(loc.licenseLabel, AppConfig.license),
                     const SizedBox(height: 12),
                     Divider(height: 1, color: AppTheme.border),
                     const SizedBox(height: 10),
@@ -1277,6 +1277,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
                                   AppConfig.developerAvatarUrl,
                                   width: 28,
                                   height: 28,
+                                  cacheWidth: 80,
+                                  cacheHeight: 80,
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, _, _) => CircleAvatar(
                                     radius: 14,
@@ -1342,75 +1344,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // FOOTER: Made with ❤️ by zerabyte88 (Clickable to GitHub with avatar)
-              Center(
-                child: InkWell(
-                  onTap: () async {
-                    final uri = Uri.parse(AppConfig.developerGithubUrl);
-                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: AppTheme.surfaceElevated,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppTheme.border, width: 0.8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ClipOval(
-                          child: Image.network(
-                            AppConfig.developerAvatarUrl,
-                            width: 18,
-                            height: 18,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => const Icon(
-                              Icons.favorite_rounded,
-                              color: Color(0xFFFF5252),
-                              size: 13,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Made with ',
-                          style: TextStyle(
-                            color: AppTheme.textMuted,
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.favorite_rounded,
-                          color: Color(0xFFFF5252),
-                          size: 13,
-                        ),
-                        Text(
-                          ' by ',
-                          style: TextStyle(
-                            color: AppTheme.textMuted,
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          AppConfig.developerUsername,
-                          style: TextStyle(
-                            color: AppTheme.primaryCyan,
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -1436,7 +1370,8 @@ class _SettingsSheetState extends State<SettingsSheet> {
             onTap: onTap,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              constraints: const BoxConstraints(minHeight: 52),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
               decoration: BoxDecoration(
                 color: isSelected
                     ? (isEasterEgg
@@ -1460,7 +1395,7 @@ class _SettingsSheetState extends State<SettingsSheet> {
                         ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
                         : AppTheme.textMuted,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1472,12 +1407,14 @@ class _SettingsSheetState extends State<SettingsSheet> {
                             color: isSelected
                                 ? (isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan)
                                 : AppTheme.textPrimary,
-                            fontSize: 11.5,
+                            fontSize: 11,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                            height: 1.15,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 1),
                         Text(
                           subtitle,
                           style: TextStyle(
@@ -1490,12 +1427,14 @@ class _SettingsSheetState extends State<SettingsSheet> {
                       ],
                     ),
                   ),
-                  if (isSelected)
+                  if (isSelected) ...[
+                    const SizedBox(width: 4),
                     Icon(
                       Icons.check_circle_rounded,
-                      size: 15,
+                      size: 14,
                       color: isEasterEgg ? const Color(0xFFFF6B9D) : AppTheme.primaryCyan,
                     ),
+                  ],
                 ],
               ),
             ),

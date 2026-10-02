@@ -117,9 +117,10 @@ class LanguageChart extends StatelessWidget {
 
     final isDetailedBytes = totalCount >= 100;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+    return RepaintBoundary(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.border, width: 1),
@@ -216,6 +217,7 @@ class LanguageChart extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

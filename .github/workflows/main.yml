@@ -9,13 +9,13 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Release Tag (e.g., v1.0.1)'
+        description: 'Release Tag (e.g., v1.0.2)'
         required: true
-        default: 'v1.0.1'
+        default: 'v1.0.2'
       release_name:
         description: 'Release Title'
         required: true
-        default: 'GitPulse v1.0.1 (64-bit ARM)'
+        default: 'GitPulse v1.0.2 (64-bit ARM)'
       release_notes:
         description: 'Release Notes'
         required: false
@@ -68,11 +68,17 @@ jobs:
       - name: Prepare Release Artifacts
         id: prep
         run: |
-          RAW_TAG="${{ inputs.tag_name || github.ref_name }}"
-          if [ -z "$RAW_TAG" ] || [ "$RAW_TAG" = "master" ] || [ "$RAW_TAG" = "main" ]; then
-            TAG="v1.0.1"
+          PUBSPEC_VER=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d ' \r\n')
+          INPUT_TAG="${{ inputs.tag_name }}"
+          REF_NAME="${{ github.ref_name }}"
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          elif [[ "$REF_NAME" == v* ]]; then
+            TAG="$REF_NAME"
+          elif [ -n "$PUBSPEC_VER" ]; then
+            TAG="v$PUBSPEC_VER"
           else
-            TAG="$RAW_TAG"
+            TAG="v1.0.2"
           fi
           APK_NAME="GitPulse-${TAG}-arm64-v8a.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "${APK_NAME}"
@@ -89,13 +95,14 @@ jobs:
             ${{ steps.prep.outputs.apk_name }}.sha256
 
       - name: Publish to GitHub Releases
-        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.publish_to_release) || startsWith(github.ref, 'refs/tags/v') }}
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish_to_release)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.prep.outputs.tag_name }}
-          name: ${{ inputs.release_name || steps.prep.outputs.tag_name }}
-          body: ${{ inputs.release_notes || 'Official GitPulse Mobile release bundle.' }}
+          name: GitPulse ${{ steps.prep.outputs.tag_name }} (64-bit ARM)
+          body: ${{ inputs.release_notes || 'Official GitPulse Mobile release bundle compiled exclusively for 64-bit ARM architecture (arm64-v8a).' }}
           generate_release_notes: true
+          make_latest: true
           files: |
             ${{ steps.prep.outputs.apk_name }}
             ${{ steps.prep.outputs.apk_name }}.sha256

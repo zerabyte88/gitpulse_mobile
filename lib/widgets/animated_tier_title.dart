@@ -55,26 +55,28 @@ class _AnimatedTierTitleState extends State<AnimatedTierTitle>
     final cleanTitle = AppLocalizations.of(context)
         .getCommitTierCleanTitle(tier);
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final progress = _controller.value;
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          final progress = _controller.value;
 
-        switch (tier) {
-          case 1:
-            return _buildTier1FireEffect(cleanTitle, progress);
-          case 2:
-            return _buildTier2ElectricEffect(cleanTitle, progress);
-          case 3:
-            return _buildTier3EmeraldEffect(cleanTitle, progress);
-          case 4:
-            return _buildTier4SolarAmberEffect(cleanTitle, progress);
-          case 5:
-            return _buildTier5CosmicSilverEffect(cleanTitle, progress);
-          default:
-            return _buildTier6SpringSproutEffect(cleanTitle, progress);
-        }
-      },
+          switch (tier) {
+            case 1:
+              return _buildTier1FireEffect(cleanTitle, progress);
+            case 2:
+              return _buildTier2ElectricEffect(cleanTitle, progress);
+            case 3:
+              return _buildTier3EmeraldEffect(cleanTitle, progress);
+            case 4:
+              return _buildTier4SolarAmberEffect(cleanTitle, progress);
+            case 5:
+              return _buildTier5CosmicSilverEffect(cleanTitle, progress);
+            default:
+              return _buildTier6SpringSproutEffect(cleanTitle, progress);
+          }
+        },
+      ),
     );
   }
 
@@ -578,6 +580,9 @@ class _FlameEmbersPainter extends CustomPainter {
 
   _FlameEmbersPainter({required this.progress});
 
+  static final Paint _glowPaint = Paint();
+  static final Paint _corePaint = Paint();
+
   static const List<_EmberSpec> _embers = [
     _EmberSpec(xRatio: 0.10, speed: 1.0, size: 1.6, phase: 0.05, color: Color(0xFFFF9100)),
     _EmberSpec(xRatio: 0.26, speed: 1.3, size: 1.3, phase: 0.40, color: Color(0xFFFFD600)),
@@ -605,15 +610,12 @@ class _FlameEmbersPainter extends CustomPainter {
       if (alpha <= 0.02) continue;
 
       // Outer glowing halo
-      final glowPaint = Paint()
-        ..color = ember.color.withValues(alpha: alpha * 0.75)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, ember.size * 0.7);
-      canvas.drawCircle(Offset(x, y), ember.size, glowPaint);
+      _glowPaint.color = ember.color.withValues(alpha: alpha * 0.70);
+      canvas.drawCircle(Offset(x, y), ember.size * 1.25, _glowPaint);
 
       // Inner incandescent core
-      final corePaint = Paint()
-        ..color = Colors.white.withValues(alpha: alpha * 0.90);
-      canvas.drawCircle(Offset(x, y), ember.size * 0.45, corePaint);
+      _corePaint.color = Colors.white.withValues(alpha: alpha * 0.90);
+      canvas.drawCircle(Offset(x, y), ember.size * 0.5, _corePaint);
     }
   }
 

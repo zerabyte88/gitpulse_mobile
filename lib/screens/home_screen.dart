@@ -88,7 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       _newsService.personalAccessToken = widget.storageService.getToken();
-      final news = await _newsService.fetchNews(tag: _selectedCategory);
+      final news = await _newsService.fetchNews(
+        tag: _selectedCategory,
+        forceRefresh: refresh,
+      );
       if (mounted) {
         setState(() {
           _newsList = news;
@@ -278,65 +281,131 @@ class _HomeScreenState extends State<HomeScreen> {
             ]);
             setState(() {});
           },
-          child: SingleChildScrollView(
+          child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Search Input with integrated dropdown
-                _buildSearchBar(loc),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Search Input with integrated dropdown
+                      _buildSearchBar(loc),
 
-                // Search History Dropdown (only visible when search field is focused/clicked)
-                if (_isSearchFocused) ...[
-                  const SizedBox(height: 8),
-                  _buildSearchHistoryPanel(loc, recents, allRecents),
-                ],
+                      // Search History Dropdown (only visible when search field is focused/clicked)
+                      if (_isSearchFocused) ...[
+                        const SizedBox(height: 8),
+                        _buildSearchHistoryPanel(loc, recents, allRecents),
+                      ],
 
-                if (_errorMessage != null) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: AppTheme.accentRed.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.3)),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.error_outline_rounded,
-                          color: AppTheme.accentRed,
-                          size: 17,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _errorMessage!,
-                            style: TextStyle(
-                              color: AppTheme.accentRed,
-                              fontSize: 12,
-                            ),
+                      if (_errorMessage != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: AppTheme.accentRed.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.error_outline_rounded,
+                                color: AppTheme.accentRed,
+                                size: 17,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _errorMessage!,
+                                  style: TextStyle(
+                                    color: AppTheme.accentRed,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
+
+                      const SizedBox(height: 20),
+
+                      // Bookmarks Section
+                      _buildBookmarksSection(loc, bookmarkedUsers),
+
+                      const SizedBox(height: 24),
+
+                      // Latest Tech & AI News Header
+                      _buildTechNewsHeader(loc),
+
+                      const SizedBox(height: 14),
+                    ],
+                  ),
+                ),
+              ),
+
+              // News Content as virtualized sliver
+              if (_isNewsLoading)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 36),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppTheme.primaryCyan,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            loc.loadingNews,
+                            style: TextStyle(
+                              color: AppTheme.textMuted.withValues(alpha: 0.8),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ],
-
-                const SizedBox(height: 20),
-
-                // Bookmarks Section
-                _buildBookmarksSection(loc, bookmarkedUsers),
-
-                const SizedBox(height: 24),
-
-                // Latest Tech & AI News Section
-                _buildTechNewsSection(loc),
-
-                const SizedBox(height: 28),
-              ],
-            ),
+                )
+              else if (_newsList.isEmpty)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 28),
+                      child: Text(
+                        loc.noNewsFound,
+                        style: TextStyle(
+                          color: AppTheme.textMuted.withValues(alpha: 0.8),
+                          fontSize: 12.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: TechNewsCard(news: _newsList[index]),
+                        );
+                      },
+                      childCount: _newsList.length,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -701,6 +770,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             user.avatarUrl,
                             width: 38,
                             height: 38,
+                            cacheWidth: 100,
+                            cacheHeight: 100,
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
@@ -783,7 +854,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTechNewsSection(AppLocalizations loc) {
+  Widget _buildTechNewsHeader(AppLocalizations loc) {
     final categories = _getCategories(loc);
 
     return Column(
@@ -864,55 +935,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
-        const SizedBox(height: 14),
-
-        // News Content
-        if (_isNewsLoading)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 36),
-              child: Column(
-                children: [
-                  SizedBox(width: 24, height: 24, child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppTheme.primaryCyan,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    loc.loadingNews,
-                    style: TextStyle(
-                      color: AppTheme.textMuted.withValues(alpha: 0.8),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else if (_newsList.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 28),
-              child: Text(
-                loc.noNewsFound,
-                style: TextStyle(
-                  color: AppTheme.textMuted.withValues(alpha: 0.8),
-                  fontSize: 12.5,
-                ),
-              ),
-            ),
-          )
-        else
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _newsList.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              return TechNewsCard(news: _newsList[index]);
-            },
-          ),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 import '../theme/app_theme.dart';
 
 class ActivityChart extends StatelessWidget {
@@ -9,14 +10,15 @@ class ActivityChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     // Group into 6 time intervals (each 4 hours)
     final intervals = [
-      {'label': '00-04', 'name': 'Malam', 'count': 0},
-      {'label': '04-08', 'name': 'Fajar', 'count': 0},
-      {'label': '08-12', 'name': 'Pagi', 'count': 0},
-      {'label': '12-16', 'name': 'Siang', 'count': 0},
-      {'label': '16-20', 'name': 'Sore', 'count': 0},
-      {'label': '20-24', 'name': 'Malam', 'count': 0},
+      {'label': '00-04', 'count': 0},
+      {'label': '04-08', 'count': 0},
+      {'label': '08-12', 'count': 0},
+      {'label': '12-16', 'count': 0},
+      {'label': '16-20', 'count': 0},
+      {'label': '20-24', 'count': 0},
     ];
 
     hourlyActivity.forEach((hour, count) {
@@ -68,8 +70,9 @@ class ActivityChart extends StatelessWidget {
       );
     });
 
-    return Container(
-      padding: const EdgeInsets.all(16),
+    return RepaintBoundary(
+      child: Container(
+        padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -92,7 +95,7 @@ class ActivityChart extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Ritme Jam Produktif',
+                        loc.activityRhythmTitle,
                         style: TextStyle(
                           color: AppTheme.textPrimary,
                           fontSize: 14.5,
@@ -118,7 +121,7 @@ class ActivityChart extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Peak: ${intervals[peakIndex]['label']}',
+                    '${loc.peakLabel}: ${intervals[peakIndex]['label']}',
                     style: TextStyle(
                       color: AppTheme.accentGreen,
                       fontSize: 11,
@@ -130,7 +133,7 @@ class ActivityChart extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Distribusi aktivitas commit & event menurut jam lokal perangkat',
+            loc.activityRhythmSubtitle,
             style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
           ),
           const SizedBox(height: 20),
@@ -147,7 +150,7 @@ class ActivityChart extends StatelessWidget {
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final item = intervals[group.x.toInt()];
                       return BarTooltipItem(
-                        '${item['label']}\n${rod.toY.toInt()} event',
+                        '${item['label']}\n${rod.toY.toInt()} ${loc.eventsUnit}',
                         TextStyle(
                           color: AppTheme.textPrimary,
                           fontWeight: FontWeight.w600,
@@ -194,6 +197,7 @@ class ActivityChart extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }
