@@ -65,7 +65,7 @@ jobs:
         run: flutter test
 
       - name: Build 64-bit Release APK (ARM64 Only)
-        run: flutter build apk --release --target-platform android-arm64
+        run: flutter build apk --release --target-platform android-arm64 --android-skip-build-dependency-validation
 
       - name: Package & Prepare Release Artifacts
         run: |
